@@ -5,9 +5,9 @@ namespace Ab\LocoX;
 /**
  * Static parsers contain no internal parsers.
  */
-abstract class StaticParser extends \Ab\LocoX\MonoParser
+abstract class StaticParser extends MonoParser
 {
-    public function __construct($callback)
+    public function __construct(?callable $callback)
     {
         parent::__construct([], $callback);
     }
@@ -15,11 +15,9 @@ abstract class StaticParser extends \Ab\LocoX\MonoParser
     /**
      * no internals => empty immediate first-set
      *
-     * @return array
-     *
      * @psalm-return array<empty, empty>
      */
-    public function firstSet()
+    public function firstSet(): array
     {
         return [];
     }

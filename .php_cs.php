@@ -81,9 +81,9 @@ $fullRuleset = [
     // Replaces `intval`, `floatval`, `doubleval`, `strval` and `boolval` function calls with according type casting operator.
     'modernize_types_casting' => true,
     // Add leading `\` before constant invocation of internal constant to speed up resolving. Constant name match is case-sensitive, except for `null`, `false` and `true`.
-    'native_constant_invocation' => true,
+    'native_constant_invocation' => false,
     // Add leading `\` before function invocation to speed up resolving.
-    'native_function_invocation' => true,
+    'native_function_invocation' => false,
     // Master functions shall be used instead of aliases.
     'no_alias_functions' => true,
     // Replace accidental usage of homoglyphs (non ascii characters) in names.

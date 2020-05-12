@@ -17,19 +17,14 @@
 >
     <projectFiles>
         <directory name="src"/>
-        <directory name="tests"/>
-        <directory name="docs/examples/"/>
+
         <ignoreFiles>
             <directory name="vendor"/>
             <directory name="tests/Classic/"/>
         </ignoreFiles>
     </projectFiles>
 
-    <ignoreExceptions>
-        <class name="UnexpectedValueException"/>
-        <class name="InvalidArgumentException"/>
-        <class name="LogicException"/>
-    </ignoreExceptions>
+
     <issueHandlers>
         <LessSpecificReturnType errorLevel="info" />
 

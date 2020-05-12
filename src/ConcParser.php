@@ -2,13 +2,21 @@
 
 namespace Ab\LocoX;
 
+use function func_get_args;
+
 /**
  * Match several things in a row. Callback should accept one argument
  * for each parser listed.
  */
-class ConcParser extends \Ab\LocoX\MonoParser
+class ConcParser extends MonoParser
 {
-    public function __construct($internals, $callback = null)
+    /**
+     * @param MonoParser[]  $internals
+     * @param null|callable $callback
+     *
+     * @throws GrammarException
+     */
+    public function __construct(array $internals, $callback = null)
     {
         $this->string = 'new ' . __CLASS__ . '(' . serialiseArray($internals) . ')';
         parent::__construct($internals, $callback);
@@ -18,23 +26,23 @@ class ConcParser extends \Ab\LocoX\MonoParser
      * Default callback (this should be used rarely) returns all arguments as
      * an array. In the majority of cases the user should specify a callback.
      *
-     * @return array
-     *
      * @psalm-return list<mixed>
      */
-    public function defaultCallback()
+    public function defaultCallback(): array
     {
-        return \func_get_args();
+        return func_get_args();
     }
 
     /**
-     * @return (array|mixed)[]
+     * @param string $string
+     * @param int $currentPosition
+     * @return array (array|mixed)[]
      *
      * @psalm-return array{j: mixed, args: list<mixed>}
      */
-    public function getResult($string, $i = 0)
+    public function getResult(string $string, int $currentPosition = 0): array
     {
-        $j = $i;
+        $j = $currentPosition;
         $args = [];
         foreach ($this->internals as $parser) {
             $match = $parser->match($string, $j);
@@ -48,11 +56,9 @@ class ConcParser extends \Ab\LocoX\MonoParser
     /**
      * First-set is built up as follows...
      *
-     * @return array
-     *
-     * @psalm-return list<mixed>
+     * @psalm-return list<MonoParser>
      */
-    public function firstSet()
+    public function firstSet(): array
     {
         $firstSet = [];
         foreach ($this->internals as $internal) {
@@ -71,10 +77,8 @@ class ConcParser extends \Ab\LocoX\MonoParser
 
     /**
      * only nullable if everything in the list is nullable
-     *
-     * @return bool
      */
-    public function evaluateNullability()
+    public function evaluateNullability(): bool
     {
         foreach ($this->internals as $internal) {
             if (!$internal->nullable) {

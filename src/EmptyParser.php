@@ -5,9 +5,9 @@ namespace Ab\LocoX;
 /**
  * Match the empty string
  */
-class EmptyParser extends \Ab\LocoX\StaticParser
+class EmptyParser extends StaticParser
 {
-    public function __construct($callback = null)
+    public function __construct(?callable $callback = null)
     {
         $this->string = 'new ' . __CLASS__ . '()';
         parent::__construct($callback);
@@ -15,10 +15,8 @@ class EmptyParser extends \Ab\LocoX\StaticParser
 
     /**
      * default callback returns null
-     *
-     * @return void
      */
-    public function defaultCallback()
+    public function defaultCallback(): void
     {
     }
 
@@ -26,15 +24,15 @@ class EmptyParser extends \Ab\LocoX\StaticParser
      * Always match successfully, pass no args to callback
      *
      * @param mixed $string
-     * @param mixed $i
+     * @param mixed $currentPosition
      *
-     * @return (array|mixed)[]
+     * @return array (array|mixed)[]
      *
      * @psalm-return array{j: mixed, args: array<empty, empty>}
      */
-    public function getResult($string, $i = 0)
+    public function getResult(string $string, int $currentPosition = 0): array
     {
-        return ['j' => $i, 'args' => []];
+        return ['j' => $currentPosition, 'args' => []];
     }
 
     /**
@@ -42,7 +40,7 @@ class EmptyParser extends \Ab\LocoX\StaticParser
      *
      * @return true
      */
-    public function evaluateNullability()
+    public function evaluateNullability(): bool
     {
         return true;
     }

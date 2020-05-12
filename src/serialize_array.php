@@ -2,24 +2,27 @@
 
 namespace Ab\LocoX;
 
+use function array_keys;
+use function count;
+use function is_string;
+use function var_export;
+
 /**
  * a helpful internal function
  *
  * @param mixed $array
- *
- * @return string
  */
 function serialiseArray($array): string
 {
     $string = 'array(';
-    foreach (\array_keys($array) as $keyId => $key) {
-        $string .= \var_export($key, true) . ' => ';
-        if (\is_string($array[$key])) {
-            $string .= \var_export($array[$key], true);
+    foreach (array_keys($array) as $keyId => $key) {
+        $string .= var_export($key, true) . ' => ';
+        if (is_string($array[$key])) {
+            $string .= var_export($array[$key], true);
         } else {
             $string .= $array[$key]->__toString();
         }
-        if ($keyId + 1 !== \count($array)) {
+        if ($keyId + 1 !== count($array)) {
             $string .= ', ';
         }
     }

@@ -2,14 +2,17 @@
 
 namespace Ab\LocoX;
 
+use function func_get_args;
+use function var_export;
+
 /**
  * Callback accepts a single argument containing all submatches, however many
  */
-class GreedyMultiParser extends \Ab\LocoX\MonoParser
+class GreedyMultiParser extends MonoParser
 {
-    private $lower;
-
     public $optional;
+
+    private $lower;
 
     public function __construct($internal, $lower, $upper, $callback = null)
     {
@@ -18,34 +21,38 @@ class GreedyMultiParser extends \Ab\LocoX\MonoParser
             $this->optional = null;
         } else {
             if ($upper < $lower) {
-                throw new \Ab\LocoX\GrammarException("Can't create a " . __CLASS__ . ' with lower limit ' . \var_export($lower, true) . ' and upper limit ' . \var_export($upper, true));
+                throw new GrammarException("Can't create a " . __CLASS__ . ' with lower limit ' . var_export(
+                        $lower,
+                        true
+                    ) . ' and upper limit ' . var_export($upper, true));
             }
             $this->optional = $upper - $lower;
         }
-        $this->string = 'new ' . __CLASS__ . '(' . $internal . ', ' . \var_export($lower, true) . ', ' . \var_export($upper, true) . ')';
+        $this->string = 'new ' . __CLASS__ . '(' . $internal . ', ' . var_export(
+                $lower,
+                true
+            ) . ', ' . var_export($upper, true) . ')';
         parent::__construct([$internal], $callback);
     }
 
     /**
      * default callback: just return the list
      *
-     * @return array
-     *
      * @psalm-return list<mixed>
      */
-    public function defaultCallback()
+    public function defaultCallback(): array
     {
-        return \func_get_args();
+        return func_get_args();
     }
 
     /**
-     * @return (array|mixed)[]
+     * @return array (array|mixed)[]
      *
      * @psalm-return array{j: mixed, args: list<mixed>}
      */
-    public function getResult($string, $i = 0)
+    public function getResult(string $string, int $currentPosition = 0): array
     {
-        $result = ['j' => $i, 'args' => []];
+        $result = ['j' => $currentPosition, 'args' => []];
         // First do the non-optional segment
         // Any parse failures here are terminal
         for ($k = 0; $k < $this->lower; $k++) {
@@ -60,7 +67,7 @@ class GreedyMultiParser extends \Ab\LocoX\MonoParser
                 $match = $this->internals[0]->match($string, $result['j']);
                 $result['j'] = $match['j'];
                 $result['args'][] = $match['value'];
-            } catch (\Ab\LocoX\ParseFailureException $e) {
+            } catch (ParseFailureException $e) {
                 break;
             }
         }
@@ -70,10 +77,8 @@ class GreedyMultiParser extends \Ab\LocoX\MonoParser
 
     /**
      * nullable if lower limit is zero OR internal is nullable.
-     *
-     * @return bool
      */
-    public function evaluateNullability()
+    public function evaluateNullability(): bool
     {
         return 0 === $this->lower || true === $this->internals[0]->nullable;
     }
@@ -81,11 +86,9 @@ class GreedyMultiParser extends \Ab\LocoX\MonoParser
     /**
      * This parser contains only one internal
      *
-     * @return array
-     *
      * @psalm-return array{0: mixed}
      */
-    public function firstSet()
+    public function firstSet(): array
     {
         return [$this->internals[0]];
     }

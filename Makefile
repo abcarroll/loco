@@ -1,6 +1,8 @@
 COMPOSER    = composer
 VENDORBIN   = vendor/bin
 
+test:
+	php -d zend.assertions=1 -d assert.active=On -d assert.exception=On tests/run.php
 
 clean: autoload
 	@rm -rf -- *.cache
@@ -26,7 +28,7 @@ php-cs-fixer: mkmetrics
 	./vendor/bin/php-cs-fixer fix --diff --dry-run --config ./.php_cs.php src/ tests/ docs/examples/ | tee .metrics/php-cs-fixer.txt
 
 php-cs-fixer-fix: mkmetrics
-	./vendor/bin/php-cs-fixer fix --diff --dry-run --config ./.php_cs.php src/ tests/ docs/examples/ | tee .metrics/php-cs-fixer-fix.txt
+	./vendor/bin/php-cs-fixer fix --diff --config ./.php_cs.php src/ tests/ docs/examples/ | tee .metrics/php-cs-fixer-fix.txt
 
 phpstan: mkmetrics
 	./vendor/bin/phpstan analyse --level 7 --ansi src/ | tee .metrics/phpstan.txt
@@ -37,11 +39,13 @@ psalm: mkmetrics
 psalter: mkmetrics
 	./vendor/bin/psalter --dry-run --config=.psalm.xml --issues=InvalidFalsableReturnType,InvalidNullableReturnType,InvalidReturnType,LessSpecificReturnType,MismatchingDocblockParamType,MismatchingDocblockReturnType,MissingClosureReturnType,MissingParamType,MissingReturnType,PossiblyUndefinedGlobalVariable,PossiblyUndefinedVariable,PossiblyUnusedProperty,UnusedProperty,UnusedVariable,UnnecessaryVarAnnotation src/ tests/ docs/examples | tee .metrics/psalter.txt
 
+psalter-fix: mkmetrics
+	./vendor/bin/psalter --config=.psalm.xml --issues=InvalidFalsableReturnType,InvalidNullableReturnType,InvalidReturnType,LessSpecificReturnType,MismatchingDocblockParamType,MismatchingDocblockReturnType,MissingClosureReturnType,MissingParamType,MissingReturnType,PossiblyUndefinedGlobalVariable,PossiblyUndefinedVariable,PossiblyUnusedProperty,UnusedProperty,UnusedVariable,UnnecessaryVarAnnotation src/ tests/ docs/examples | tee .metrics/psalter.txt
+
 phpmd: mkmetrics
 	./vendor/bin/phpmd src/ text cleancode,codesize,controversial,design,naming,unusedcode | tee .metrics/phpmd.txt
 	./vendor/bin/phpmd tests/ text cleancode,codesize,controversial,design,naming,unusedcode | tee .metrics/phpmd.txt
 	./vendor/bin/phpmd docs/examples/ text cleancode,codesize,controversial,design,naming,unusedcode | tee .metrics/phpmd.txt
-
 
 phploc: mkmetrics
 	./vendor/bin/phploc src/ tests/ docs/examples/ | tee .metrics/phploc.txt
