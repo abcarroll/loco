@@ -2,7 +2,6 @@
 
 namespace Ab\LocoX;
 
-
 /**
  * Takes the input parsers and applies them all in turn. "Lazy" indicates
  * that as soon as a single parser matches, those matches are returned and
@@ -15,11 +14,11 @@ class LazyAltParser extends \Ab\LocoX\MonoParser
 {
     public function __construct($internals, $callback = null)
     {
-        if (count($internals) === 0) {
-            throw new \Ab\LocoX\GrammarException("Can't make a " . get_class() . " without at least one internal parser.\n");
+        if (0 === \count($internals)) {
+            throw new \Ab\LocoX\GrammarException("Can't make a " . __CLASS__ . " without at least one internal parser.\n");
         }
         $this->internals = $internals;
-        $this->string = "new " . get_class() . "(" . serialiseArray($internals) . ")";
+        $this->string = 'new ' . __CLASS__ . '(' . serialiseArray($internals) . ')';
         parent::__construct($internals, $callback);
     }
 
@@ -28,8 +27,14 @@ class LazyAltParser extends \Ab\LocoX\MonoParser
      */
     public function defaultCallback()
     {
-        return func_get_arg(0);
+        return \func_get_arg(0);
     }
+
+    /**
+     * @return (array|mixed)[]
+     *
+     * @psalm-return array{j: mixed, args: array{0: mixed}}
+     */
     public function getResult($string, $i = 0)
     {
         foreach ($this->internals as $internal) {
@@ -38,13 +43,17 @@ class LazyAltParser extends \Ab\LocoX\MonoParser
             } catch (\Ab\LocoX\ParseFailureException $e) {
                 continue;
             }
-            return array("j" => $match["j"], "args" => array($match["value"]));
+
+            return ['j' => $match['j'], 'args' => [$match['value']]];
         }
-        throw new \Ab\LocoX\ParseFailureException($this . " could not match another token", $i, $string);
+
+        throw new \Ab\LocoX\ParseFailureException($this . ' could not match another token', $i, $string);
     }
 
     /**
      * Nullable if any internal is nullable.
+     *
+     * @return bool
      */
     public function evaluateNullability()
     {
@@ -53,6 +62,7 @@ class LazyAltParser extends \Ab\LocoX\MonoParser
                 return true;
             }
         }
+
         return false;
     }
 
@@ -64,4 +74,3 @@ class LazyAltParser extends \Ab\LocoX\MonoParser
         return $this->internals;
     }
 }
-

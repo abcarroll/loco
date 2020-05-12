@@ -13,163 +13,167 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 # http://qntm.org/locoparser
 
 $bnfGrammar = new Grammar(
-	"<syntax>",
-	array(
-		"<syntax>" => new ConcParser(
-			array(
-				"<rules>",
-				"OPT-WHITESPACE"
-			),
-			function($rules, $whitespace) { return $rules; }
-		),
+    '<syntax>',
+    [
+        '<syntax>' => new ConcParser(
+            [
+                '<rules>',
+                'OPT-WHITESPACE'
+            ],
+            function ($rules, $whitespace) {
+                return $rules;
+            }
+        ),
 
-		"<rules>" => new GreedyMultiParser(
-			"<ruleoremptyline>",
-			1,
-			null,
-			function() {
-				$rules = array();
-				foreach(func_get_args() as $rule) {
+        '<rules>' => new GreedyMultiParser(
+            '<ruleoremptyline>',
+            1,
+            null,
+            function () {
+                $rules = [];
+                foreach (\func_get_args() as $rule) {
+                    // blank line
+                    if (null === $rule) {
+                        continue;
+                    }
 
-					// blank line
-					if($rule === null) {
-						continue;
-					}
+                    $rules[] = $rule;
+                }
 
-					$rules[] = $rule;
-				}
-				return $rules;
-			}
-		),
+                return $rules;
+            }
+        ),
 
-		"<ruleoremptyline>" => new LazyAltParser(
-			array("<rule>", "<emptyline>")
-		),
+        '<ruleoremptyline>' => new LazyAltParser(
+            ['<rule>', '<emptyline>']
+        ),
 
-		"<emptyline>" => new ConcParser(
-			array("OPT-WHITESPACE", "EOL"),
-			function($whitespace, $eol) {
-				return null;
-			}
-		),
+        '<emptyline>' => new ConcParser(
+            ['OPT-WHITESPACE', 'EOL'],
+            function ($whitespace, $eol) {
+            }
+        ),
 
-		"<rule>" => new ConcParser(
-			array(
-				"OPT-WHITESPACE",
-				"RULE-NAME",
-				"OPT-WHITESPACE",
-				new StringParser("::="),
-				"OPT-WHITESPACE",
-				"<expression>",
-				"EOL"
-			),
-			function(
-				$whitespace1,
-				$rule_name,
-				$whitespace2,
-				$equals,
-				$whitespace3,
-				$expression,
-				$eol
-			) {
-				return array(
-					"rule-name"  => $rule_name,
-					"expression" => $expression
-				);
-			}
-		),
+        '<rule>' => new ConcParser(
+            [
+                'OPT-WHITESPACE',
+                'RULE-NAME',
+                'OPT-WHITESPACE',
+                new StringParser('::='),
+                'OPT-WHITESPACE',
+                '<expression>',
+                'EOL'
+            ],
+            function (
+                $whitespace1,
+                $rule_name,
+                $whitespace2,
+                $equals,
+                $whitespace3,
+                $expression,
+                $eol
+            ) {
+                return [
+                    'rule-name' => $rule_name,
+                    'expression' => $expression
+                ];
+            }
+        ),
 
-		"<expression>" => new ConcParser(
-			array(
-				"<list>",
-				"<pipelists>"
-			),
-			function($list, $pipelists) {
-				array_unshift($pipelists, $list);
-				return new LazyAltParser($pipelists);
-			}
-		),
+        '<expression>' => new ConcParser(
+            [
+                '<list>',
+                '<pipelists>'
+            ],
+            function ($list, $pipelists) {
+                \array_unshift($pipelists, $list);
 
-		"<pipelists>" => new GreedyStarParser("<pipelist>"),
+                return new LazyAltParser($pipelists);
+            }
+        ),
 
-		"<pipelist>" => new ConcParser(
-			array(
-				new StringParser("|"),
-				"OPT-WHITESPACE",
-				"<list>"
-			),
-			function($pipe, $whitespace, $list) {
-				return $list;
-			}
-		),
+        '<pipelists>' => new GreedyStarParser('<pipelist>'),
 
-		"<list>" => new GreedyMultiParser(
-			"<term>",
-			1,
-			null,
-			function() {
-				return new ConcParser(func_get_args());
-			}
-		),
+        '<pipelist>' => new ConcParser(
+            [
+                new StringParser('|'),
+                'OPT-WHITESPACE',
+                '<list>'
+            ],
+            function ($pipe, $whitespace, $list) {
+                return $list;
+            }
+        ),
 
-		"<term>" => new ConcParser(
-			array("TERM", "OPT-WHITESPACE"),
-			function($term, $whitespace) {
-				return $term;
-			}
-		),
+        '<list>' => new GreedyMultiParser(
+            '<term>',
+            1,
+            null,
+            function () {
+                return new ConcParser(\func_get_args());
+            }
+        ),
 
-		"TERM" => new LazyAltParser(
-			array(
-				"LITERAL",
-				"RULE-NAME"
-			)
-		),
+        '<term>' => new ConcParser(
+            ['TERM', 'OPT-WHITESPACE'],
+            function ($term, $whitespace) {
+                return $term;
+            }
+        ),
 
-		"LITERAL" => new LazyAltParser(
-			array(
-				new RegexParser('#^"([^"]*)"#', function($match0, $match1) { return $match1; }),
-				new RegexParser("#^'([^']*)'#", function($match0, $match1) { return $match1; })
-			),
-			function($text) {
-				if($text == "") {
-					return new EmptyParser(function() { return ""; });
-				}
-				return new StringParser($text);
-			}
-		),
+        'TERM' => new LazyAltParser(
+            [
+                'LITERAL',
+                'RULE-NAME'
+            ]
+        ),
 
-		"RULE-NAME" => new RegexParser("#^<[A-Za-z\\-]*>#"),
+        'LITERAL' => new LazyAltParser(
+            [
+                new RegexParser('#^"([^"]*)"#', function ($match0, $match1) {
+                    return $match1;
+                }),
+                new RegexParser("#^'([^']*)'#", function ($match0, $match1) {
+                    return $match1;
+                })
+            ],
+            function ($text) {
+                if ('' === $text) {
+                    return new EmptyParser(function () {
+                        return '';
+                    });
+                }
 
-		"OPT-WHITESPACE" => new RegexParser("#^[\t ]*#"),
+                return new StringParser($text);
+            }
+        ),
 
-		"EOL" => new LazyAltParser(
-			array(
-				new StringParser("\r"),
-				new StringParser("\n")
-			)
-		)
-	),
-	function($syntax) {
-		$parsers = array();
-		foreach($syntax as $rule) {
+        'RULE-NAME' => new RegexParser('#^<[A-Za-z\\-]*>#'),
 
-			if(count($parsers) === 0) {
-				$top = $rule["rule-name"];
-			}
-			$parsers[$rule["rule-name"]] = $rule["expression"];
-		}
-		if(count($parsers) === 0) {
-			throw new Exception("No rules.");
-		}
-		return new Grammar($top, $parsers);
-	}
+        'OPT-WHITESPACE' => new RegexParser("#^[\t ]*#"),
+
+        'EOL' => new LazyAltParser(
+            [
+                new StringParser("\r"),
+                new StringParser("\n")
+            ]
+        )
+    ],
+    function ($syntax) {
+        $parsers = [];
+        foreach ($syntax as $rule) {
+            if (0 === \count($parsers)) {
+                $top = $rule['rule-name'];
+            }
+            $parsers[$rule['rule-name']] = $rule['expression'];
+        }
+        if (0 === \count($parsers)) {
+            throw new Exception('No rules.');
+        }
+
+        return new Grammar($top, $parsers);
+    }
 );
-
-// if executing this file directly, run unit tests
-if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
-	return;
-}
 
 // Full rule set
 $string = "
@@ -193,13 +197,13 @@ $string = "
 	<roman-numeral> ::= 'g'
 ";
 
-$start = microtime(true);
+$start = \microtime(true);
 $grammar2 = $bnfGrammar->parse($string);
-print("Parsing completed in ".(microtime(true)-$start)." seconds\n");
+echo 'Parsing completed in ' . (\microtime(true) - $start) . " seconds\n";
 
-$start = microtime(true);
+$start = \microtime(true);
 $grammar2->parse("Steve MacLaurin \n173 Acacia Avenue 7A\nStevenage, KY 33445\n");
-print("Parsing completed in ".(microtime(true)-$start)." seconds\n");
+echo 'Parsing completed in ' . (\microtime(true) - $start) . " seconds\n";
 
 $string = "
 	<syntax>         ::= <rule> | <rule> <syntax>
@@ -216,14 +220,19 @@ $string = "
 	<text>           ::= 'b'
 ";
 
-$start = microtime(true);
+$start = \microtime(true);
 $grammar3 = $bnfGrammar->parse($string);
-print("Parsing completed in ".(microtime(true)-$start)." seconds\n");
+echo 'Parsing completed in ' . (\microtime(true) - $start) . " seconds\n";
 
-$start = microtime(true);
+$start = \microtime(true);
 $grammar3->parse(" <a> ::= 'b' \n");
-print("Parsing completed in ".(microtime(true)-$start)." seconds\n");
+echo 'Parsing completed in ' . (\microtime(true) - $start) . " seconds\n";
 
 // Should raise a ParseFailureException before trying to instantiate a Grammar
-$string = " <incomplete ::=";
-try { $bnfGrammar->parse($string); var_dump(false); } catch(ParseFailureException $e) { }
+$string = ' <incomplete ::=';
+
+try {
+    $bnfGrammar->parse($string);
+    \var_dump(false);
+} catch (ParseFailureException $e) {
+}

@@ -16,10 +16,12 @@ abstract class MonoParser
     // serialiseArray() helps with array arguments (var_export is no good because
     // it leaves line breaks!)
     protected $string;
+
     public function __toString()
     {
         return $this->string;
     }
+
     // An array of internal parsers, which are called recursively by and hence
     // "exist inside of" this parser. These may be actual MonoParser
     // objects.
@@ -29,32 +31,35 @@ abstract class MonoParser
     // to the real parsers at Grammar instantiation time.
     // This list is empty for "static" parsers
     public $internals;
+
     // A function to apply to the result of whatever this parser just parsed.
     // The arguments supplied to this callback depend on the parser class;
     // check!
     public $callback;
-    public abstract function defaultCallback();
+
+    abstract public function defaultCallback();
+
     public function __construct($internals, $callback)
     {
-        if (!is_string($this->string)) {
-            throw new \Exception("You need to populate \$string");
+        if (!\is_string($this->string)) {
+            throw new \Exception('You need to populate $string');
         }
         // Perform basic validation.
-        if (!is_array($internals)) {
-            throw new \Ab\LocoX\GrammarException(var_export($internals, true) . " should be an array");
+        if (!\is_array($internals)) {
+            throw new \Ab\LocoX\GrammarException(\var_export($internals, true) . ' should be an array');
         }
         foreach ($internals as $internal) {
-            if (!is_string($internal) && !$internal instanceof \Ab\LocoX\MonoParser) {
-                throw new \Ab\LocoX\GrammarException(var_export($internal, true) . " should be either a string or a MonoParser");
+            if (!\is_string($internal) && !$internal instanceof \Ab\LocoX\MonoParser) {
+                throw new \Ab\LocoX\GrammarException(\var_export($internal, true) . ' should be either a string or a MonoParser');
             }
         }
         $this->internals = $internals;
         // if null, set default callback
-        if ($callback === null) {
-            $callback = array($this, "defaultCallback");
+        if (null === $callback) {
+            $callback = [$this, 'defaultCallback'];
         }
-        if (!is_callable($callback)) {
-            throw new \Ab\LocoX\GrammarException("Callback should be a callable function");
+        if (!\is_callable($callback)) {
+            throw new \Ab\LocoX\GrammarException('Callback should be a callable function');
         }
         $this->callback = $callback;
     }
@@ -62,33 +67,47 @@ abstract class MonoParser
     /**
      * try to match this parser at the specified point.
      * returns j and args to pass to the callback, or throws exception on failure
+     *
+     * @param mixed $string
+     * @param mixed $i
      */
-    public abstract function getResult($string, $i = 0);
+    abstract public function getResult($string, $i = 0);
 
     /**
      * apply callback to returned value before returning it
+     *
+     * @param mixed $string
+     * @param mixed $i
+     *
+     * @return array
+     *
+     * @psalm-return array{j: mixed, value: mixed}
      */
-    public function match($string, $i = 0)
+    public function match($string, $i = 0): array
     {
         $result = $this->getResult($string, $i);
-        return array("j" => $result["j"], "value" => call_user_func_array($this->callback, $result["args"]));
+
+        return ['j' => $result['j'], 'value' => \call_user_func_array($this->callback, $result['args'])];
     }
 
     /**
      * Parse: try to match this parser at the beginning of the string
      * Return the result only on success, or throw exception on failure
      * or if the match doesn't encompass the whole string
+     *
+     * @param mixed $string
      */
     public function parse($string)
     {
         $result = $this->getResult($string, 0);
-        if ($result["j"] != strlen($string)) {
-            throw new \Ab\LocoX\ParseFailureException("Parsing completed prematurely", $result["j"], $string);
+        if ($result['j'] !== \strlen($string)) {
+            throw new \Ab\LocoX\ParseFailureException('Parsing completed prematurely', $result['j'], $string);
         }
         // notice how this isn't called until AFTER we've verified that
         // the whole thing has been parsed
-        return call_user_func_array($this->callback, $result["args"]);
+        return \call_user_func_array($this->callback, $result['args']);
     }
+
     // Every parser assumes that it is non-nullable from the outset
     public $nullable = false;
 
@@ -102,7 +121,7 @@ abstract class MonoParser
      * Just gets $nullable for each internal, if any.
      * This has to be called after all strings have been resolved to parser references.
      */
-    public abstract function evaluateNullability();
+    abstract public function evaluateNullability();
 
     /**
      * The immediate first-set of a parser is the set of all internal parsers
@@ -112,5 +131,5 @@ abstract class MonoParser
      * This has to be called after the "nullability flood fill" is complete,
      * or "Called method of non-object" exceptions will arise
      */
-    public abstract function firstSet();
+    abstract public function firstSet();
 }

@@ -13,12 +13,13 @@ class Grammar extends \Ab\LocoX\MonoParser
     // All parsing begins with the parser of this name.
     // $S should not be an actual parser
     private $S;
+
     public function __construct($S, $internals, $callback = null)
     {
-        $this->string = "new " . get_class() . "(" . var_export($S, true) . ", " . serialiseArray($internals) . ")";
+        $this->string = 'new ' . __CLASS__ . '(' . \var_export($S, true) . ', ' . serialiseArray($internals) . ')';
         parent::__construct($internals, $callback);
-        if (!array_key_exists($S, $this->internals)) {
-            throw new \Ab\LocoX\GrammarException("This grammar begins with rule '" . var_export($S, true) . "' but no parser with this name was given.");
+        if (!\array_key_exists($S, $this->internals)) {
+            throw new \Ab\LocoX\GrammarException("This grammar begins with rule '" . \var_export($S, true) . "' but no parser with this name was given.");
         }
         $this->S = $S;
         // Each parser may have internal sub-parsers to which it
@@ -41,7 +42,7 @@ class Grammar extends \Ab\LocoX\MonoParser
         // It is not unlike a "flood fill" procedure.
         while (1) {
             foreach ($this->internals as $internal) {
-                if ($internal->nullable === true) {
+                if (true === $internal->nullable) {
                     continue;
                 }
                 if (!$internal->evaluateNullability()) {
@@ -51,6 +52,7 @@ class Grammar extends \Ab\LocoX\MonoParser
                 // has been newly evaluated as nullable. A change has occurred! So,
                 // mark $internal as nullable now and start the process over again.
                 $internal->nullable = true;
+
                 continue 2;
             }
             // If we reach this point then we are done marking more internals as
@@ -66,18 +68,18 @@ class Grammar extends \Ab\LocoX\MonoParser
             // Find the extended first-set of this parser. If this parser is
             // contained in its own first-set, then it is left-recursive.
             // This has to be called after the "nullability flood fill" is complete.
-            $firstSet = array($internal);
+            $firstSet = [$internal];
             $i = 0;
-            while ($i < count($firstSet)) {
+            while ($i < \count($firstSet)) {
                 $current = $firstSet[$i];
                 foreach ($current->firstSet() as $next) {
                     // Left-recursion
                     if ($next === $internal) {
-                        throw new \Ab\LocoX\GrammarException("This grammar is left-recursive in " . $internal . ".");
+                        throw new \Ab\LocoX\GrammarException('This grammar is left-recursive in ' . $internal . '.');
                     }
                     // If it's already in the list, then skip it
                     // this DOESN'T imply left-recursion, though
-                    for ($j = 0; $j < count($firstSet); $j++) {
+                    for ($j = 0; $j < \count($firstSet); $j++) {
                         if ($next === $firstSet[$j]) {
                             continue 2;
                         }
@@ -93,14 +95,14 @@ class Grammar extends \Ab\LocoX\MonoParser
         // it is going to loop forever.
         // In this situation, we raise a very serious error
         foreach ($this->internals as $internal) {
-            if (!is_a($internal, "GreedyMultiParser")) {
+            if (!\is_a($internal, 'GreedyMultiParser')) {
                 continue;
             }
-            if ($internal->optional !== null) {
+            if (null !== $internal->optional) {
                 continue;
             }
             if ($internal->internals[0]->nullable) {
-                throw new \Ab\LocoX\GrammarException($internal . " has internal parser " . $internal->internals[0] . ", which matches the empty string. This will cause infinite loops when parsing.");
+                throw new \Ab\LocoX\GrammarException($internal . ' has internal parser ' . $internal->internals[0] . ', which matches the empty string. This will cause infinite loops when parsing.');
             }
         }
     }
@@ -114,27 +116,30 @@ class Grammar extends \Ab\LocoX\MonoParser
      * real parsers, no longer strings.
      * Be cautious modifying this code, it was constructed quite delicately to
      * avoid infinite loops
+     *
+     * @param mixed $parser
      */
     private function resolve($parser)
     {
-        $keys = array_keys($parser->internals);
-        for ($i = 0; $i < count($keys); $i++) {
+        $keys = \array_keys($parser->internals);
+        for ($i = 0; $i < \count($keys); $i++) {
             $key = $keys[$i];
             // replace names with references
-            if (is_string($parser->internals[$key])) {
+            if (\is_string($parser->internals[$key])) {
                 // make sure the other parser that we're about to create a reference to actually exists
                 $name = $parser->internals[$key];
-                if (!array_key_exists($name, $this->internals)) {
-                    throw new \Ab\LocoX\GrammarException($parser . " contains a reference to another parser " . var_export($name, true) . " which cannot be found");
+                if (!\array_key_exists($name, $this->internals)) {
+                    throw new \Ab\LocoX\GrammarException($parser . ' contains a reference to another parser ' . \var_export($name, true) . ' which cannot be found');
                 }
                 // create that reference
-                $parser->internals[$key] =& $this->internals[$name];
+                $parser->internals[$key] = & $this->internals[$name];
             } else {
                 // already a parser? No need to replace it!
                 // but we do need to recurse!
                 $parser->internals[$key] = $this->resolve($parser->internals[$key]);
             }
         }
+
         return $parser;
     }
 
@@ -144,31 +149,45 @@ class Grammar extends \Ab\LocoX\MonoParser
      */
     public function defaultCallback()
     {
-        return func_get_arg(0);
+        return \func_get_arg(0);
     }
 
     /**
      * use the "main" internal parser, S
+     *
+     * @param mixed $string
+     * @param mixed $i
+     *
+     * @return (array|mixed)[]
+     *
+     * @psalm-return array{j: mixed, args: array{0: mixed}}
      */
     public function getResult($string, $i = 0)
     {
         $match = $this->internals[$this->S]->match($string, $i);
-        return array("j" => $match["j"], "args" => array($match["value"]));
+
+        return ['j' => $match['j'], 'args' => [$match['value']]];
     }
 
     /**
      * nullable iff <S> is nullable
+     *
+     * @return bool
      */
     public function evaluateNullability()
     {
-        return $this->internals[$this->S]->nullable === true;
+        return true === $this->internals[$this->S]->nullable;
     }
 
     /**
      * S is the first
+     *
+     * @return array
+     *
+     * @psalm-return array{0: mixed}
      */
     public function firstSet()
     {
-        return array($this->internals[$this->S]);
+        return [$this->internals[$this->S]];
     }
 }

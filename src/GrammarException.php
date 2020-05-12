@@ -9,4 +9,3 @@ namespace Ab\LocoX;
 class GrammarException extends \Exception
 {
 }
-

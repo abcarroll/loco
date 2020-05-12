@@ -16,214 +16,220 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 # http://qntm.org/locoparser
 
 $ebnfGrammar = new Grammar(
-	"<syntax>",
-	array(
-		"<syntax>" => new ConcParser(
-			array("<space>", "<rules>"),
-			function($space, $rules) {
-				return $rules;
-			}
-		),
+    '<syntax>',
+    [
+        '<syntax>' => new ConcParser(
+            ['<space>', '<rules>'],
+            function ($space, $rules) {
+                return $rules;
+            }
+        ),
 
-		"<rules>" => new GreedyStarParser("<rule>"),
+        '<rules>' => new GreedyStarParser('<rule>'),
 
-		"<rule>" => new ConcParser(
-			array("<bareword>", "<space>", new StringParser("="), "<space>", "<alt>", new StringParser(";"), "<space>"),
-			function($bareword, $space1, $equals, $space2, $alt, $semicolon, $space3) {
-				return array(
-					"rule-name"  => $bareword,
-					"expression" => $alt
-				);
-			}
-		),
+        '<rule>' => new ConcParser(
+            ['<bareword>', '<space>', new StringParser('='), '<space>', '<alt>', new StringParser(';'), '<space>'],
+            function ($bareword, $space1, $equals, $space2, $alt, $semicolon, $space3) {
+                return [
+                    'rule-name' => $bareword,
+                    'expression' => $alt
+                ];
+            }
+        ),
 
-		"<alt>" => new ConcParser(
-			array("<conc>", "<pipeconclist>"),
-			function($conc, $pipeconclist) {
-				array_unshift($pipeconclist, $conc);
-				return new LazyAltParser($pipeconclist);
-			}
-		),
+        '<alt>' => new ConcParser(
+            ['<conc>', '<pipeconclist>'],
+            function ($conc, $pipeconclist) {
+                \array_unshift($pipeconclist, $conc);
 
-		"<pipeconclist>" => new GreedyStarParser("<pipeconc>"),
+                return new LazyAltParser($pipeconclist);
+            }
+        ),
 
-		"<pipeconc>" => new ConcParser(
-			array(new StringParser("|"), "<space>", "<conc>"),
-			function($pipe, $space, $conc) {
-				return $conc;
-			}
-		),
+        '<pipeconclist>' => new GreedyStarParser('<pipeconc>'),
 
-		"<conc>" => new ConcParser(
-			array("<term>", "<commatermlist>"),
-			function($term, $commatermlist) {
-				array_unshift($commatermlist, $term);
+        '<pipeconc>' => new ConcParser(
+            [new StringParser('|'), '<space>', '<conc>'],
+            function ($pipe, $space, $conc) {
+                return $conc;
+            }
+        ),
 
-				// get array key numbers where multiparsers are located
-				// in reverse order so that our splicing doesn't modify the array
-				$multiparsers = array();
-				foreach($commatermlist as $k => $internal) {
-					if(is_a($internal, "GreedyMultiParser")) {
-						array_unshift($multiparsers, $k);
-					}
-				}
+        '<conc>' => new ConcParser(
+            ['<term>', '<commatermlist>'],
+            function ($term, $commatermlist) {
+                \array_unshift($commatermlist, $term);
 
-				// We do something quite advanced here. The inner multiparsers are
-				// spliced out into the list of arguments proper instead of forming an
-				// internal sub-array of their own
-				return new ConcParser(
-					$commatermlist,
-					function() use ($multiparsers) {
-						$args = func_get_args();
-						foreach($multiparsers as $k) {
-							array_splice($args, $k, 1, $args[$k]);
-						}
-						return $args;
-					}
-				);
-			}
-		),
+                // get array key numbers where multiparsers are located
+                // in reverse order so that our splicing doesn't modify the array
+                $multiparsers = [];
+                foreach ($commatermlist as $k => $internal) {
+                    if (\is_a($internal, 'GreedyMultiParser')) {
+                        \array_unshift($multiparsers, $k);
+                    }
+                }
 
-		"<commatermlist>" => new GreedyStarParser("<commaterm>"),
+                // We do something quite advanced here. The inner multiparsers are
+                // spliced out into the list of arguments proper instead of forming an
+                // internal sub-array of their own
+                return new ConcParser(
+                    $commatermlist,
+                    function () use ($multiparsers) {
+                        $args = \func_get_args();
+                        foreach ($multiparsers as $k) {
+                            \array_splice($args, $k, 1, $args[$k]);
+                        }
 
-		"<commaterm>" => new ConcParser(
-			array(new StringParser(","), "<space>", "<term>"),
-			function($comma, $space, $term) {
-				return $term;
-			}
-		),
+                        return $args;
+                    }
+                );
+            }
+        ),
 
-		"<term>" => new LazyAltParser(
-			array("<bareword>", "<sq>", "<dq>", "<group>", "<repetition>", "<optional>")
-		),
+        '<commatermlist>' => new GreedyStarParser('<commaterm>'),
 
-		"<bareword>" => new ConcParser(
-			array(
-				new RegexParser(
-					"#^([a-z][a-z ]*[a-z]|[a-z])#",
-					function($match0) {
-						return $match0;
-					}
-				),
-				"<space>"
-			),
-			function($bareword, $space) {
-				return $bareword;
-			}
-		),
+        '<commaterm>' => new ConcParser(
+            [new StringParser(','), '<space>', '<term>'],
+            function ($comma, $space, $term) {
+                return $term;
+            }
+        ),
 
-		"<sq>" => new ConcParser(
-			array(
-				new RegexParser(
-					"#^'([^']*)'#",
-					function($match0, $match1) {
-						if($match1 === "") {
-							return new EmptyParser();
-						}
-						return new StringParser($match1);
-					}
-				),
-				"<space>"
-			),
-			function($string, $space) {
-				return $string;
-			}
-		),
+        '<term>' => new LazyAltParser(
+            ['<bareword>', '<sq>', '<dq>', '<group>', '<repetition>', '<optional>']
+        ),
 
-		"<dq>" => new ConcParser(
-			array(
-				new RegexParser(
-					'#^"([^"]*)"#',
-					function($match0, $match1) {
-						if($match1 === "") {
-							return new EmptyParser();
-						}
-						return new StringParser($match1);
-					}
-				),
-				"<space>"
-			),
-			function($string, $space) {
-				return $string;
-			}
-		),
+        '<bareword>' => new ConcParser(
+            [
+                new RegexParser(
+                    '#^([a-z][a-z ]*[a-z]|[a-z])#',
+                    function ($match0) {
+                        return $match0;
+                    }
+                ),
+                '<space>'
+            ],
+            function ($bareword, $space) {
+                return $bareword;
+            }
+        ),
 
-		"<group>" => new ConcParser(
-			array(
-				new StringParser("("),
-				"<space>",
-				"<alt>",
-				new StringParser(")"),
-				"<space>"
-			),
-			function($left_paren, $space1, $alt, $right_paren, $space2) {
-				return $alt;
-			}
-		),
+        '<sq>' => new ConcParser(
+            [
+                new RegexParser(
+                    "#^'([^']*)'#",
+                    function ($match0, $match1) {
+                        if ('' === $match1) {
+                            return new EmptyParser();
+                        }
 
-		"<repetition>" => new ConcParser(
-			array(
-				new StringParser("{"),
-				"<space>",
-				"<alt>",
-				new StringParser("}"),
-				"<space>"
-			),
-			function($left_brace, $space1, $alt, $right_brace, $space2) {
-				return new GreedyStarParser($alt);
-			}
-		),
+                        return new StringParser($match1);
+                    }
+                ),
+                '<space>'
+            ],
+            function ($string, $space) {
+                return $string;
+            }
+        ),
 
-		"<optional>" => new ConcParser(
-			array(
-				new StringParser("["),
-				"<space>",
-				"<alt>",
-				new StringParser("]"),
-				"<space>"
-			),
-			function($left_bracket, $space1, $alt, $right_bracket, $space2) {
-				return new GreedyMultiParser($alt, 0, 1);
-			}
-		),
+        '<dq>' => new ConcParser(
+            [
+                new RegexParser(
+                    '#^"([^"]*)"#',
+                    function ($match0, $match1) {
+                        if ('' === $match1) {
+                            return new EmptyParser();
+                        }
 
-		"<space>" => new GreedyStarParser("<whitespace/comment>"),
+                        return new StringParser($match1);
+                    }
+                ),
+                '<space>'
+            ],
+            function ($string, $space) {
+                return $string;
+            }
+        ),
 
-		"<whitespace/comment>" => new LazyAltParser(
-			array("<whitespace>", "<comment>")
-		),
+        '<group>' => new ConcParser(
+            [
+                new StringParser('('),
+                '<space>',
+                '<alt>',
+                new StringParser(')'),
+                '<space>'
+            ],
+            function ($left_paren, $space1, $alt, $right_paren, $space2) {
+                return $alt;
+            }
+        ),
 
-		"<whitespace>" => new RegexParser("#^[ \t\r\n]+#"),
-		"<comment>" => new RegexParser("#^(\(\* [^*]* \*\)|\(\* \*\)|\(\*\*\))#")
-	),
-	function($syntax) {
-		$parsers = array();
-		foreach($syntax as $rule) {
-			if(count($parsers) === 0) {
-				$top = $rule["rule-name"];
-			}
-			$parsers[$rule["rule-name"]] = $rule["expression"];
-		}
-		if(count($parsers) === 0) {
-			throw new Exception("No rules.");
-		}
-		return new Grammar($top, $parsers);
-	}
+        '<repetition>' => new ConcParser(
+            [
+                new StringParser('{'),
+                '<space>',
+                '<alt>',
+                new StringParser('}'),
+                '<space>'
+            ],
+            function ($left_brace, $space1, $alt, $right_brace, $space2) {
+                return new GreedyStarParser($alt);
+            }
+        ),
+
+        '<optional>' => new ConcParser(
+            [
+                new StringParser('['),
+                '<space>',
+                '<alt>',
+                new StringParser(']'),
+                '<space>'
+            ],
+            function ($left_bracket, $space1, $alt, $right_bracket, $space2) {
+                return new GreedyMultiParser($alt, 0, 1);
+            }
+        ),
+
+        '<space>' => new GreedyStarParser('<whitespace/comment>'),
+
+        '<whitespace/comment>' => new LazyAltParser(
+            ['<whitespace>', '<comment>']
+        ),
+
+        '<whitespace>' => new RegexParser("#^[ \t\r\n]+#"),
+        '<comment>' => new RegexParser("#^(\(\* [^*]* \*\)|\(\* \*\)|\(\*\*\))#")
+    ],
+    function ($syntax) {
+        $parsers = [];
+        foreach ($syntax as $rule) {
+            if (0 === \count($parsers)) {
+                $top = $rule['rule-name'];
+            }
+            $parsers[$rule['rule-name']] = $rule['expression'];
+        }
+        if (0 === \count($parsers)) {
+            throw new Exception('No rules.');
+        }
+
+        return new Grammar($top, $parsers);
+    }
 );
 
-// if executing this file directly, run unit tests
-if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
-	return;
-}
-
 $string = "a = 'PROGRAM' ;";
-$ebnfGrammar->parse($string)->parse("PROGRAM");
-var_dump(true);
+$ebnfGrammar->parse($string)->parse('PROGRAM');
+\var_dump(true);
 
 // Should raise a ParseFailureException before trying to instantiate a Grammar
 // with no rules and raising a GrammarException
 $string = "a = 'PROGRAM ;";
-try { $ebnfGrammar->parse($string); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); }
+
+try {
+    $ebnfGrammar->parse($string);
+    \var_dump(false);
+} catch (ParseFailureException $e) {
+    \var_dump(true);
+}
 
 // Full rule set
 $string = "
@@ -245,19 +251,19 @@ $string = "
 	all characters = \"H\" | \"e\" | \"l\" | \"o\" | \" \" | \"w\" | \"r\" | \"d\" | \"!\" ;
 ";
 $pascalGrammar = $ebnfGrammar->parse($string);
-var_dump(true);
+\var_dump(true);
 
 $string =
-	 "PROGRAM DEMO1\n"
-	."BEGIN\n"
-	."  A0:=3;\n"
-	."  B:=45;\n"
-	."  H:=-100023;\n"
-	."  C:=A;\n"
-	."  D123:=B34A;\n"
-	."  BABOON:=GIRAFFE;\n"
-	."  TEXT:=\"Hello world!\";\n"
-	."END."
+     "PROGRAM DEMO1\n"
+    . "BEGIN\n"
+    . "  A0:=3;\n"
+    . "  B:=45;\n"
+    . "  H:=-100023;\n"
+    . "  C:=A;\n"
+    . "  D123:=B34A;\n"
+    . "  BABOON:=GIRAFFE;\n"
+    . "  TEXT:=\"Hello world!\";\n"
+    . 'END.'
 ;
 $pascalGrammar->parse($string);
-var_dump(true);
+\var_dump(true);
