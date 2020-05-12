@@ -1,13 +1,13 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 /**
  * UTF-8 parser parses one valid UTF-8 character and returns the
  * resulting code point.
  * Callback should accept the character (in the form of bytes)
  */
-class Utf8Parser extends \Ferno\Loco\StaticParser
+class Utf8Parser extends \Ab\LocoX\StaticParser
 {
     # Some basic useful information about each possible byte
     # sequence i.e. prefix and number of free bits
@@ -154,7 +154,7 @@ class Utf8Parser extends \Ferno\Loco\StaticParser
             // code point isn't safe: abandon effort entirely
             break;
         }
-        throw new \Ferno\Loco\ParseFailureException($this . " could not find a UTF-8 character", $i, $string);
+        throw new \Ab\LocoX\ParseFailureException($this . " could not find a UTF-8 character", $i, $string);
     }
 
     /**

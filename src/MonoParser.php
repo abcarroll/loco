@@ -1,6 +1,6 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 /**
  * http://en.wikipedia.org/wiki/Parser_combinator
@@ -41,11 +41,11 @@ abstract class MonoParser
         }
         // Perform basic validation.
         if (!is_array($internals)) {
-            throw new \Ferno\Loco\GrammarException(var_export($internals, true) . " should be an array");
+            throw new \Ab\LocoX\GrammarException(var_export($internals, true) . " should be an array");
         }
         foreach ($internals as $internal) {
-            if (!is_string($internal) && !$internal instanceof \Ferno\Loco\MonoParser) {
-                throw new \Ferno\Loco\GrammarException(var_export($internal, true) . " should be either a string or a MonoParser");
+            if (!is_string($internal) && !$internal instanceof \Ab\LocoX\MonoParser) {
+                throw new \Ab\LocoX\GrammarException(var_export($internal, true) . " should be either a string or a MonoParser");
             }
         }
         $this->internals = $internals;
@@ -54,7 +54,7 @@ abstract class MonoParser
             $callback = array($this, "defaultCallback");
         }
         if (!is_callable($callback)) {
-            throw new \Ferno\Loco\GrammarException("Callback should be a callable function");
+            throw new \Ab\LocoX\GrammarException("Callback should be a callable function");
         }
         $this->callback = $callback;
     }
@@ -83,7 +83,7 @@ abstract class MonoParser
     {
         $result = $this->getResult($string, 0);
         if ($result["j"] != strlen($string)) {
-            throw new \Ferno\Loco\ParseFailureException("Parsing completed prematurely", $result["j"], $string);
+            throw new \Ab\LocoX\ParseFailureException("Parsing completed prematurely", $result["j"], $string);
         }
         // notice how this isn't called until AFTER we've verified that
         // the whole thing has been parsed

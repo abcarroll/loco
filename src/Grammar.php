@@ -1,6 +1,6 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 /**
  * Grammar is a container for a bunch of parsers. This container is
@@ -8,7 +8,7 @@ namespace Ferno\Loco;
  * parser can actually refer to other parsers instead of just being
  * useless strings.
  */
-class Grammar extends \Ferno\Loco\MonoParser
+class Grammar extends \Ab\LocoX\MonoParser
 {
     // All parsing begins with the parser of this name.
     // $S should not be an actual parser
@@ -18,7 +18,7 @@ class Grammar extends \Ferno\Loco\MonoParser
         $this->string = "new " . get_class() . "(" . var_export($S, true) . ", " . serialiseArray($internals) . ")";
         parent::__construct($internals, $callback);
         if (!array_key_exists($S, $this->internals)) {
-            throw new \Ferno\Loco\GrammarException("This grammar begins with rule '" . var_export($S, true) . "' but no parser with this name was given.");
+            throw new \Ab\LocoX\GrammarException("This grammar begins with rule '" . var_export($S, true) . "' but no parser with this name was given.");
         }
         $this->S = $S;
         // Each parser may have internal sub-parsers to which it
@@ -73,7 +73,7 @@ class Grammar extends \Ferno\Loco\MonoParser
                 foreach ($current->firstSet() as $next) {
                     // Left-recursion
                     if ($next === $internal) {
-                        throw new \Ferno\Loco\GrammarException("This grammar is left-recursive in " . $internal . ".");
+                        throw new \Ab\LocoX\GrammarException("This grammar is left-recursive in " . $internal . ".");
                     }
                     // If it's already in the list, then skip it
                     // this DOESN'T imply left-recursion, though
@@ -100,7 +100,7 @@ class Grammar extends \Ferno\Loco\MonoParser
                 continue;
             }
             if ($internal->internals[0]->nullable) {
-                throw new \Ferno\Loco\GrammarException($internal . " has internal parser " . $internal->internals[0] . ", which matches the empty string. This will cause infinite loops when parsing.");
+                throw new \Ab\LocoX\GrammarException($internal . " has internal parser " . $internal->internals[0] . ", which matches the empty string. This will cause infinite loops when parsing.");
             }
         }
     }
@@ -125,7 +125,7 @@ class Grammar extends \Ferno\Loco\MonoParser
                 // make sure the other parser that we're about to create a reference to actually exists
                 $name = $parser->internals[$key];
                 if (!array_key_exists($name, $this->internals)) {
-                    throw new \Ferno\Loco\GrammarException($parser . " contains a reference to another parser " . var_export($name, true) . " which cannot be found");
+                    throw new \Ab\LocoX\GrammarException($parser . " contains a reference to another parser " . var_export($name, true) . " which cannot be found");
                 }
                 // create that reference
                 $parser->internals[$key] =& $this->internals[$name];

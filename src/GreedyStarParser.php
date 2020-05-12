@@ -1,11 +1,11 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 /**
  * Tiny subclass is ironically much more useful than GreedyMultiParser
  */
-class GreedyStarParser extends \Ferno\Loco\GreedyMultiParser
+class GreedyStarParser extends \Ab\LocoX\GreedyMultiParser
 {
     public function __construct($internal, $callback = null)
     {

@@ -1,6 +1,6 @@
 {
-  "name": "ab/loco-parse",
-  "description": "The qntm.org loco lexer-parser (ferno/loco) modernized for PHP7.1+",
+  "name": "ab/locoX-parser",
+  "description": "The qntm.org loco lexer-parser (ferno/loco) modernized for PHP7.4+",
   "keywords": [
     "parser",
     "parsing",

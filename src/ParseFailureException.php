@@ -1,6 +1,6 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 /**
  * Occurs when any parser fails to parse what it's supposed to

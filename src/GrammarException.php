@@ -1,6 +1,6 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 /**
  * This occurs at Grammar instantiation time, e.g. left-recursion, null-stars,

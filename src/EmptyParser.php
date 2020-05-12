@@ -1,12 +1,12 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 
 /**
  * Match the empty string
  */
-class EmptyParser extends \Ferno\Loco\StaticParser
+class EmptyParser extends \Ab\LocoX\StaticParser
 {
     public function __construct($callback = null)
     {

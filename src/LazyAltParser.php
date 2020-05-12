@@ -1,6 +1,6 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 
 /**
@@ -11,12 +11,12 @@ namespace Ferno\Loco;
  * callback should accept a single argument which is the single match
  * LazyAltParsers become risky when one is a proper prefix of another
  */
-class LazyAltParser extends \Ferno\Loco\MonoParser
+class LazyAltParser extends \Ab\LocoX\MonoParser
 {
     public function __construct($internals, $callback = null)
     {
         if (count($internals) === 0) {
-            throw new \Ferno\Loco\GrammarException("Can't make a " . get_class() . " without at least one internal parser.\n");
+            throw new \Ab\LocoX\GrammarException("Can't make a " . get_class() . " without at least one internal parser.\n");
         }
         $this->internals = $internals;
         $this->string = "new " . get_class() . "(" . serialiseArray($internals) . ")";
@@ -35,12 +35,12 @@ class LazyAltParser extends \Ferno\Loco\MonoParser
         foreach ($this->internals as $internal) {
             try {
                 $match = $internal->match($string, $i);
-            } catch (\Ferno\Loco\ParseFailureException $e) {
+            } catch (\Ab\LocoX\ParseFailureException $e) {
                 continue;
             }
             return array("j" => $match["j"], "args" => array($match["value"]));
         }
-        throw new \Ferno\Loco\ParseFailureException($this . " could not match another token", $i, $string);
+        throw new \Ab\LocoX\ParseFailureException($this . " could not match another token", $i, $string);
     }
 
     /**

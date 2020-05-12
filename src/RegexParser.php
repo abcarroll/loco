@@ -1,6 +1,6 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 
 /**
@@ -9,14 +9,14 @@ namespace Ferno\Loco;
  * Regexes can match multiple times in theory, but this pattern returns a singleton
  * Callback should accept an array of all the matches made
  */
-class RegexParser extends \Ferno\Loco\StaticParser
+class RegexParser extends \Ab\LocoX\StaticParser
 {
     private $pattern;
     public function __construct($pattern, $callback = null)
     {
         $this->string = "new " . get_class() . "(" . var_export($pattern, true) . ")";
         if (substr($pattern, 1, 1) !== "^") {
-            throw new \Ferno\Loco\GrammarException($this . " doesn't anchor at the beginning of the string!");
+            throw new \Ab\LocoX\GrammarException($this . " doesn't anchor at the beginning of the string!");
         }
         $this->pattern = $pattern;
         parent::__construct($callback);
@@ -34,7 +34,7 @@ class RegexParser extends \Ferno\Loco\StaticParser
         if (preg_match($this->pattern, substr($string, $i), $matches) === 1) {
             return array("j" => $i + strlen($matches[0]), "args" => $matches);
         }
-        throw new \Ferno\Loco\ParseFailureException($this . " could not match expression " . var_export($this->pattern, true), $i, $string);
+        throw new \Ab\LocoX\ParseFailureException($this . " could not match expression " . var_export($this->pattern, true), $i, $string);
     }
 
     /**

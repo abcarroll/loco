@@ -5,7 +5,7 @@
  * Date: 09.06.16
  * Time: 16:41
  */
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 use Exception;
 

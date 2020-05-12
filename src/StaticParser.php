@@ -1,11 +1,11 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 /**
  * Static parsers contain no internal parsers.
  */
-abstract class StaticParser extends \Ferno\Loco\MonoParser
+abstract class StaticParser extends \Ab\LocoX\MonoParser
 {
     public function __construct($callback)
     {

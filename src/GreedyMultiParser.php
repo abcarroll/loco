@@ -1,11 +1,11 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 /**
  * Callback accepts a single argument containing all submatches, however many
  */
-class GreedyMultiParser extends \Ferno\Loco\MonoParser
+class GreedyMultiParser extends \Ab\LocoX\MonoParser
 {
     private $lower;
     public $optional;
@@ -16,7 +16,7 @@ class GreedyMultiParser extends \Ferno\Loco\MonoParser
             $this->optional = null;
         } else {
             if ($upper < $lower) {
-                throw new \Ferno\Loco\GrammarException("Can't create a " . get_class() . " with lower limit " . var_export($lower, true) . " and upper limit " . var_export($upper, true));
+                throw new \Ab\LocoX\GrammarException("Can't create a " . get_class() . " with lower limit " . var_export($lower, true) . " and upper limit " . var_export($upper, true));
             }
             $this->optional = $upper - $lower;
         }
@@ -48,7 +48,7 @@ class GreedyMultiParser extends \Ferno\Loco\MonoParser
                 $match = $this->internals[0]->match($string, $result["j"]);
                 $result["j"] = $match["j"];
                 $result["args"][] = $match["value"];
-            } catch (\Ferno\Loco\ParseFailureException $e) {
+            } catch (\Ab\LocoX\ParseFailureException $e) {
                 break;
             }
         }
