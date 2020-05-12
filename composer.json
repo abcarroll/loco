@@ -1,5 +1,5 @@
 {
-  "name": "ab/locoX-parser",
+  "name": "ab/locox-parser",
   "description": "The qntm.org loco lexer-parser (ferno/loco) modernized for PHP7.4+",
   "keywords": [
     "parser",
@@ -16,13 +16,13 @@
       "name": "A.B. Carroll",
       "homepage": "https://ab.hl9.net",
       "email": "ben@hl9.net",
-      "role": "Current Maintainer"
+      "role": "Author, Maintainer"
     },
     {
       "name": "ferno",
       "email": "actinium@gmail.com",
       "homepage": "https://qntm.org/loco",
-      "role": "Original Author"
+      "role": "Author"
     }
   ],
   "homepage": "http://qntm.org/loco",
