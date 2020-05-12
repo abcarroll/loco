@@ -3,7 +3,7 @@ namespace Ab\LocoX;
 
 use Exception;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 // Takes a string presented in Wirth syntax notation and turn it into a new
 // Grammar object capable of recognising the language described by that string.
