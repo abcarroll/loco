@@ -10,13 +10,7 @@ use function is_string;
 use function strlen;
 use function var_export;
 
-/**
- * http://en.wikipedia.org/wiki/Parser_combinator
- * These parsers are all unusual in that instead of returning a complete
- * set of js and tokens, each returns either a single successful combination of
- * j and result, or throws a ParseFailureException. These are, then, "monoparsers"
- */
-abstract class MonoParser
+abstract class MonoParser implements ParserInterface
 {
     // A string form for any parser should be generated at instantiation time.
     // This string should be *approximately* the "new MonoParser()" syntax,
@@ -104,13 +98,6 @@ abstract class MonoParser
 
     // Every parser assumes that it is non-nullable from the outset
 
-    /**
-     * Parse: try to match this parser at the beginning of the string
-     * Return the result only on success, or throw exception on failure
-     * or if the match doesn't encompass the whole string
-     *
-     * @param mixed $string
-     */
     public function parse($string)
     {
         $result = $this->getResult($string, 0);
@@ -144,7 +131,7 @@ abstract class MonoParser
      *
      * @psalm-return list<MonoParser>
      *
-     * @return MonoParser[]
+     * @return ParserInterface[]
      */
     abstract public function firstSet(): array;
 }
