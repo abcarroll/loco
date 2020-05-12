@@ -2,6 +2,7 @@
 
 namespace Ab\LocoX;
 
+use Ab\LocoX\Exception\GrammarException;
 use function func_get_args;
 
 /**

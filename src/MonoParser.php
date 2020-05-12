@@ -2,6 +2,8 @@
 
 namespace Ab\LocoX;
 
+use Ab\LocoX\Exception\GrammarException;
+use Ab\LocoX\Exception\ParseFailureException;
 use Exception;
 use function call_user_func_array;
 use function is_array;

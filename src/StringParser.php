@@ -2,6 +2,8 @@
 
 namespace Ab\LocoX;
 
+use Ab\LocoX\Exception\GrammarException;
+use Ab\LocoX\Exception\ParseFailureException;
 use function func_get_arg;
 use function is_string;
 use function strlen;

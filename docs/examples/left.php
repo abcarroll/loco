@@ -1,6 +1,8 @@
 <?php
 namespace Ab\LocoX;
 
+use Ab\LocoX\Exception\GrammarException;
+
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 # Left-recursion in Loco, demonstration.

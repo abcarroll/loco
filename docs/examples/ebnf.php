@@ -1,6 +1,7 @@
 <?php
 namespace Ab\LocoX;
 
+use Ab\LocoX\Exception\ParseFailureException;
 use Exception;
 
 require_once __DIR__ . '/../../vendor/autoload.php';

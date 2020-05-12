@@ -2,6 +2,7 @@
 
 namespace Ab\LocoX;
 
+use Ab\LocoX\Exception\GrammarException;
 use function array_key_exists;
 use function array_keys;
 use function count;

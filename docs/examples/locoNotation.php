@@ -1,6 +1,7 @@
 <?php
 namespace Ab\LocoX;
 
+use Ab\LocoX\Exception\ParseFailureException;
 use Exception;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -621,7 +622,7 @@ try {
 // two rules
 echo "3A\n";
 $start = \microtime(true);
-$grammar2 = $locoGrammar->parse(" 
+$grammar2 = $locoGrammar->parse("
 	unicode ::= 'a' '' b | 'grammar' '\\'' '\\\\' \"\\\"\"
 	b::=
 ");

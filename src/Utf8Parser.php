@@ -2,6 +2,7 @@
 
 namespace Ab\LocoX;
 
+use Ab\LocoX\Exception\ParseFailureException;
 use function array_reverse;
 use function chr;
 use function func_get_arg;
