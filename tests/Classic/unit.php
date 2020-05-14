@@ -9,9 +9,27 @@
  * @author Originally by 'mbrzuchalski'
  */
 
-namespace Ab\LocoX;
+namespace Ab\LocoX\Tests\Classic;
 
-use Exception;
+use \Ab\LocoX\{
+    StringParser,
+    EmptyParser,
+    ConcParser,
+    Grammar,
+    RegexParser,
+    GreedyMultiParser,
+    GreedyStarParser,
+    Utf8Parser,
+    Exception\GrammarException,
+    Exception\ParseFailureException
+};
+use \Exception, \Closure;
+use function \assert;
+
+/**
+ * @var \Closure $test
+ * @type \Closure<\Closure> $test
+ */
 
 // unit tests
 $test(function () {
