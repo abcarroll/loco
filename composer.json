@@ -40,7 +40,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Ferno\\Loco\\": "src/"
+      "Ab\\LocoX\\": "src/"
     },
     "files": [
       "src/serialize_array.php"
@@ -48,7 +48,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Ferno\\Test\\Loco\\": "tests/"
+      "Ab\\Tests\\LocoX\\": "tests/"
     }
   },
   "minimum-stability": "dev",
