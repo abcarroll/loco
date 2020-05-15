@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.5/phpunit.xsd"
+         bootstrap="../../vendor/autoload.php"
+         executionOrder="depends,defects"
+         beStrictAboutCoversAnnotation="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
+         processIsolation="true"
+         cacheResultFile="../../build/.tmp/phpunit.cache"
+         colors="true"
+         defaultTimeLimit="30"
+         enforceTimeLimit="true"
+         testdox="true"
+         verbose="true"
+>
+    <logging>
+        <log type="plain" target="../../build/tests.txt" />
+        <log type="coverage-html" target="../../build/phpunit-coverage/" />
+        <log type="coverage-php" target="../../build/phpunit-coverage-php/" />
+        <log type="testdox-html" target="../../build/testdox/" />
+    </logging>
+
+    <!-- <extensions>
+        <extension class="Ab\Tests\ClassicTestRunner" />
+    </extensions> -->
+
+    <testsuites>
+        <testsuite name="default">
+            <directory suffix="Test.php">tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
+</phpunit>
