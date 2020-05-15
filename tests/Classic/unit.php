@@ -11,7 +11,7 @@
 
 namespace Ab\LocoX\Tests\Classic;
 
-use \Ab\LocoX\{
+use Ab\LocoX\{LazyAltParser,
     StringParser,
     EmptyParser,
     ConcParser,
@@ -21,8 +21,7 @@ use \Ab\LocoX\{
     GreedyStarParser,
     Utf8Parser,
     Exception\GrammarException,
-    Exception\ParseFailureException
-};
+    Exception\ParseFailureException};
 use \Exception, \Closure;
 use function \assert;
 
