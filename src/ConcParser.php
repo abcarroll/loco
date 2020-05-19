@@ -12,7 +12,7 @@ use function func_get_args;
 class ConcParser extends MonoParser
 {
     /**
-     * @param ParserInterface[] $internals
+     * @param array<ParserInterface|string> $internals
      * @param null|callable $callback
      *
      * @throws GrammarException

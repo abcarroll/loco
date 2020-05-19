@@ -25,3 +25,8 @@ $test = function ($closure) use($whoops) {
 };
 
 require __DIR__ . '/Classic/unit.php';
+require __DIR__ . '/../docs/examples/bnf.php';
+require __DIR__ . '/../docs/examples/ebnf.php';
+require __DIR__ . '/../docs/examples/json.php';
+require __DIR__ . '/../docs/examples/left.php';
+require __DIR__ . '/../docs/examples/locoNotation.php';
