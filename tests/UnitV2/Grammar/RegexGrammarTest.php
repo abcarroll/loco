@@ -1,9 +1,9 @@
 <?php
 
-namespace ferno\loco\test\parser\grammar;
+namespace Ferno\Tests\Loco\Grammar;
 
-use ferno\loco\grammar\RegexGrammar;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ferno\Loco\Grammar\RegexGrammar;
+use \PHPUnit\Framework\TestCase as TestCase;
 
 class RegexGrammarTest extends TestCase
 {

@@ -1,19 +1,19 @@
 <?php
 
-namespace ferno\loco\test\parser;
+namespace Ferno\Tests\Loco;
 
-use ferno\loco\GrammarException;
-use ferno\loco\ParseFailureException;
-use ferno\loco\LazyAltParser;
-use ferno\loco\StringParser;
-use \PHPUnit_Framework_TestCase as TestCase;
+use Ferno\Loco\GrammarException;
+use Ferno\Loco\ParseFailureException;
+use Ferno\Loco\LazyAltParser;
+use Ferno\Loco\StringParser;
+use PHPUnit\Framework\TestCase as TestCase;
 
 class LazyAltParserTest extends TestCase
 {
     /** @var StringParser */
     private $parser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->parser = new LazyAltParser(
             array(

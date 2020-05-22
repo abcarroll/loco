@@ -1,15 +1,15 @@
 <?php
 
-namespace ferno\loco\test\parser\grammar;
+namespace Ferno\Tests\Loco\Grammar;
 
-use ferno\loco\grammar\JsonGrammar;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ferno\Loco\Grammar\JsonGrammar;
+use \PHPUnit\Framework\TestCase as TestCase;
 
 class JsonGrammarTest extends TestCase
 {
     private $grammar;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->grammar = new JsonGrammar();
     }

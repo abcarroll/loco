@@ -1,12 +1,12 @@
 <?php
 
 
-namespace ferno\loco\grammar\regex;
+namespace Ferno\Loco\Grammar\Regex;
 
 use Exception;
 
-// A Charclass is a set of characters, possibly negated.
-class Charclass
+// A CharClass is a set of characters, possibly negated.
+class CharClass
 {
     public $chars = [];
 

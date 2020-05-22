@@ -1,21 +1,21 @@
 <?php
 
 
-namespace ferno\loco\grammar;
+namespace Ferno\Loco\grammar;
 
 use Exception;
-use ferno\loco\ConcParser;
-use ferno\loco\EmptyParser;
-use ferno\loco\Grammar;
-use ferno\loco\grammar\regex\Charclass;
-use ferno\loco\grammar\regex\Conc;
-use ferno\loco\grammar\regex\Mult;
-use ferno\loco\grammar\regex\Multiplier;
-use ferno\loco\grammar\regex\Pattern;
-use ferno\loco\GreedyStarParser;
-use ferno\loco\LazyAltParser;
-use ferno\loco\RegexParser;
-use ferno\loco\StringParser;
+use Ferno\Loco\ConcParser;
+use Ferno\Loco\EmptyParser;
+use Ferno\Loco\Grammar;
+use Ferno\Loco\Grammar\Regex\CharClass;
+use Ferno\Loco\Grammar\Regex\Conc;
+use Ferno\Loco\Grammar\Regex\Mult;
+use Ferno\Loco\Grammar\Regex\Multiplier;
+use Ferno\Loco\Grammar\Regex\Pattern;
+use Ferno\Loco\GreedyStarParser;
+use Ferno\Loco\LazyAltParser;
+use Ferno\Loco\RegexParser;
+use Ferno\Loco\StringParser;
 
 class RegexGrammar extends Grammar
 {
@@ -50,7 +50,7 @@ class RegexGrammar extends Grammar
                     function () { return new Conc(func_get_args()); }
                 ),
 
-                // A Mult is a multiplicand (Charclass or sub-Pattern) followed by a multiplier.
+                // A Mult is a multiplicand (CharClass or sub-Pattern) followed by a multiplier.
                 // A subpattern has to be put inside parentheses.
                 '<mult>' => new ConcParser(
                     ['<multiplicand>', '<multiplier>'],
@@ -103,49 +103,49 @@ class RegexGrammar extends Grammar
                 'COMMA' => new StringParser(','),
                 '<integer>' => new RegexParser('#^(0|[1-9][0-9]*)#', function ($match) { return (int) ($match); }),
 
-                // A Charclass is usually a single literal character.
+                // A CharClass is usually a single literal character.
                 // It can also be a single character escaped with a backslash,
                 // or a "true" charclass, which is a possibly-negated set of elements
                 // listed inside a pair of brackets.
                 '<charclass>' => new LazyAltParser(
                     [
-                        new RegexParser('#^[^|()\\[\\]?*+{}\\\\.]#', function ($match) { return new Charclass($match); }),
+                        new RegexParser('#^[^|()\\[\\]?*+{}\\\\.]#', function ($match) { return new CharClass($match); }),
                         '<bracketednegatedcharclass>',
                         '<bracketedcharclass>',
-                        new StringParser('\\|', function ($string) { return new Charclass(substr($string, 1, 1)); }),
-                        new StringParser('\\(', function ($string) { return new Charclass(substr($string, 1, 1)); }),
-                        new StringParser('\\)', function ($string) { return new Charclass(substr($string, 1, 1)); }),
-                        new StringParser('\\[', function ($string) { return new Charclass(substr($string, 1, 1)); }),
-                        new StringParser('\\]', function ($string) { return new Charclass(substr($string, 1, 1)); }),
-                        new StringParser('\\?', function ($string) { return new Charclass(substr($string, 1, 1)); }),
-                        new StringParser('\\*', function ($string) { return new Charclass(substr($string, 1, 1)); }),
-                        new StringParser('\\+', function ($string) { return new Charclass(substr($string, 1, 1)); }),
-                        new StringParser('\\{', function ($string) { return new Charclass(substr($string, 1, 1)); }),
-                        new StringParser('\\}', function ($string) { return new Charclass(substr($string, 1, 1)); }),
-                        new StringParser('\\\\', function ($string) { return new Charclass(substr($string, 1, 1)); }),
-                        new StringParser('\\.', function ($string) { return new Charclass(substr($string, 1, 1)); }),
-                        new StringParser('\\f', function ($string) { return new Charclass("\f"); }),
-                        new StringParser('\\n', function ($string) { return new Charclass("\n"); }),
-                        new StringParser('\\r', function ($string) { return new Charclass("\r"); }),
-                        new StringParser('\\t', function ($string) { return new Charclass("\t"); }),
-                        new StringParser('\\v', function ($string) { return new Charclass("\v"); }),
-                        new StringParser('\\w', function ($string) { return new Charclass('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'); }),
-                        new StringParser('\\W', function ($string) { return new Charclass('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz', true); }),
-                        new StringParser('\\d', function ($string) { return new Charclass('0123456789'); }),
-                        new StringParser('\\D', function ($string) { return new Charclass('0123456789', true); }),
-                        new StringParser('\\s', function ($string) { return new Charclass(" \f\n\r\t\v"); }),
-                        new StringParser('\\S', function ($string) { return new Charclass(" \f\n\r\t\v", true); }),
-                        new StringParser('.', function ($string) { return new Charclass('', true); })
+                        new StringParser('\\|', function ($string) { return new CharClass(substr($string, 1, 1)); }),
+                        new StringParser('\\(', function ($string) { return new CharClass(substr($string, 1, 1)); }),
+                        new StringParser('\\)', function ($string) { return new CharClass(substr($string, 1, 1)); }),
+                        new StringParser('\\[', function ($string) { return new CharClass(substr($string, 1, 1)); }),
+                        new StringParser('\\]', function ($string) { return new CharClass(substr($string, 1, 1)); }),
+                        new StringParser('\\?', function ($string) { return new CharClass(substr($string, 1, 1)); }),
+                        new StringParser('\\*', function ($string) { return new CharClass(substr($string, 1, 1)); }),
+                        new StringParser('\\+', function ($string) { return new CharClass(substr($string, 1, 1)); }),
+                        new StringParser('\\{', function ($string) { return new CharClass(substr($string, 1, 1)); }),
+                        new StringParser('\\}', function ($string) { return new CharClass(substr($string, 1, 1)); }),
+                        new StringParser('\\\\', function ($string) { return new CharClass(substr($string, 1, 1)); }),
+                        new StringParser('\\.', function ($string) { return new CharClass(substr($string, 1, 1)); }),
+                        new StringParser('\\f', function ($string) { return new CharClass("\f"); }),
+                        new StringParser('\\n', function ($string) { return new CharClass("\n"); }),
+                        new StringParser('\\r', function ($string) { return new CharClass("\r"); }),
+                        new StringParser('\\t', function ($string) { return new CharClass("\t"); }),
+                        new StringParser('\\v', function ($string) { return new CharClass("\v"); }),
+                        new StringParser('\\w', function ($string) { return new CharClass('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'); }),
+                        new StringParser('\\W', function ($string) { return new CharClass('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz', true); }),
+                        new StringParser('\\d', function ($string) { return new CharClass('0123456789'); }),
+                        new StringParser('\\D', function ($string) { return new CharClass('0123456789', true); }),
+                        new StringParser('\\s', function ($string) { return new CharClass(" \f\n\r\t\v"); }),
+                        new StringParser('\\S', function ($string) { return new CharClass(" \f\n\r\t\v", true); }),
+                        new StringParser('.', function ($string) { return new CharClass('', true); })
                     ]
                 ),
 
                 '<bracketednegatedcharclass>' => new ConcParser(
                     ['LEFT_BRACKET', 'CARET', '<elemlist>', 'RIGHT_BRACKET'],
-                    function ($left_bracket, $elemlist, $right_bracket) { return new Charclass($elemlist, true); }
+                    function ($left_bracket, $elemlist, $right_bracket) { return new CharClass($elemlist, true); }
                 ),
                 '<bracketedcharclass>' => new ConcParser(
                     ['LEFT_BRACKET', '<elemlist>', 'RIGHT_BRACKET'],
-                    function ($left_bracket, $elemlist, $right_bracket) { return new Charclass($elemlist); }
+                    function ($left_bracket, $elemlist, $right_bracket) { return new CharClass($elemlist); }
                 ),
                 'LEFT_BRACKET' => new StringParser('['),
                 'RIGHT_BRACKET' => new StringParser(']'),

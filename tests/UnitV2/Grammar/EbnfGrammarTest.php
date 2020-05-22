@@ -1,10 +1,10 @@
 <?php
 
-namespace ferno\loco\test\parser\grammar;
+namespace Ferno\Tests\Loco\Grammar;
 
-use ferno\loco\grammar\EbnfGrammar;
-use ferno\loco\ParseFailureException;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ferno\Loco\Grammar\EbnfGrammar;
+use Ferno\Loco\ParseFailureException;
+use \PHPUnit\Framework\TestCase as TestCase;
 
 class EbnfGrammarTest extends TestCase
 {

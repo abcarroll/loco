@@ -1,17 +1,17 @@
 <?php
 
 
-namespace ferno\loco\grammar;
+namespace Ferno\Loco\grammar;
 
-use ferno\loco\ConcParser;
-use ferno\loco\EmptyParser;
-use ferno\loco\Grammar;
-use ferno\loco\GreedyMultiParser;
-use ferno\loco\GreedyStarParser;
-use ferno\loco\LazyAltParser;
-use ferno\loco\RegexParser;
-use ferno\loco\StringParser;
-use ferno\loco\Utf8Parser;
+use Ferno\Loco\ConcParser;
+use Ferno\Loco\EmptyParser;
+use Ferno\Loco\Grammar;
+use Ferno\Loco\GreedyMultiParser;
+use Ferno\Loco\GreedyStarParser;
+use Ferno\Loco\LazyAltParser;
+use Ferno\Loco\RegexParser;
+use Ferno\Loco\StringParser;
+use Ferno\Loco\Utf8Parser;
 
 // Takes a string presented in Loco Backus-Naur Form and turns it into a
 // new Grammar object capable of recognising the language described by that string.
@@ -108,7 +108,7 @@ class LocoGrammar extends Grammar
                         // in reverse order so that our splicing doesn't modify the array
                         $multiparsers = [];
                         foreach (func_get_args() as $k => $internal) {
-                            if (is_a($internal, "ferno\loco\GreedyMultiParser")) {
+                            if (is_a($internal, "Ferno\Loco\GreedyMultiParser")) {
                                 array_unshift($multiparsers, $k);
                             }
                         }

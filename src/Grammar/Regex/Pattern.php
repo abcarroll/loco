@@ -1,7 +1,7 @@
 <?php
 
 
-namespace ferno\loco\grammar\regex;
+namespace Ferno\Loco\Grammar\Regex;
 
 // Each Pattern is an alternation between several "Concs"
 // This is the top-level Pattern object returned by the lexer.

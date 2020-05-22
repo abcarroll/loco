@@ -1,16 +1,16 @@
 <?php
 
-namespace ferno\loco\test\parser\grammar;
+namespace Ferno\Tests\Loco\Grammar;
 
-use ferno\loco\grammar\SimpleCommentGrammar;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ferno\Loco\Grammar\SimpleCommentGrammar;
+use \PHPUnit\Framework\TestCase as TestCase;
 
 class SimpleCommentGrammarTest extends TestCase
 {
     /** @var SimpleCommentGrammar */
     private $grammar;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->grammar = new SimpleCommentGrammar();
     }

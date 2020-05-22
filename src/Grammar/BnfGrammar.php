@@ -1,17 +1,17 @@
 <?php
 
 
-namespace ferno\loco\grammar;
+namespace Ferno\Loco\grammar;
 
 use Exception;
-use ferno\loco\ConcParser;
-use ferno\loco\EmptyParser;
-use ferno\loco\Grammar;
-use ferno\loco\GreedyMultiParser;
-use ferno\loco\GreedyStarParser;
-use ferno\loco\LazyAltParser;
-use ferno\loco\RegexParser;
-use ferno\loco\StringParser;
+use Ferno\Loco\ConcParser;
+use Ferno\Loco\EmptyParser;
+use Ferno\Loco\Grammar;
+use Ferno\Loco\GreedyMultiParser;
+use Ferno\Loco\GreedyStarParser;
+use Ferno\Loco\LazyAltParser;
+use Ferno\Loco\RegexParser;
+use Ferno\Loco\StringParser;
 
 /**
  * Takes a string presented in Backus-Naur Form and turns it into a new Grammar

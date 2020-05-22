@@ -1,17 +1,17 @@
 <?php
 
-namespace ferno\loco\test\parser\grammar;
+namespace Ferno\Tests\Loco\Grammar;
 
-use ferno\loco\grammar\LocoGrammar;
-use ferno\loco\ParseFailureException;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ferno\Loco\Grammar\LocoGrammar;
+use Ferno\Loco\ParseFailureException;
+use PHPUnit\Framework\TestCase as TestCase;
 
 class LocoGrammarTest extends TestCase
 {
     /** @var LocoGrammar */
     private $grammar;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->grammar = new LocoGrammar();
     }

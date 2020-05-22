@@ -1,12 +1,12 @@
 <?php
 
-namespace ferno\loco\test\parser;
+namespace Ferno\Tests\Loco;
 
-use ferno\loco\GreedyMultiParser;
-use ferno\loco\LazyAltParser;
-use ferno\loco\ParseFailureException;
-use ferno\loco\StringParser;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ferno\Loco\GreedyMultiParser;
+use Ferno\Loco\LazyAltParser;
+use Ferno\Loco\ParseFailureException;
+use Ferno\Loco\StringParser;
+use \PHPUnit\Framework\TestCase as TestCase;
 
 class GreedyMultiParserTest extends TestCase
 {

@@ -1,17 +1,17 @@
 <?php
 
-namespace ferno\loco\test\parser;
+namespace Ferno\Tests\Loco;
 
-use ferno\loco\ConcParser;
-use ferno\loco\EmptyParser;
-use ferno\loco\Grammar;
-use ferno\loco\GrammarException;
-use ferno\loco\GreedyMultiParser;
-use ferno\loco\GreedyStarParser;
-use ferno\loco\LazyAltParser;
-use ferno\loco\ParseFailureException;
-use ferno\loco\StringParser;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ferno\Loco\ConcParser;
+use Ferno\Loco\EmptyParser;
+use Ferno\Loco\Grammar;
+use Ferno\Loco\GrammarException;
+use Ferno\Loco\GreedyMultiParser;
+use Ferno\Loco\GreedyStarParser;
+use Ferno\Loco\LazyAltParser;
+use Ferno\Loco\ParseFailureException;
+use Ferno\Loco\StringParser;
+use \PHPUnit\Framework\TestCase as TestCase;
 
 class GrammarTest extends TestCase
 {

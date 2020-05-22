@@ -1,15 +1,15 @@
 <?php
 
 
-namespace ferno\loco\grammar;
+namespace Ferno\Loco\grammar;
 
-use ferno\loco\ConcParser;
-use ferno\loco\Grammar;
-use ferno\loco\GreedyStarParser;
-use ferno\loco\LazyAltParser;
-use ferno\loco\RegexParser;
-use ferno\loco\StringParser;
-use ferno\loco\Utf8Parser;
+use Ferno\Loco\ConcParser;
+use Ferno\Loco\Grammar;
+use Ferno\Loco\GreedyStarParser;
+use Ferno\Loco\LazyAltParser;
+use Ferno\Loco\RegexParser;
+use Ferno\Loco\StringParser;
+use Ferno\Loco\Utf8Parser;
 
 class SimpleCommentGrammar extends Grammar
 {

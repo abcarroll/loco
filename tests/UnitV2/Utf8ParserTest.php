@@ -1,17 +1,17 @@
 <?php
 
-namespace ferno\loco\test\parser;
+namespace Ferno\Tests\Loco;
 
-use ferno\loco\ParseFailureException;
-use ferno\loco\Utf8Parser;
-use \PHPUnit_Framework_TestCase as TestCase;
+use Ferno\Loco\ParseFailureException;
+use Ferno\Loco\Utf8Parser;
+use PHPUnit\Framework\TestCase as TestCase;
 
 class Utf8ParserTest extends TestCase
 {
     /** @var Utf8Parser */
     private $parser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->parser = new Utf8Parser();
     }

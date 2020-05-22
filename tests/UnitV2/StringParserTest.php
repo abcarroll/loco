@@ -1,10 +1,10 @@
 <?php
 
-namespace ferno\loco\test\parser;
+namespace Ferno\Tests\Loco;
 
-use ferno\loco\ParseFailureException;
-use ferno\loco\StringParser;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ferno\Loco\ParseFailureException;
+use Ferno\Loco\StringParser;
+use \PHPUnit\Framework\TestCase as TestCase;
 
 class StringParserTest extends TestCase
 {

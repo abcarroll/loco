@@ -1,9 +1,9 @@
 <?php
 
-namespace ferno\loco\test\grammar;
+namespace Ferno\Loco\test\grammar;
 
-use ferno\loco\grammar\WirthGrammar;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ferno\Loco\Grammar\WirthGrammar;
+use \PHPUnit\Framework\TestCase as TestCase;
 
 class WirthGrammarTest extends TestCase
 {

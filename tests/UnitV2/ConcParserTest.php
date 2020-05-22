@@ -1,18 +1,18 @@
 <?php
 
-namespace ferno\loco\test\parser;
+namespace Ferno\Tests\Loco;
 
-use ferno\loco\ConcParser;
-use ferno\loco\ParseFailureException;
-use ferno\loco\RegexParser;
-use PHPUnit_Framework_TestCase as TestCase;
+use Ferno\Loco\ConcParser;
+use Ferno\Loco\ParseFailureException;
+use Ferno\Loco\RegexParser;
+use PHPUnit\Framework\TestCase as TestCase;
 
 class ConcParserTest extends TestCase
 {
     /** @var ConcParser */
     private $parser;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->parser = new ConcParser(
             array(
