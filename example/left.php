@@ -1,12 +1,12 @@
 <?php
 
-use ferno\loco\ConcParser;
-use ferno\loco\Grammar;
-use ferno\loco\GrammarException;
-use ferno\loco\GreedyStarParser;
-use ferno\loco\LazyAltParser;
-use ferno\loco\RegexParser;
-use ferno\loco\StringParser;
+use Ferno\Loco\ConcParser;
+use Ferno\Loco\Grammar;
+use Ferno\Loco\GrammarException;
+use Ferno\Loco\GreedyStarParser;
+use Ferno\Loco\LazyAltParser;
+use Ferno\Loco\RegexParser;
+use Ferno\Loco\StringParser;
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
@@ -59,10 +59,10 @@ try {
             "N" => $N
         )
     );
-    var_dump(false);
+    assert(false);
 } catch (GrammarException $e) {
     # Left-recursive in S
-    var_dump(true);
+    assert(true);
 }
 
 # Fix the grammar like so:
@@ -84,4 +84,4 @@ $grammar = new Grammar(
     )
 );
 
-var_dump($grammar->parse("5-4-3"));
+assert($grammar->parse("5-4-3"));

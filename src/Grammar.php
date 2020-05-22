@@ -22,10 +22,7 @@ class Grammar extends MonoParser
         parent::__construct($internals, $callback);
 
         if (! array_key_exists($S, $this->internals)) {
-            throw new GrammarException("This grammar begins with rule '" . var_export(
-                $S,
-                true
-            ) . "' but no parser with this name was given.");
+            throw new GrammarException("This grammar begins with rule '" . var_export($S, true) . "' but no parser with this name was given.");
         }
         $this->S = $S;
 
@@ -153,10 +150,7 @@ class Grammar extends MonoParser
                 // make sure the other parser that we're about to create a reference to actually exists
                 $name = $parser->internals[$key];
                 if (! array_key_exists($name, $this->internals)) {
-                    throw new GrammarException($parser . ' contains a reference to another parser ' . var_export(
-                        $name,
-                        true
-                    ) . ' which cannot be found');
+                    throw new \Ferno\Loco\GrammarException($parser . " contains a reference to another parser " . var_export($name, true) . " which cannot be found");
                 }
 
                 // create that reference

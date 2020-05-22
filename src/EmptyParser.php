@@ -18,6 +18,7 @@ class EmptyParser extends StaticParser
      */
     public function defaultCallback()
     {
+        return null;
     }
 
     /**

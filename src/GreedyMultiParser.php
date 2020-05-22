@@ -18,11 +18,7 @@ class GreedyMultiParser extends MonoParser
             $this->optional = null;
         } else {
             if ($upper < $lower) {
-                throw new GrammarException("Can't create a " . __CLASS__
-                 . ' with lower limit ' . var_export(
-                    $lower,
-                    true
-                ) . ' and upper limit ' . var_export($upper, true));
+                throw new \Ferno\Loco\GrammarException("Can't create a " . get_class() . " with lower limit " . var_export($lower, true) . " and upper limit " . var_export($upper, true));
             }
             $this->optional = $upper - $lower;
         }
