@@ -3,14 +3,18 @@ namespace Ferno\Loco;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-# Left-recursion in Loco, demonstration.
+/**
+ * Left-recursion in Loco, demonstration.
+ *
+ * Left-recursive grammars cannot be parsed using a recursive descent approach.
+ * Loco detects left-recursion in a new grammar and raises an exception.
+ * How do we get around this?
+ */
 
-# Left-recursive grammars cannot be parsed using a recursive descent approach.
-# Loco detects left-recursion in a new grammar and raises an exception.
-# How do we get around this?
-
-# minus($minuend, $subtrahend) is a left-associative operator.
-# e.g. "5 - 4 - 3" means "(5 - 4) - 3 = -2", not "5 - (4 - 3) = 4".
+/**
+ * minus($minuend, $subtrahend) is a left-associative operator.
+ * e.g. "5 - 4 - 3" means "(5 - 4) - 3 = -2", not "5 - (4 - 3) = 4".
+ */
 function minus($minuend, $subtrahend) {
 	return $minuend - $subtrahend;
 }
@@ -48,10 +52,10 @@ try {
 			"N" => $N
 		)
 	);
-	var_dump(false);
+    assert(false);
 } catch (GrammarException $e) {
 	# Left-recursive in S
-	var_dump(true);
+    assert(true);
 }
 
 # Fix the grammar like so:
@@ -73,4 +77,4 @@ $grammar = new Grammar(
 	)
 );
 
-var_dump($grammar->parse("5-4-3") === -2); # true
+assert($grammar->parse("5-4-3") === -2); # true
