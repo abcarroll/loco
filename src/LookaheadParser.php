@@ -20,7 +20,7 @@ class LookaheadParser extends StaticParser
         }
         $this->lookaheadStrings = $lookaheadStrings;
 
-        $this->string = 'new ' . __CLASS__ . '(' . $this->serializeArray($lookaheadStrings) . ')';
+        $this->string = 'new ' . __CLASS__ . '(' . serialiseArray($lookaheadStrings) . ')';
 
         parent::__construct($callback);
     }

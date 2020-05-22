@@ -10,7 +10,7 @@ class ConcParser extends MonoParser
 {
     public function __construct($internals, $callback = null)
     {
-        $this->string = 'new ' . __CLASS__ . '(' . $this->serializeArray($internals) . ')';
+        $this->string = 'new ' . __CLASS__ . '(' . serialiseArray($internals) . ')';
         parent::__construct($internals, $callback);
     }
 
@@ -41,33 +41,30 @@ class ConcParser extends MonoParser
      */
     public function firstSet()
     {
-        $firstSet = [];
+        $firstSet = array();
         foreach ($this->internals as $internal) {
             // The first $internal is always in the first-set
             $firstSet[] = $internal;
-
             // If $internal was nullable, then the next internal in the
             // list is also in the first-set, so continue the loop.
             // Otherwise we are done.
-            if (! $internal->nullable) {
+            if (!$internal->nullable) {
                 break;
             }
         }
 
         return $firstSet;
     }
-
     /**
      * only nullable if everything in the list is nullable
      */
     public function evaluateNullability()
     {
         foreach ($this->internals as $internal) {
-            if (! $internal->nullable) {
+            if (!$internal->nullable) {
                 return false;
             }
         }
-
         return true;
     }
 }

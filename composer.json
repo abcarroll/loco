@@ -1,48 +1,55 @@
 {
-    "name": "ab/locox-parser",
-    "description": "The qntm.org loco lexer-parser (ferno/loco) modernized for PHP7.4+",
-    "keywords": [
-        "parser",
-        "parsing",
-        "lexer",
-        "compiler",
-        "dsl",
-        "doctrine",
-        "hoa"
-    ],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "A.B. Carroll",
-            "homepage": "https://ab.hl9.net",
-            "email": "ben@hl9.net",
-            "role": "Author, Maintainer"
-        },
-        {
-            "name": "ferno",
-            "email": "actinium@gmail.com",
-            "homepage": "https://qntm.org/loco",
-            "role": "Author"
-        }
-    ],
-    "homepage": "http://qntm.org/loco",
-    "require": {
-        "php": ">=7.4"
+  "name": "ab/loco-parse",
+  "description": "The qntm.org loco lexer-parser (ferno/loco) modernized for PHP7.1+",
+  "keywords": [
+    "parser",
+    "parsing",
+    "lexer",
+    "compiler",
+    "dsl",
+    "doctrine",
+    "hoa"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "A.B. Carroll",
+      "homepage": "https://ab.hl9.net",
+      "email": "ben@hl9.net",
+      "role": "Current Maintainer"
     },
-    "require-dev": {
-        "phpunit/phpunit": "^8",
-        "squizlabs/php_codesniffer": "^3.5"
+    {
+      "name": "ferno",
+      "email": "actinium@gmail.com",
+      "homepage": "https://qntm.org/loco",
+      "role": "Original Author"
+    }
+  ],
+  "homepage": "http://qntm.org/loco",
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+      "phpunit/phpunit": "^8",
+      "squizlabs/php_codesniffer": "^3.5"
+  },
+  "scripts": {
+    "check": "phpcs",
+    "fix-cs": "phpcbf"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ferno\\Loco\\": "src/"
     },
-    "autoload": {
-        "psr-4": {
-            "Ferno\\Loco\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Ferno\\Tests\\Loco\\": "src/tests"
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    "files": [
+      "src/serialize_array.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Ferno\\Tests\\Loco\\": "tests/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
