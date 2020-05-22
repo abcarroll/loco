@@ -10,7 +10,6 @@ namespace ferno\loco;
  */
 class Grammar extends MonoParser
 {
-
     /**
      * All parsing begins with the parser of this name.
      * $S should not be an actual parser
@@ -19,7 +18,7 @@ class Grammar extends MonoParser
 
     public function __construct($S, $internals, $callback = null)
     {
-        $this->string = "new " . get_class() . "(" . var_export($S, true) . ", " . $this->serializeArray($internals) . ")";
+        $this->string = 'new ' . __CLASS__ . '(' . var_export($S, true) . ', ' . $this->serializeArray($internals) . ')';
         parent::__construct($internals, $callback);
 
         if (! array_key_exists($S, $this->internals)) {
@@ -30,30 +29,30 @@ class Grammar extends MonoParser
         }
         $this->S = $S;
 
-        # Each parser may have internal sub-parsers to which it
-        # "farms out" parsing duties. (This is contained in each parser's internal
-        # list, $internals). In some cases, these will appear as
-        # full-blown internal parsers, which is fine, but in other cases
-        # (unavoidably) these will appear as mere strings, intended to refer
-        # to other parsers elsewhere in the complete grammar.
+        // Each parser may have internal sub-parsers to which it
+        // "farms out" parsing duties. (This is contained in each parser's internal
+        // list, $internals). In some cases, these will appear as
+        // full-blown internal parsers, which is fine, but in other cases
+        // (unavoidably) these will appear as mere strings, intended to refer
+        // to other parsers elsewhere in the complete grammar.
 
-        # Strings alone are no good for parsing purposes, so at this stage,
-        # we resolve this by replacing each such string with a
-        # reference to "the real thing" - if it can be found.
+        // Strings alone are no good for parsing purposes, so at this stage,
+        // we resolve this by replacing each such string with a
+        // reference to "the real thing" - if it can be found.
 
-        # this needs to recurse over all inner parsers!!
+        // this needs to recurse over all inner parsers!!
         $this->resolve($this);
 
-        # Nullability.
-        # It is impossible to be certain whether an arbitrary parser is nullable
-        # without knowing the nullability status of its internal parsers.
-        # Because this chain may recurse, the nullability of a general collection
-        # of parsers has to be evaluated by "bubbling up" nullability states
-        # until we are certain that all nullable parsers have been marked as such.
-        # It is not unlike a "flood fill" procedure.
+        // Nullability.
+        // It is impossible to be certain whether an arbitrary parser is nullable
+        // without knowing the nullability status of its internal parsers.
+        // Because this chain may recurse, the nullability of a general collection
+        // of parsers has to be evaluated by "bubbling up" nullability states
+        // until we are certain that all nullable parsers have been marked as such.
+        // It is not unlike a "flood fill" procedure.
         while (1) {
             foreach ($this->internals as $internal) {
-                if ($internal->nullable === true) {
+                if (true === $internal->nullable) {
                     continue;
                 }
 
@@ -61,46 +60,47 @@ class Grammar extends MonoParser
                     continue;
                 }
 
-                # If we get here, then $internal is marked as non-nullable, but
-                # has been newly evaluated as nullable. A change has occurred! So,
-                # mark $internal as nullable now and start the process over again.
+                // If we get here, then $internal is marked as non-nullable, but
+                // has been newly evaluated as nullable. A change has occurred! So,
+                // mark $internal as nullable now and start the process over again.
                 $internal->nullable = true;
-                continue(2);
+
+                continue 2;
             }
 
-            # If we reach this point then we are done marking more internals as
-            # nullable. The nullability fill is complete
+            // If we reach this point then we are done marking more internals as
+            // nullable. The nullability fill is complete
             break;
         }
 
-        # The reason for needing to know nullability is so that we can confidently
-        # create the immediate first-set of each parser.
+        // The reason for needing to know nullability is so that we can confidently
+        // create the immediate first-set of each parser.
 
-        # This allows the creation of the extended first-set of each parser.
+        // This allows the creation of the extended first-set of each parser.
 
-        # This in turn is necessary to detect left recursion, which occurs
-        # if and only if a parser contains ITSELF in its own extended first-set.
+        // This in turn is necessary to detect left recursion, which occurs
+        // if and only if a parser contains ITSELF in its own extended first-set.
         foreach ($this->internals as $internal) {
 
-            # Find the extended first-set of this parser. If this parser is
-            # contained in its own first-set, then it is left-recursive.
-            # This has to be called after the "nullability flood fill" is complete.
-            $firstSet = array($internal);
+            // Find the extended first-set of this parser. If this parser is
+            // contained in its own first-set, then it is left-recursive.
+            // This has to be called after the "nullability flood fill" is complete.
+            $firstSet = [$internal];
             $i = 0;
             while ($i < count($firstSet)) {
                 $current = $firstSet[$i];
                 foreach ($current->firstSet() as $next) {
 
-                    # Left - recursion
+                    // Left - recursion
                     if ($next === $internal) {
-                        throw new GrammarException("This grammar is left-recursive in " . $internal . ".");
+                        throw new GrammarException('This grammar is left-recursive in ' . $internal . '.');
                     }
 
-                    # If it's already in the list, then skip it
-                    # this DOESN'T imply left - recursion, though
+                    // If it's already in the list, then skip it
+                    // this DOESN'T imply left - recursion, though
                     for ($j = 0; $j < count($firstSet); $j ++) {
                         if ($next === $firstSet[$j]) {
-                            continue(2);
+                            continue 2;
                         }
                     }
 
@@ -110,21 +110,21 @@ class Grammar extends MonoParser
             }
         }
 
-        # Nullability is also required for this step:
-        # If a GreedyMultiParser's inner parser is capable of matching a
-        # string of zero length, and it has an unbounded upper limit, then
-        # it is going to loop forever.
-        # In this situation, we raise a very serious error
+        // Nullability is also required for this step:
+        // If a GreedyMultiParser's inner parser is capable of matching a
+        // string of zero length, and it has an unbounded upper limit, then
+        // it is going to loop forever.
+        // In this situation, we raise a very serious error
         foreach ($this->internals as $internal) {
             if (! ($internal instanceof GreedyMultiParser)) {
                 continue;
             }
-            if ($internal->optional !== null) {
+            if (null !== $internal->optional) {
                 continue;
             }
 
             if ($internal->internals[0]->nullable) {
-                throw new GrammarException($internal . " has internal parser " . $internal->internals[0] . ", which matches the empty string. This will cause infinite loops when parsing.");
+                throw new GrammarException($internal . ' has internal parser ' . $internal->internals[0] . ', which matches the empty string. This will cause infinite loops when parsing.');
             }
         }
     }
@@ -138,34 +138,36 @@ class Grammar extends MonoParser
      * real parsers, no longer strings.
      * Be cautious modifying this code, it was constructed quite delicately to
      * avoid infinite loops
+     *
+     * @param mixed $parser
      */
     private function resolve($parser)
     {
-
         $keys = array_keys($parser->internals);
         for ($i = 0; $i < count($keys); $i ++) {
             $key = $keys[$i];
 
-            # replace names with references
+            // replace names with references
             if (is_string($parser->internals[$key])) {
 
-                # make sure the other parser that we're about to create a reference to actually exists
+                // make sure the other parser that we're about to create a reference to actually exists
                 $name = $parser->internals[$key];
                 if (! array_key_exists($name, $this->internals)) {
-                    throw new GrammarException($parser . " contains a reference to another parser " . var_export(
+                    throw new GrammarException($parser . ' contains a reference to another parser ' . var_export(
                         $name,
                         true
-                    ) . " which cannot be found");
+                    ) . ' which cannot be found');
                 }
 
-                # create that reference
-                $parser->internals[$key] =& $this->internals[$name];
+                // create that reference
+                $parser->internals[$key] = & $this->internals[$name];
             } else {
-                # already a parser? No need to replace it!
-                # but we do need to recurse!
+                // already a parser? No need to replace it!
+                // but we do need to recurse!
                 $parser->internals[$key] = $this->resolve($parser->internals[$key]);
             }
         }
+
         return $parser;
     }
 
@@ -180,14 +182,18 @@ class Grammar extends MonoParser
 
     /**
      * use the "main" internal parser, S
+     *
+     * @param mixed $string
+     * @param mixed $i
      */
     public function getResult($string, $i = 0)
     {
         $match = $this->internals[$this->S]->match($string, $i);
-        return array(
-            "j"    => $match["j"],
-            "args" => array($match["value"])
-        );
+
+        return [
+            'j' => $match['j'],
+            'args' => [$match['value']]
+        ];
     }
 
     /**
@@ -195,7 +201,7 @@ class Grammar extends MonoParser
      */
     public function evaluateNullability()
     {
-        return ($this->internals[$this->S]->nullable === true);
+        return true === $this->internals[$this->S]->nullable;
     }
 
     /**
@@ -203,6 +209,6 @@ class Grammar extends MonoParser
      */
     public function firstSet()
     {
-        return array($this->internals[$this->S]);
+        return [$this->internals[$this->S]];
     }
 }

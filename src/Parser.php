@@ -9,12 +9,14 @@ abstract class Parser
 {
     /**
      * a helpful internal function
+     *
+     * @param mixed $array
      */
-    function serializeArray($array)
+    public function serializeArray($array)
     {
-        $string = "array(";
+        $string = 'array(';
         foreach (array_keys($array) as $keyId => $key) {
-            $string .= var_export($key, true) . " => ";
+            $string .= var_export($key, true) . ' => ';
             if (is_string($array[$key])) {
                 $string .= var_export($array[$key], true);
             } else {
@@ -22,10 +24,11 @@ abstract class Parser
             }
 
             if ($keyId + 1 !== count($array)) {
-                $string .= ", ";
+                $string .= ', ';
             }
         }
-        $string .= ")";
+        $string .= ')';
+
         return $string;
     }
 }

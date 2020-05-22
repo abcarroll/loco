@@ -53,29 +53,29 @@ abstract class MonoParser extends Parser
     public function __construct($internals, $callback)
     {
         if (! is_string($this->string)) {
-            throw new Exception("You need to populate \$string");
+            throw new Exception('You need to populate $string');
         }
 
         // Perform basic validation.
         if (! is_array($internals)) {
-            throw new GrammarException(var_export($internals, true) . " should be an array");
+            throw new GrammarException(var_export($internals, true) . ' should be an array');
         }
         foreach ($internals as $internal) {
             if (! is_string($internal) && ! ($internal instanceof MonoParser)) {
                 throw new GrammarException(var_export(
                     $internal,
                     true
-                ) . " should be either a string or a MonoParser");
+                ) . ' should be either a string or a MonoParser');
             }
         }
         $this->internals = $internals;
 
         // if null, set default callback
-        if ($callback === null) {
-            $callback = array($this, "defaultCallback");
+        if (null === $callback) {
+            $callback = [$this, 'defaultCallback'];
         }
         if (! is_callable($callback)) {
-            throw new GrammarException("Callback should be a callable function");
+            throw new GrammarException('Callback should be a callable function');
         }
         $this->callback = $callback;
     }
@@ -83,36 +83,45 @@ abstract class MonoParser extends Parser
     /**
      * try to match this parser at the specified point.
      * returns j and args to pass to the callback, or throws exception on failure
+     *
+     * @param mixed $string
+     * @param mixed $i
      */
     abstract public function getResult($string, $i = 0);
 
     /**
      * apply callback to returned value before returning it
+     *
+     * @param mixed $string
+     * @param mixed $i
      */
     public function match($string, $i = 0)
     {
         $result = $this->getResult($string, $i);
-        return array(
-            "j"     => $result["j"],
-            "value" => call_user_func_array($this->callback, $result["args"])
-        );
+
+        return [
+            'j' => $result['j'],
+            'value' => call_user_func_array($this->callback, $result['args'])
+        ];
     }
 
     /**
      * Parse: try to match this parser at the beginning of the string
      * Return the result only on success, or throw exception on failure
      * or if the match doesn't encompass the whole string
+     *
+     * @param mixed $string
      */
     public function parse($string)
     {
         $result = $this->getResult($string, 0);
-        if ($result["j"] != strlen($string)) {
-            throw new ParseFailureException("Parsing completed prematurely", $result["j"], $string);
+        if ($result['j'] !== strlen($string)) {
+            throw new ParseFailureException('Parsing completed prematurely', $result['j'], $string);
         }
 
         // notice how this isn't called until AFTER we've verified that
         // the whole thing has been parsed
-        return call_user_func_array($this->callback, $result["args"]);
+        return call_user_func_array($this->callback, $result['args']);
     }
 
     /**

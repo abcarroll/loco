@@ -14,13 +14,13 @@ class LookaheadParser extends StaticParser
     public function __construct($lookaheadStrings, $callback = null)
     {
         if (! is_array($lookaheadStrings)) {
-            throw new GrammarException("\$lookaheadStrings must be an array");
-        } else if (count($lookaheadStrings) == 0) {
-            throw new GrammarException("\$lookaheadStrings must not be empty");
+            throw new GrammarException('$lookaheadStrings must be an array');
+        } elseif (0 === count($lookaheadStrings)) {
+            throw new GrammarException('$lookaheadStrings must not be empty');
         }
         $this->lookaheadStrings = $lookaheadStrings;
 
-        $this->string = "new ".get_class()."(".$this->serializeArray($lookaheadStrings).")";
+        $this->string = 'new ' . __CLASS__ . '(' . $this->serializeArray($lookaheadStrings) . ')';
 
         parent::__construct($callback);
     }
@@ -38,23 +38,23 @@ class LookaheadParser extends StaticParser
         $lookaheadFirstStringPos = strlen($string);
         foreach ($this->lookaheadStrings as $lookahead) {
             $pos = strpos($string, $lookahead, $i);
-            if ($pos !== FALSE AND $pos < $lookaheadFirstStringPos) {
+            if (false !== $pos && $pos < $lookaheadFirstStringPos) {
                 $lookaheadFirstStringPos = $pos;
             }
         }
 
-        if ($lookaheadFirstStringPos == $i) {
-            throw new ParseFailureException($this." did not match anything ", $i, $string);
-        } else {
-            return array(
-                "j" => $lookaheadFirstStringPos,
-                "args" => array(substr($string, $i, $lookaheadFirstStringPos - $i)),
-            );
+        if ($lookaheadFirstStringPos === $i) {
+            throw new ParseFailureException($this . ' did not match anything ', $i, $string);
         }
+
+        return [
+            'j' => $lookaheadFirstStringPos,
+            'args' => [substr($string, $i, $lookaheadFirstStringPos - $i)],
+        ];
     }
 
     public function evaluateNullability()
     {
-        return FALSE;
+        return false;
     }
 }

@@ -15,7 +15,7 @@ class Pattern
     {
         foreach ($concs as $conc) {
             if (!($conc instanceof Conc)) {
-                throw new Exception("Not a Conc: " . var_export($conc, true));
+                throw new Exception('Not a Conc: ' . var_export($conc, true));
             }
         }
         $this->concs = $concs;
@@ -23,6 +23,6 @@ class Pattern
 
     public function __toString()
     {
-        return implode("|", $this->concs);
+        return implode('|', $this->concs);
     }
 }

@@ -13,13 +13,13 @@ class StringParser extends StaticParser
     public function __construct($needle, $callback = null)
     {
         if (! is_string($needle)) {
-            throw new GrammarException("Can't create a " . get_class() . " with 'string' " . var_export(
+            throw new GrammarException("Can't create a " . __CLASS__ . " with 'string' " . var_export(
                 $needle,
                 true
             ));
         }
         $this->needle = $needle;
-        $this->string = "new " . get_class() . "(" . var_export($needle, true) . ")";
+        $this->string = 'new ' . __CLASS__ . '(' . var_export($needle, true) . ')';
         parent::__construct($callback);
     }
 
@@ -34,12 +34,13 @@ class StringParser extends StaticParser
     public function getResult($string, $i = 0)
     {
         if (strpos($string, $this->needle, $i) === $i) {
-            return array(
-                "j"    => $i + strlen($this->needle),
-                "args" => array($this->needle)
-            );
+            return [
+                'j' => $i + strlen($this->needle),
+                'args' => [$this->needle]
+            ];
         }
-        throw new ParseFailureException($this . " could not find string " . var_export(
+
+        throw new ParseFailureException($this . ' could not find string ' . var_export(
             $this->needle,
             true
         ), $i, $string);
@@ -50,6 +51,6 @@ class StringParser extends StaticParser
      */
     public function evaluateNullability()
     {
-        return ($this->needle === "");
+        return '' === $this->needle;
     }
 }

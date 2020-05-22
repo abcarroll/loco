@@ -14,7 +14,7 @@ class Conc
     {
         foreach ($mults as $mult) {
             if (!($mult instanceof Mult)) {
-                throw new Exception("Not a Mult: " . var_export($mult, true));
+                throw new Exception('Not a Mult: ' . var_export($mult, true));
             }
         }
         $this->mults = $mults;
@@ -22,6 +22,6 @@ class Conc
 
     public function __toString()
     {
-        return implode("", $this->mults);
+        return implode('', $this->mults);
     }
-} 
+}

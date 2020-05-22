@@ -9,7 +9,7 @@ abstract class StaticParser extends MonoParser
 {
     public function __construct($callback)
     {
-        parent::__construct(array(), $callback);
+        parent::__construct([], $callback);
     }
 
     /**
@@ -17,7 +17,7 @@ abstract class StaticParser extends MonoParser
      */
     public function firstSet()
     {
-        return array();
+        return [];
     }
 
     // empty immediate first-set => empty extended first-set

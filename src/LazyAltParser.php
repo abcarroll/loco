@@ -14,12 +14,12 @@ class LazyAltParser extends MonoParser
 {
     public function __construct($internals, $callback = null)
     {
-        if (count($internals) === 0) {
-            throw new GrammarException("Can't make a " . get_class(
-            ) . " without at least one internal parser.\n");
+        if (0 === count($internals)) {
+            throw new GrammarException("Can't make a " . __CLASS__
+             . " without at least one internal parser.\n");
         }
         $this->internals = $internals;
-        $this->string = "new " . get_class() . "(" . $this->serializeArray($internals) . ")";
+        $this->string = 'new ' . __CLASS__ . '(' . $this->serializeArray($internals) . ')';
         parent::__construct($internals, $callback);
     }
 
@@ -39,12 +39,14 @@ class LazyAltParser extends MonoParser
             } catch (ParseFailureException $e) {
                 continue;
             }
-            return array(
-                "j"    => $match["j"],
-                "args" => array($match["value"])
-            );
+
+            return [
+                'j' => $match['j'],
+                'args' => [$match['value']]
+            ];
         }
-        throw new ParseFailureException($this . " could not match another token", $i, $string);
+
+        throw new ParseFailureException($this . ' could not match another token', $i, $string);
     }
 
     /**
@@ -57,6 +59,7 @@ class LazyAltParser extends MonoParser
                 return true;
             }
         }
+
         return false;
     }
 

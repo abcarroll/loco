@@ -10,7 +10,7 @@ class ConcParser extends MonoParser
 {
     public function __construct($internals, $callback = null)
     {
-        $this->string = "new " . get_class() . "(" . $this->serializeArray($internals) . ")";
+        $this->string = 'new ' . __CLASS__ . '(' . $this->serializeArray($internals) . ')';
         parent::__construct($internals, $callback);
     }
 
@@ -26,13 +26,14 @@ class ConcParser extends MonoParser
     public function getResult($string, $i = 0)
     {
         $j = $i;
-        $args = array();
+        $args = [];
         foreach ($this->internals as $parser) {
             $match = $parser->match($string, $j);
-            $j = $match["j"];
-            $args[] = $match["value"];
+            $j = $match['j'];
+            $args[] = $match['value'];
         }
-        return array("j" => $j, "args" => $args);
+
+        return ['j' => $j, 'args' => $args];
     }
 
     /**
@@ -40,18 +41,19 @@ class ConcParser extends MonoParser
      */
     public function firstSet()
     {
-        $firstSet = array();
+        $firstSet = [];
         foreach ($this->internals as $internal) {
-            # The first $internal is always in the first-set
+            // The first $internal is always in the first-set
             $firstSet[] = $internal;
 
-            # If $internal was nullable, then the next internal in the
-            # list is also in the first-set, so continue the loop.
-            # Otherwise we are done.
+            // If $internal was nullable, then the next internal in the
+            // list is also in the first-set, so continue the loop.
+            // Otherwise we are done.
             if (! $internal->nullable) {
                 break;
             }
         }
+
         return $firstSet;
     }
 
@@ -65,6 +67,7 @@ class ConcParser extends MonoParser
                 return false;
             }
         }
+
         return true;
     }
 }
