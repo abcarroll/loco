@@ -26,7 +26,7 @@ class JsonGrammar extends Grammar
 
                 '<object>' => new ConcParser(
                     ['LEFT_BRACE', 'WHITESPACE', '<objectcontent>', 'RIGHT_BRACE', 'WHITESPACE'],
-                    function ($left_brace, $whitespace, $objectcontent, $right_brace, $whitespace) { return $objectcontent; }
+                    function ($left_brace, $whitespace1, $objectcontent, $right_brace, $whitespace2) { return $objectcontent; }
                 ),
 
                 '<objectcontent>' => new LazyAltParser(
@@ -70,7 +70,7 @@ class JsonGrammar extends Grammar
 
                 '<array>' => new ConcParser(
                     ['LEFT_BRACKET', 'WHITESPACE', '<arraycontent>', 'RIGHT_BRACKET', 'WHITESPACE'],
-                    function ($left_bracket, $whitespace, $arraycontent, $right_bracket, $whitespace) { return $arraycontent; }
+                    function ($left_bracket, $whitespace1, $arraycontent, $right_bracket, $whitespace2) { return $arraycontent; }
                 ),
 
                 '<arraycontent>' => new LazyAltParser(
@@ -103,7 +103,7 @@ class JsonGrammar extends Grammar
 
                 '<string>' => new ConcParser(
                     ['DOUBLE_QUOTE', '<stringcontent>', 'DOUBLE_QUOTE', 'WHITESPACE'],
-                    function ($double_quote, $stringcontent, $double_quote, $whitespace) { return $stringcontent; }
+                    function ($double_quote1, $stringcontent, $double_quote2, $whitespace) { return $stringcontent; }
                 ),
 
                 '<stringcontent>' => new GreedyStarParser(

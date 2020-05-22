@@ -4,7 +4,7 @@ namespace Ferno\Tests\Loco\Grammar;
 
 use Ferno\Loco\Grammar\LocoGrammar;
 use Ferno\Loco\ParseFailureException;
-use PHPUnit\Framework\TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class LocoGrammarTest extends TestCase
 {
@@ -174,7 +174,7 @@ class LocoGrammarTest extends TestCase
         $grammar = $this->grammar->parse(" number ::= /a\\.b/ ");
         $this->assertEquals(array("a.b"), $grammar->parse("a.b"));
 
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $grammar1->parse("aXb");
     }
 
@@ -216,7 +216,7 @@ class LocoGrammarTest extends TestCase
     {
         $grammar = $this->grammar->parse(" S ::= . ");
 
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $grammar->parse($input);
     }
 
@@ -252,7 +252,7 @@ class LocoGrammarTest extends TestCase
     public function testFailingUtfCases($input)
     {
         $grammar = $this->grammar->parse(" S ::= [^& <>\\]] ");
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
 
         $grammar->parse($input);
     }
@@ -302,6 +302,7 @@ class LocoGrammarTest extends TestCase
 
     /**
      * @dataProvider balancedBrackets
+     * @coversNothing
      */
     public function testBracketMatching($input)
     {
@@ -324,7 +325,7 @@ class LocoGrammarTest extends TestCase
             expression ::= '<' S '>'"
         );
 
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $bracketMatchGrammar->parse($input);
     }
 
@@ -379,7 +380,7 @@ class LocoGrammarTest extends TestCase
     public function testBadJson($input)
     {
         $jsonGrammar = $this->grammar->parse($this->json_parser);
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $result = $jsonGrammar->parse($input);
     }
 
@@ -428,7 +429,7 @@ class LocoGrammarTest extends TestCase
     {
         $simpleCommentGrammar = $this->grammar->parse($this->simpleCommentSyntax);
 
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         $string = $simpleCommentGrammar->parse($input);
     }
 }

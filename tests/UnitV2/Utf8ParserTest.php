@@ -4,7 +4,7 @@ namespace Ferno\Tests\Loco;
 
 use Ferno\Loco\ParseFailureException;
 use Ferno\Loco\Utf8Parser;
-use PHPUnit\Framework\TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class Utf8ParserTest extends TestCase
 {
@@ -18,7 +18,7 @@ class Utf8ParserTest extends TestCase
 
     public function testEmptyStringFails()
     {
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $this->parser->match('');
     }
 
@@ -63,7 +63,7 @@ class Utf8ParserTest extends TestCase
      */
     public function testFailingConversions($string)
     {
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $this->parser->match($string);
     }
 

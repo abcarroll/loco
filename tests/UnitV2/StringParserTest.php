@@ -17,7 +17,7 @@ class StringParserTest extends TestCase
     public function testMatchFailure()
     {
         $parser = new StringParser("needle");
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $this->assertEquals(0, $parser->match("asdfneedle"));
     }
 }

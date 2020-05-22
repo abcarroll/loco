@@ -1,6 +1,6 @@
 <?php
 
-namespace ferno\loco;
+namespace Ferno\Loco;
 
 /**
  * Tiny subclass is ironically much more useful than GreedyMultiParser

@@ -11,14 +11,14 @@ class RegexParserTest extends TestCase
 {
     public function testImproperAnchoring()
     {
-        $this->setExpectedException(GrammarException::_CLASS);
+        $this->expectException(GrammarException::_CLASS);
         new RegexParser("#boo#");
     }
 
     public function testNonMatching()
     {
         $parser = new RegexParser("#^boo#");
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $parser->match("aboo", 0);
     }
 

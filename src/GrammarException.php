@@ -1,6 +1,6 @@
 <?php
 
-namespace ferno\loco;
+namespace Ferno\Loco;
 
 use RuntimeException;
 

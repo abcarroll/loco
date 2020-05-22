@@ -39,7 +39,7 @@ class SimpleCommentGrammarTest extends TestCase
      */
     public function testFailures($input)
     {
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         $this->grammar->parse($input);
     }
 }

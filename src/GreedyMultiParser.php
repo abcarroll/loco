@@ -1,6 +1,6 @@
 <?php
 
-namespace ferno\loco;
+namespace Ferno\Loco;
 
 /**
  * Callback accepts a single argument containing all submatches, however many

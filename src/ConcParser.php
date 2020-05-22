@@ -1,6 +1,6 @@
 <?php
 
-namespace ferno\loco;
+namespace Ferno\Loco;
 
 /**
  * Match several things in a row. Callback should accept one argument

@@ -80,7 +80,7 @@ class GreedyMultiParserTest extends TestCase
     public function testOutOfBounds()
     {
         $parser = new GreedyMultiParser(new StringParser("f"), 1, 2);
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $parser->match("", 0);
 
     }
@@ -97,7 +97,7 @@ class GreedyMultiParserTest extends TestCase
     public function testOptionalEmptyMatch()
     {
         $parser = new GreedyMultiParser(new StringParser("f"), 1, null);
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
 
         $parser->match("", 0);
     }

@@ -6,7 +6,7 @@ use Ferno\Loco\GrammarException;
 use Ferno\Loco\ParseFailureException;
 use Ferno\Loco\LazyAltParser;
 use Ferno\Loco\StringParser;
-use PHPUnit\Framework\TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class LazyAltParserTest extends TestCase
 {
@@ -26,7 +26,7 @@ class LazyAltParserTest extends TestCase
 
     public function testNonMatchingString()
     {
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $this->parser->match('0', 1);
     }
 
@@ -40,7 +40,7 @@ class LazyAltParserTest extends TestCase
 
     public function testEmptyParser()
     {
-        $this->setExpectedException(GrammarException::_CLASS);
+        $this->expectException(GrammarException::_CLASS);
         new LazyAltParser(array());
     }
 }

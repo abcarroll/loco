@@ -57,7 +57,7 @@ class JsonGrammarTest extends TestCase
      */
     public function testFailureModes($input)
     {
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         $this->grammar->parse($input);
     }
 }

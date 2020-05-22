@@ -20,7 +20,7 @@ class EbnfGrammarTest extends TestCase
         $string = "a = 'PROGRAM ;";
         $grammar = new EbnfGrammar();
 
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $grammar->parse($string);
     }
 

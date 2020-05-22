@@ -1,6 +1,6 @@
 <?php
 
-namespace ferno\loco;
+namespace Ferno\Loco;
 
 /**
  * UTF-8 parser parses one valid UTF-8 character and returns the

@@ -24,7 +24,7 @@ class GrammarTest extends TestCase
             )
         );
 
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $grammar->parse("a");
     }
 
@@ -42,7 +42,7 @@ class GrammarTest extends TestCase
 
     public function testGreedyMultiParsersWIthUnboundedLimits()
     {
-        $this->setExpectedException(GrammarException::_CLASS);
+        $this->expectException(GrammarException::_CLASS);
         new Grammar(
             "<S>",
             array(
@@ -54,7 +54,7 @@ class GrammarTest extends TestCase
 
     public function testGreedyStarParsersWIthUnboundedLimits()
     {
-        $this->setExpectedException(GrammarException::_CLASS);
+        $this->expectException(GrammarException::_CLASS);
         new Grammar(
             "<S>",
             array(
@@ -67,13 +67,13 @@ class GrammarTest extends TestCase
 
     public function testNoRootParser()
     {
-        $this->setExpectedException(GrammarException::_CLASS);
+        $this->expectException(GrammarException::_CLASS);
         new Grammar("<A>", array());
     }
 
     public function testSimpleLeftRecursion()
     {
-        $this->setExpectedException(GrammarException::_CLASS);
+        $this->expectException(GrammarException::_CLASS);
         new Grammar(
             "<S>",
             array(
@@ -86,7 +86,7 @@ class GrammarTest extends TestCase
     {
         // more advanced (only left-recursive because <B> is nullable)
 
-        $this->setExpectedException(GrammarException::_CLASS);
+        $this->expectException(GrammarException::_CLASS);
         new Grammar(
             "<A>",
             array(
@@ -109,7 +109,7 @@ class GrammarTest extends TestCase
         // original Loco left-recursion check).
         // This grammar is left-recursive in A -> B -> D -> A
 
-        $this->setExpectedException(GrammarException::_CLASS);
+        $this->expectException(GrammarException::_CLASS);
         new Grammar(
             "<A>",
             array(

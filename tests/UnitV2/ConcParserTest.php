@@ -5,7 +5,7 @@ namespace Ferno\Tests\Loco;
 use Ferno\Loco\ConcParser;
 use Ferno\Loco\ParseFailureException;
 use Ferno\Loco\RegexParser;
-use PHPUnit\Framework\TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class ConcParserTest extends TestCase
 {
@@ -25,13 +25,13 @@ class ConcParserTest extends TestCase
 
     public function testEmptyFails()
     {
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $this->parser->match("", 0);
     }
 
     public function testNonConsecutiveFails()
     {
-        $this->setExpectedException(ParseFailureException::_CLASS);
+        $this->expectException(ParseFailureException::_CLASS);
         $this->parser->match("aaa", 0);
     }
 

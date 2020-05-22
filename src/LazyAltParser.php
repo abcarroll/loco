@@ -1,6 +1,6 @@
 <?php
 
-namespace ferno\loco;
+namespace Ferno\Loco;
 
 /**
  * Takes the input parsers and applies them all in turn. "Lazy" indicates
