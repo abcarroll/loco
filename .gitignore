@@ -1,5 +1,49 @@
+# Code Lint, Code Styles
+/.phpcs.xml
+/.phpunit.xml
+/.php_cs.php
+/.psalm.xml
+/.psalm.baseline.xml
+/.phpstan.neon
+
+# Package Managers
+vendor/
+composer.lock
+node_modules/
+package-lock.json
+yarn.lock
+
+# Metrics from phploc, pdepends
+.metrics/
+
+# Generic Build, Dist
+build/
+dist/
+
+# Logs, Temporary Files, Cache Files
+tmp/
+*.tmp
+logs/
+*.log
+cache/
+*.cache
+
+
+# Jetbrains IDE
 .idea/
 *.iml
+*.iws
+# VSCode
+.vscode/
+.project/
+# Netbeans
+nbproject/
+# Vim
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+# Windows & Mac Artifacts
+Thumbs.db
+Desktop.ini
 
 #################
 ## Eclipse
