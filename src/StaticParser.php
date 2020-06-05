@@ -15,7 +15,6 @@ abstract class StaticParser extends MonoParser
     /**
      * no internals => empty immediate first-set
      *
-     * @return array
      *
      * @psalm-return array<empty, empty>
      */

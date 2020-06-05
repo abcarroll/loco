@@ -48,9 +48,9 @@ class ConcParser extends MonoParser
     /**
      * First-set is built up as follows...
      *
-     * @return Parser[]
+     * @return MonoParser[]
      *
-     * @psalm-return list<Parser>
+     * @psalm-return list<MonoParser>
      */
     public function firstSet()
     {

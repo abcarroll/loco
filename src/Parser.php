@@ -7,7 +7,5 @@ namespace Ferno\Loco;
  */
 abstract class Parser
 {
-    /*
-     * Nothing, yet.
-     */
+    abstract public function match(string $input, int $pos);
 }

@@ -64,6 +64,9 @@ class ByteParser extends MonoParser
         return false;
     }
 
+    /**
+     * @return null
+     */
     public function firstSet()
     {
         return null;

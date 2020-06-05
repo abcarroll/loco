@@ -86,9 +86,9 @@ class GreedyMultiParser extends MonoParser
     /**
      * This parser contains only one internal
      *
-     * @return Parser[]
+     * @return MonoParser[]
      *
-     * @psalm-return array{0: Parser}
+     * @psalm-return array{0: MonoParser}
      */
     public function firstSet()
     {

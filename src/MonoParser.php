@@ -37,7 +37,7 @@ abstract class MonoParser extends Parser
      * to the real parsers at Grammar instantiation time.
      * This list is empty for "static" parsers
      *
-     * @var Parser[]
+     * @var MonoParser[]
      */
     public $internals;
 
@@ -92,14 +92,14 @@ abstract class MonoParser extends Parser
     /**
      * apply callback to returned value before returning it
      *
-     * @param mixed $string
-     * @param mixed $i
+     * @param string $string
+     * @param int $i
      *
      * @return array
      *
      * @psalm-return array{j: mixed, value: mixed}
      */
-    public function match($string, $i = 0): array
+    public function match(string $string, int $i = 0): array
     {
         $result = $this->getResult($string, $i);
 
@@ -114,9 +114,9 @@ abstract class MonoParser extends Parser
      * Return the result only on success, or throw exception on failure
      * or if the match doesn't encompass the whole string
      *
-     * @param mixed $string
+     * @param string $string
      */
-    public function parse($string)
+    public function parse(string $string)
     {
         $result = $this->getResult($string, 0);
         if ($result['j'] !== strlen($string)) {
@@ -130,6 +130,8 @@ abstract class MonoParser extends Parser
 
     /**
      * Every parser assumes that it is non-nullable from the outset
+     *
+     * @var bool
      */
     public $nullable = false;
 
@@ -142,6 +144,8 @@ abstract class MonoParser extends Parser
      * result in a stack overflow.
      * Just gets $nullable for each internal, if any.
      * This has to be called after all strings have been resolved to parser references.
+     *
+     * @return bool
      */
     abstract public function evaluateNullability();
 
@@ -152,6 +156,8 @@ abstract class MonoParser extends Parser
      * first-set is {B, C}.
      * This has to be called after the "nullability flood fill" is complete,
      * or "Called method of non-object" exceptions will arise
+     *
+     * @return null|Parser[]
      */
     abstract public function firstSet();
 }

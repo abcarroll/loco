@@ -73,9 +73,9 @@ class LazyAltParser extends MonoParser
     /**
      * every internal is potentially a first.
      *
-     * @return Parser[]
+     * @return MonoParser[]
      *
-     * @psalm-return array<array-key, Parser>
+     * @psalm-return array<array-key, MonoParser>
      */
     public function firstSet()
     {

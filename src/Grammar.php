@@ -53,7 +53,7 @@ class Grammar extends MonoParser
                     continue;
                 }
 
-                if (! $internal->evaluateNullability()) {
+                if (!$internal->evaluateNullability()) {
                     continue;
                 }
 
@@ -207,9 +207,9 @@ class Grammar extends MonoParser
     /**
      * S is the first
      *
-     * @return Parser[]
+     * @return MonoParser[]
      *
-     * @psalm-return array{0: Parser}
+     * @psalm-return array{0: MonoParser}
      */
     public function firstSet()
     {
