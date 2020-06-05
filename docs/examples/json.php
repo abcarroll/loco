@@ -3,7 +3,7 @@ namespace Ferno\Loco;
 
 use Exception;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 # This code is in the public domain.
 # http://qntm.org/loco

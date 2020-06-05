@@ -3,7 +3,7 @@ namespace Ferno\Loco;
 
 use Exception;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 # This code is in the public domain.
 # http://qntm.org/loco
@@ -64,11 +64,6 @@ $simpleCommentGrammar = new Grammar(
 		"AMPERSAND"    => new StringParser("&amp;"),              // ... or an escaped &
 	)
 );
-
-// if executing this file directly, run unit tests
-if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
-	return;
-}
 
 $start = microtime(true);
 $string = $simpleCommentGrammar->parse("<h5>  Title<br /><em\n><strong\n></strong>&amp;</em></h5>   \r\n\t <p  >&lt;</p  >");

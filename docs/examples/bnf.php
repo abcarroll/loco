@@ -3,7 +3,7 @@ namespace Ferno\Loco;
 
 use Exception;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 // Takes a string presented in Backus-Naur Form and turns it into a new Grammar
 // object capable of recognising the language described by that string.
@@ -210,7 +210,7 @@ $string = "
 	<list>           ::= <term> | <term> <opt-whitespace> <list>
 	<term>           ::= <literal> | \"<\" <rule-name> \">\"
 	<literal>        ::= '\"' <text> '\"' | \"'\" <text> \"'\"
-	
+
 	<rule-name>      ::= 'a'
 	<EOL>            ::= '\n'
 	<text>           ::= 'b'

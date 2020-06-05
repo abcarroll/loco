@@ -3,7 +3,7 @@ namespace Ferno\Loco;
 
 use Exception;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 // Takes a string presented in Wirth syntax notation and turn it into a new
 // Grammar object capable of recognising the language described by that string.
@@ -163,10 +163,6 @@ $wirthGrammar = new Grammar(
 	}
 );
 
-// if executing this file directly, run unit tests
-if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
-	return;
-}
 
 // This is the syntax for Wirth syntax notation except it lacks whitespace
 $string = "
@@ -182,11 +178,11 @@ $string = "
 	IDENTIFIER = letter { letter } .
 	LITERAL    = \"\"\"\" character { character } \"\"\"\" .
 	digit      = \"0\" | \"1\" | \"2\" | \"3\" | \"4\" | \"5\" | \"6\" | \"7\" | \"8\" | \"9\" .
-	upper      = \"A\" | \"B\" | \"C\" | \"D\" | \"E\" | \"F\" | \"G\" | \"H\" | \"I\" | \"J\" 
-			   | \"K\" | \"L\" | \"M\" | \"N\" | \"O\" | \"P\" | \"Q\" | \"R\" | \"S\" | \"T\" 
+	upper      = \"A\" | \"B\" | \"C\" | \"D\" | \"E\" | \"F\" | \"G\" | \"H\" | \"I\" | \"J\"
+			   | \"K\" | \"L\" | \"M\" | \"N\" | \"O\" | \"P\" | \"Q\" | \"R\" | \"S\" | \"T\"
 			   | \"U\" | \"V\" | \"W\" | \"X\" | \"Y\" | \"Z\" .
-	lower      = \"a\" | \"b\" | \"c\" | \"d\" | \"e\" | \"f\" | \"g\" | \"h\" | \"i\" | \"j\" 
-			   | \"k\" | \"l\" | \"m\" | \"n\" | \"o\" | \"p\" | \"q\" | \"r\" | \"s\" | \"t\" 
+	lower      = \"a\" | \"b\" | \"c\" | \"d\" | \"e\" | \"f\" | \"g\" | \"h\" | \"i\" | \"j\"
+			   | \"k\" | \"l\" | \"m\" | \"n\" | \"o\" | \"p\" | \"q\" | \"r\" | \"s\" | \"t\"
 			   | \"u\" | \"v\" | \"w\" | \"x\" | \"y\" | \"z\" .
 	letter     = upper | lower .
 	character  = letter | digit | \"=\" | \".\" | \"\"\"\"\"\" .

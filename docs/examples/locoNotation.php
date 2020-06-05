@@ -3,7 +3,7 @@ namespace Ferno\Loco;
 
 use Exception;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 // Takes a string presented in Loco Backus-Naur Form and turns it into a
 // new Grammar object capable of recognising the language described by that string.
@@ -64,7 +64,7 @@ $locoGrammar = new Grammar(
 				);
 			}
 		),
-		
+
 		"<lazyaltparser>" => new ConcParser(
 			array("<concparser>", "<pipeconcparserlist>"),
 			function($concparser, $pipeconcparserlist) {
@@ -117,7 +117,7 @@ $locoGrammar = new Grammar(
 				);
 			}
 		),
-	
+
 		"<bnfmultiplication>" => new ConcParser(
 			array("<bnfmultiplicand>", "<whitespace>", "<bnfmultiplier>", "<whitespace>"),
 			function($bnfmultiplicand, $whitespace1, $bnfmultiplier, $whitespace2) {
@@ -129,7 +129,7 @@ $locoGrammar = new Grammar(
 						$bnfmultiplier["upper"]
 					);
 				}
-				
+
 				// otherwise assume multiplier = 1
 				return $bnfmultiplicand;
 			}
@@ -155,17 +155,17 @@ $locoGrammar = new Grammar(
 			"*",
 			function() { return array("lower" => 0, "upper" => null); }
 		),
-		
+
 		"<plus>" => new StringParser(
 			"+",
 			function() { return array("lower" => 1, "upper" => null); }
 		),
-		
+
 		"<questionmark>" => new StringParser(
 			"?",
 			function() { return array("lower" => 0, "upper" => 1); }
 		),
-		
+
 		"<emptymultiplier>" => new EmptyParser(),
 
 		// return a basic parser which recognises this string
@@ -201,7 +201,7 @@ $locoGrammar = new Grammar(
 			"<dqstrchar>",
 			function() { return implode("", func_get_args()); }
 		),
-		
+
 		"<sqstring>" => new GreedyStarParser(
 			"<sqstrchar>",
 			function() { return implode("", func_get_args()); }
@@ -214,7 +214,7 @@ $locoGrammar = new Grammar(
 				new StringParser('\\"', function($string) { return '"'; })
 			)
 		),
-		
+
 		"<sqstrchar>" => new LazyAltParser(
 			array(
 				new Utf8Parser(array("\\", "'")),
@@ -242,12 +242,12 @@ $locoGrammar = new Grammar(
 				return new RegexParser($regex);
 			}
 		),
-		
+
 		"<regex>" => new GreedyStarParser(
 			"<rechar>",
 			function() { return implode("", func_get_args()); }
 		),
-		
+
 		// Regular expression contains: Any single character that is not a slash or backslash...
 		// OR any single character escaped by a backslash. Return as literal.
 		"<rechar>" => new LazyAltParser(
@@ -275,9 +275,9 @@ $locoGrammar = new Grammar(
 				return new Utf8Parser($exceptions);
 			}
 		),
-		
+
 		"<exceptions>" => new GreedyStarParser("<exceptionchar>"),
-		
+
 		"<exceptionchar>" => new LazyAltParser(
 			array(
 				new Utf8Parser(array("\\", "]")),
@@ -292,7 +292,7 @@ $locoGrammar = new Grammar(
 				return new Utf8Parser(array());
 			}
 		),
-		
+
 		"<subparser>" => new ConcParser(
 			array(
 				new StringParser("("),
@@ -304,7 +304,7 @@ $locoGrammar = new Grammar(
 				return $lazyaltparser;
 			}
 		),
-		
+
 		"<whitespace>"         => new  RegexParser("#^[ \t]*#"),
 		"<bareword>"           => new  RegexParser("#^[a-zA-Z_][a-zA-Z0-9_]*#")
 	),
@@ -320,10 +320,6 @@ $locoGrammar = new Grammar(
 	}
 );
 
-// if executing this file directly, run unit tests
-if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
-	return;
-}
 
 // parentheses inside your BNF *always* force an array to exist in the output
 // *, +, ? and {m,n} are not disguised parentheses; they expand into the main expression
@@ -482,16 +478,16 @@ $grammar1 = $locoGrammar->parse(" S ::= [^& <>\\]] ");
 var_dump($grammar1->parse("A") === array("A"));
 var_dump($grammar1->parse("^") === array("^"));
 var_dump($grammar1->parse("\\") === array("\\"));
-try { $grammar1->parse("&"); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); } 
-try { $grammar1->parse(" "); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); } 
-try { $grammar1->parse("<"); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); } 
-try { $grammar1->parse(">"); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); } 
-try { $grammar1->parse("]"); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); } 
+try { $grammar1->parse("&"); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); }
+try { $grammar1->parse(" "); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); }
+try { $grammar1->parse("<"); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); }
+try { $grammar1->parse(">"); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); }
+try { $grammar1->parse("]"); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); }
 
 // two rules
 print("3A\n");
 $start = microtime(true);
-$grammar2 = $locoGrammar->parse(" 
+$grammar2 = $locoGrammar->parse("
 	unicode ::= 'a' '' b | 'grammar' '\\'' '\\\\' \"\\\"\"
 	b::=
 ");
