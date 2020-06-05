@@ -26,6 +26,10 @@ class EmptyParser extends StaticParser
      *
      * @param mixed $string
      * @param mixed $i
+     *
+     * @return (array|mixed)[]
+     *
+     * @psalm-return array{j: mixed, args: array<empty, empty>}
      */
     public function getResult($string, $i = 0)
     {
@@ -37,6 +41,8 @@ class EmptyParser extends StaticParser
 
     /**
      * emptyparser is nullable.
+     *
+     * @return true
      */
     public function evaluateNullability()
     {

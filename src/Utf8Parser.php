@@ -181,6 +181,11 @@ class Utf8Parser extends StaticParser
         return func_get_arg(0);
     }
 
+    /**
+     * @return ((false|string)[]|mixed)[]
+     *
+     * @psalm-return array{j: mixed, args: array{0: false|string}}
+     */
     public function getResult($string, $i = 0)
     {
         foreach (self::$expressions as $expression) {
@@ -242,6 +247,8 @@ class Utf8Parser extends StaticParser
 
     /**
      * UTF-8 parser is not nullable.
+     *
+     * @return false
      */
     public function evaluateNullability()
     {
@@ -252,6 +259,8 @@ class Utf8Parser extends StaticParser
      * convert a Unicode code point into UTF-8 bytes
      *
      * @param mixed $codepoint
+     *
+     * @return null|string
      */
     public static function getBytes($codepoint)
     {

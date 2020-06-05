@@ -31,6 +31,11 @@ class LazyAltParser extends MonoParser
         return func_get_arg(0);
     }
 
+    /**
+     * @return (array|mixed)[]
+     *
+     * @psalm-return array{j: mixed, args: array{0: mixed}}
+     */
     public function getResult($string, $i = 0)
     {
         foreach ($this->internals as $internal) {
@@ -51,6 +56,8 @@ class LazyAltParser extends MonoParser
 
     /**
      * Nullable if any internal is nullable.
+     *
+     * @return bool
      */
     public function evaluateNullability()
     {
@@ -65,6 +72,10 @@ class LazyAltParser extends MonoParser
 
     /**
      * every internal is potentially a first.
+     *
+     * @return Parser[]
+     *
+     * @psalm-return array<array-key, Parser>
      */
     public function firstSet()
     {

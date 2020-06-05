@@ -17,12 +17,21 @@ class ConcParser extends MonoParser
     /**
      * Default callback (this should be used rarely) returns all arguments as
      * an array. In the majority of cases the user should specify a callback.
+     *
+     * @return array
+     *
+     * @psalm-return list<mixed>
      */
     public function defaultCallback()
     {
         return func_get_args();
     }
 
+    /**
+     * @return (array|mixed)[]
+     *
+     * @psalm-return array{j: mixed, args: list<mixed>}
+     */
     public function getResult($string, $i = 0)
     {
         $j = $i;
@@ -38,6 +47,10 @@ class ConcParser extends MonoParser
 
     /**
      * First-set is built up as follows...
+     *
+     * @return Parser[]
+     *
+     * @psalm-return list<Parser>
      */
     public function firstSet()
     {
@@ -57,6 +70,8 @@ class ConcParser extends MonoParser
     }
     /**
      * only nullable if everything in the list is nullable
+     *
+     * @return bool
      */
     public function evaluateNullability()
     {

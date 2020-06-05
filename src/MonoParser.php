@@ -94,8 +94,12 @@ abstract class MonoParser extends Parser
      *
      * @param mixed $string
      * @param mixed $i
+     *
+     * @return array
+     *
+     * @psalm-return array{j: mixed, value: mixed}
      */
-    public function match($string, $i = 0)
+    public function match($string, $i = 0): array
     {
         $result = $this->getResult($string, $i);
 

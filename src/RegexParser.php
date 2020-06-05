@@ -30,6 +30,11 @@ class RegexParser extends StaticParser
         return func_get_arg(0);
     }
 
+    /**
+     * @return (mixed|string[])[]
+     *
+     * @psalm-return array{j: mixed, args: array<array-key, string>}
+     */
     public function getResult($string, $i = 0)
     {
         if (1 === preg_match($this->pattern, substr($string, $i), $matches)) {
@@ -47,6 +52,8 @@ class RegexParser extends StaticParser
 
     /**
      * nullable only if regex matches ""
+     *
+     * @return bool
      */
     public function evaluateNullability()
     {

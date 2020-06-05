@@ -162,6 +162,7 @@ class WirthGrammar extends Grammar
             ],
             function ($syntax) {
                 $parsers = [];
+                $top = null;
                 foreach ($syntax as $production) {
                     if (0 === count($parsers)) {
                         $top = $production['identifier'];

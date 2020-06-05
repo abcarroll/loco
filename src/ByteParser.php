@@ -24,6 +24,11 @@ class ByteParser extends MonoParser
         parent::__construct([] ,$callback);
     }
 
+    /**
+     * @return array
+     *
+     * @psalm-return array{pos: mixed, args: mixed}
+     */
     public function getResult($string, $offset = 0): array
     {
         $inputMaxLen = strlen($string);
@@ -51,6 +56,9 @@ class ByteParser extends MonoParser
         return func_get_arg(0);
     }
 
+    /**
+     * @return false
+     */
     public function evaluateNullability(): bool
     {
         return false;

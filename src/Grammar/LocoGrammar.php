@@ -323,6 +323,7 @@ class LocoGrammar extends Grammar
             ],
             function ($rules) {
                 $parsers = [];
+                $top = null;
                 foreach ($rules as $rule) {
                     if (0 === count($parsers)) {
                         $top = $rule['name'];

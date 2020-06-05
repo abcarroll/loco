@@ -31,12 +31,21 @@ class GreedyMultiParser extends MonoParser
 
     /**
      * default callback: just return the list
+     *
+     * @return array
+     *
+     * @psalm-return list<mixed>
      */
     public function defaultCallback()
     {
         return func_get_args();
     }
 
+    /**
+     * @return (array|mixed)[]
+     *
+     * @psalm-return array{j: mixed, args: list<mixed>}
+     */
     public function getResult($string, $i = 0)
     {
         $result = ['j' => $i, 'args' => []];
@@ -66,6 +75,8 @@ class GreedyMultiParser extends MonoParser
 
     /**
      * nullable if lower limit is zero OR internal is nullable.
+     *
+     * @return bool
      */
     public function evaluateNullability()
     {
@@ -74,6 +85,10 @@ class GreedyMultiParser extends MonoParser
 
     /**
      * This parser contains only one internal
+     *
+     * @return Parser[]
+     *
+     * @psalm-return array{0: Parser}
      */
     public function firstSet()
     {

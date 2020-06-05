@@ -33,6 +33,11 @@ class LookaheadParser extends StaticParser
         return func_get_arg(0);
     }
 
+    /**
+     * @return ((false|string)[]|int)[]
+     *
+     * @psalm-return array{j: int, args: array{0: false|string}}
+     */
     public function getResult($string, $i = 0)
     {
         $lookaheadFirstStringPos = strlen($string);
@@ -53,6 +58,9 @@ class LookaheadParser extends StaticParser
         ];
     }
 
+    /**
+     * @return false
+     */
     public function evaluateNullability()
     {
         return false;

@@ -31,6 +31,11 @@ class StringParser extends StaticParser
         return func_get_arg(0);
     }
 
+    /**
+     * @return (array|mixed)[]
+     *
+     * @psalm-return array{j: mixed, args: array{0: mixed}}
+     */
     public function getResult($string, $i = 0)
     {
         if (strpos($string, $this->needle, $i) === $i) {
@@ -48,6 +53,8 @@ class StringParser extends StaticParser
 
     /**
      * nullable only if string is ""
+     *
+     * @return bool
      */
     public function evaluateNullability()
     {

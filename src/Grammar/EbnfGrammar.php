@@ -217,6 +217,7 @@ class EbnfGrammar extends Grammar
             ],
             function ($syntax) {
                 $parsers = [];
+                $top = null;
                 foreach ($syntax as $rule) {
                     if (0 === count($parsers)) {
                         $top = $rule['rule-name'];

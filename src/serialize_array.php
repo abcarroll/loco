@@ -4,8 +4,10 @@ namespace Ferno\Loco;
 
 /**
  * a helpful internal function
+ *
+ * @return string
  */
-function serialiseArray($array)
+function serialiseArray($array): string
 {
     $string = "array(";
     foreach (array_keys($array) as $keyId => $key) {

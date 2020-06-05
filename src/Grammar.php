@@ -179,6 +179,10 @@ class Grammar extends MonoParser
      *
      * @param mixed $string
      * @param mixed $i
+     *
+     * @return (array|mixed)[]
+     *
+     * @psalm-return array{j: mixed, args: array{0: mixed}}
      */
     public function getResult($string, $i = 0)
     {
@@ -192,6 +196,8 @@ class Grammar extends MonoParser
 
     /**
      * nullable iff <S> is nullable
+     *
+     * @return bool
      */
     public function evaluateNullability()
     {
@@ -200,6 +206,10 @@ class Grammar extends MonoParser
 
     /**
      * S is the first
+     *
+     * @return Parser[]
+     *
+     * @psalm-return array{0: Parser}
      */
     public function firstSet()
     {
