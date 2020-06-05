@@ -7,7 +7,7 @@ namespace Ferno\Loco;
  * $lookaheadStrings is encountered. So this works like a negative
  * lookahead regular expression, but is less flexible.
  */
-class LookaheadParser extends StaticParser
+class ByteParserAlt extends StaticParser
 {
     private $lookaheadStrings;
 
