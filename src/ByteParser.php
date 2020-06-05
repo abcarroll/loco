@@ -14,14 +14,14 @@ namespace Ferno\Loco;
  *
  * @author A.B. Carroll <ben@hl9.net>
  */
-class ByteParser
+class ByteParser extends MonoParser
 {
     private $matchExceptList = [];
 
     public function __construct($stopOnCharactersBytes, $callback = null)
     {
         $this->matchExceptList = array_combine($stopOnCharactersBytes, $stopOnCharactersBytes);
-        parent::__construct($callback);
+        parent::__construct([] ,$callback);
     }
 
     public function getResult($string, $offset = 0): array
@@ -56,4 +56,8 @@ class ByteParser
         return false;
     }
 
+    public function firstSet()
+    {
+        return null;
+    }
 }
