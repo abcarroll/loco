@@ -1,23 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.5/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
+         bootstrap="../vendor/autoload.php"
          executionOrder="depends,defects"
          forceCoversAnnotation="true"
-         beStrictAboutCoversAnnotation="true"
+         beStrictAboutCoversAnnotation="false"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
+         beStrictAboutTestsThatDoNotTestAnything="false"
          verbose="true"
-        >
+         processIsolation="true"
+         cacheResultFile="./output/tmp/phpunit.cache"
+         colors="true"
+         defaultTimeLimit="30"
+         enforceTimeLimit="true"
+         testdox="true"
+>
+    <logging>
+        <!-- This one is a directory -->
+        <log type="coverage-html" target="output/phpunit-coverage" />
+        <!-- Rest are files -->
+        <log type="plain" target="output/phpunit-log.txt" />
+        <log type="coverage-php" target="output/phpunit-coverage.php" />
+        <log type="testdox-html" target="output/testdox" />
+
+        <log type="coverage-xml" target="output/coverage-xml" />
+        <log type="coverage-clover" target="output/coverage-clover" />
+        <log type="coverage-crap4j" target="output/coverage-c4j" />
+    </logging>
+
     <testsuites>
         <testsuite name="v2 Tests">
-            <directory>tests/UnitV2/</directory>
+            <directory>../tests/</directory>
+
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src/</directory>
+            <directory suffix=".php">../src/</directory>
         </whitelist>
     </filter>
 </phpunit>

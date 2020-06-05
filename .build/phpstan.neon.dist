@@ -1,8 +1,8 @@
 parameters:
     level: 7
     paths:
-        - src
-        - tests
-    tmpDir: ./var/tmp/
+        - ../src
+        - ../tests
+    tmpDir: ./output/tmp
     autoload_files:
-        - vendor/autoload.php
+        - ../vendor/autoload.php

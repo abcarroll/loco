@@ -20,6 +20,8 @@ yarn.lock
 build/
 dist/
 
+.build/output/
+
 # Logs, Temporary Files, Cache Files
 tmp/
 *.tmp
