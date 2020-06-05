@@ -1,6 +1,6 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 /**
  * ByteParser consumes all bytes until a particular byte sequence is reached, or fail if that sequence never occurs.

@@ -2,15 +2,15 @@
 
 namespace Ferno\Tests\Loco;
 
-use Ferno\Loco\ConcParser;
-use Ferno\Loco\EmptyParser;
-use Ferno\Loco\Grammar;
-use Ferno\Loco\GrammarException;
-use Ferno\Loco\GreedyMultiParser;
-use Ferno\Loco\GreedyStarParser;
-use Ferno\Loco\LazyAltParser;
-use Ferno\Loco\ParseFailureException;
-use Ferno\Loco\StringParser;
+use Ab\LocoX\ConcParser;
+use Ab\LocoX\EmptyParser;
+use Ab\LocoX\Grammar;
+use Ab\LocoX\GrammarException;
+use Ab\LocoX\GreedyMultiParser;
+use Ab\LocoX\GreedyStarParser;
+use Ab\LocoX\LazyAltParser;
+use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\StringParser;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class GrammarTest extends TestCase

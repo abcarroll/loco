@@ -7,10 +7,10 @@ NOTE: This is documentation from the original Loco project, and may be slightly 
 Finds a static string. Callback is passed one argument, the string that was matched. Yes, that's effectively the same function 
 call each time. Default callback returns the first argument i.e. the string.
 
-    new Ferno\Loco\StringParser("name");
+    new Ab\LocoX\StringParser("name");
     // returns "name"
 
-    new Ferno\Loco\StringParser(
+    new Ab\LocoX\StringParser(
       "name",
       function($string) { return strrev($string); }
     );

@@ -7,10 +7,10 @@ NOTE: This is documentation from the original Loco project, and may be slightly 
 
 Finds the empty string (and always succeeds). Callback is passed no arguments. Default callback returns `null`.
 
-    new Ferno\Loco\EmptyParser();
+    new Ab\LocoX\EmptyParser();
     // returns null
 
-    new Ferno\Loco\EmptyParser(
+    new Ab\LocoX\EmptyParser(
       function() { return array(); }
     );
     // return an empty array instead

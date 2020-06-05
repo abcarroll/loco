@@ -6,20 +6,20 @@ In this version of the code, LocoNotation is available as both a Grammar Factory
 -----
 ### [examples/locoNotation.php](https://github.com/ferno/loco/blob/master/examples/locoNotation.php)
 
-Defines `$locoGrammar`, which parses a grammar presented in "Loco notation" and returns a `Ferno\Loco\Grammar` object capable of parsing that grammar.
+Defines `$locoGrammar`, which parses a grammar presented in "Loco notation" and returns a `Ab\LocoX\Grammar` object capable of parsing that grammar.
 
-"Loco notation" (for lack of a better name) is an extension of Backus-Naur Form which gives access to all the `Ferno\Loco\MonoParser`s that Loco makes available. The following parsers are already effectively available in most grammar notations:
+"Loco notation" (for lack of a better name) is an extension of Backus-Naur Form which gives access to all the `Ab\LocoX\MonoParser`s that Loco makes available. The following parsers are already effectively available in most grammar notations:
 
-* `Ferno\Loco\EmptyParser` - Just have an empty string or an empty right-hand side to a rule. Some notations also permit an explicit "epsilon" symbol.
-* `Ferno\Loco\StringParser` - Invariably requires a simple string literal in single or double quotes.
-* `Ferno\Loco\ConcParser` - Usually you put multiple tokens in a row and they will be matched consecutively. In EBNF, commas must be used as separators.
-* `Ferno\Loco\LazyAltParser` - Alternation is achieved using a pipe, `|`, between possibilities.
-* `Ferno\Loco\GreedyMultiParser` - Most notations provide some ability to make a match optional (typically square brackets), and/or to match an unlimited number of times (typically an asterisk or braces).
+* `Ab\LocoX\EmptyParser` - Just have an empty string or an empty right-hand side to a rule. Some notations also permit an explicit "epsilon" symbol.
+* `Ab\LocoX\StringParser` - Invariably requires a simple string literal in single or double quotes.
+* `Ab\LocoX\ConcParser` - Usually you put multiple tokens in a row and they will be matched consecutively. In EBNF, commas must be used as separators.
+* `Ab\LocoX\LazyAltParser` - Alternation is achieved using a pipe, `|`, between possibilities.
+* `Ab\LocoX\GreedyMultiParser` - Most notations provide some ability to make a match optional (typically square brackets), and/or to match an unlimited number of times (typically an asterisk or braces).
 
 I had to invent new notation for the following:
 
-* `Ferno\Loco\RegexParser` - Put your regex between slashes, just like in Perl.
-* `Ferno\Loco\Utf8Parser` - To match any single UTF-8 character, put a full stop, `.`. To blacklist some characters, put the blacklisted characters between `[^` and `]`.
+* `Ab\LocoX\RegexParser` - Put your regex between slashes, just like in Perl.
+* `Ab\LocoX\Utf8Parser` - To match any single UTF-8 character, put a full stop, `.`. To blacklist some characters, put the blacklisted characters between `[^` and `]`.
 
 In both cases I borrowed notation from the standard regular expression syntax, because why not stay with the familiar?
 

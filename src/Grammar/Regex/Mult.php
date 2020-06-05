@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Ferno\Loco\Grammar\Regex;
+namespace Ab\LocoX\Grammar\Regex;
 
 // Each Mult consists of a multiplicand (a CharClass or a Pattern) and a Multiplier
 use Exception;

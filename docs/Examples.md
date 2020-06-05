@@ -23,7 +23,7 @@ Recognise simple valid HTML text using `<h5>`, `<p>`, `<em>` and `<strong>`, wit
 ### [examples/bnf.php](https://github.com/ferno/loco/blob/master/examples/bnf.php)
 
 Defines `$bnfGrammar`, which parses a grammar presented in [Backus-Naur Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form) 
-and returns `Ferno\Loco\Grammar` object capable of recognising that grammar.
+and returns `Ab\LocoX\Grammar` object capable of recognising that grammar.
 
 BNF is generally pretty low-tech and lacks a lot of features.
 
@@ -58,7 +58,7 @@ Steve MacLaurin \n173 Acacia Avenue 7A\nStevenage, KY 33445\n
 ### [examples/wirth.php](https://github.com/ferno/loco/blob/master/examples/wirth.php)
 
 Defines `$wirthGrammar`, which parses a grammar presented in [Wirth syntax notation](http://en.wikipedia.org/wiki/Wirth_syntax_notation) 
-and returns a `Ferno\Loco\Grammar` object capable of recognising that grammar.
+and returns a `Ab\LocoX\Grammar` object capable of recognising that grammar.
 
 Wirth syntax notation is okay, but I don't like the use of `.` (which in my mind usually means "any character" (when used in a 
 regex), or the string concatenation operator) as a line ending (which I usually think of as a semicolon or an actual `\n`). I also 
@@ -102,7 +102,7 @@ Defines `$ebnfGrammar`, which parses a grammar presented in [Extended Backus-Nau
 
 This is a big improvement on vanilla BNF (comments are a must!) but the need for commas between tokens is irritating and again, braces and square brackets aren't ideal in my mind.
 
-`$ebnfGrammar` can't handle "specials" (strings contained between two question marks), since these have no clear definition. It also can't handle "exceptions" (when a `-` is used to discard certain possibilities), because these are not permissible in context-free grammars or possible with naive `Ferno\Loco\MonoParser`s, and so would require special modification to Loco to handle.
+`$ebnfGrammar` can't handle "specials" (strings contained between two question marks), since these have no clear definition. It also can't handle "exceptions" (when a `-` is used to discard certain possibilities), because these are not permissible in context-free grammars or possible with naive `Ab\LocoX\MonoParser`s, and so would require special modification to Loco to handle.
 
 #### Sample grammar in Extended Backus-Naur Form
 

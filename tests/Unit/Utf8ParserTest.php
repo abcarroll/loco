@@ -2,8 +2,8 @@
 
 namespace Ferno\Tests\Loco;
 
-use Ferno\Loco\ParseFailureException;
-use Ferno\Loco\Utf8Parser;
+use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\Utf8Parser;
 use PHPUnit\Framework\TestCase;
 
 class Utf8ParserTest extends TestCase

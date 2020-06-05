@@ -13,10 +13,10 @@ Callback is passed one argument for each sub-match. For example, if the regex is
 the whole match, `"abcdefghij"`, the second argument is `"cdefgh"` and the third argument is `"ef"`. The default callback returns 
 only the first argument, the whole match.
 
-    new Ferno\Loco\RegexParser("/^'([a-zA-Z_][a-zA-Z_0-9]*)'/");
+    new Ab\LocoX\RegexParser("/^'([a-zA-Z_][a-zA-Z_0-9]*)'/");
     // returns the full match including the single quotes
   
-    new Ferno\Loco\RegexParser(
+    new Ab\LocoX\RegexParser(
       "/^'([a-zA-Z_][a-zA-Z_0-9]*)'/",
       function($match0, $match1) { return $match1; }
     );

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 /**
  * Grammar is a container for a bunch of parsers. This container is
@@ -150,7 +150,7 @@ class Grammar extends MonoParser
                 // make sure the other parser that we're about to create a reference to actually exists
                 $name = $parser->internals[$key];
                 if (! array_key_exists($name, $this->internals)) {
-                    throw new \Ferno\Loco\GrammarException($parser . " contains a reference to another parser " . var_export($name, true) . " which cannot be found");
+                    throw new \Ab\LocoX\GrammarException($parser . " contains a reference to another parser " . var_export($name, true) . " which cannot be found");
                 }
 
                 // create that reference

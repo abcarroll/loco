@@ -11,10 +11,10 @@ trying to retrieve other results if the first one turns out to be bogus.
 
 Callback is passed one argument, the sole successful internal match. The default callback returns the first argument directly.
 
-    new Ferno\Loco\LazyAltParser(
+    new Ab\LocoX\LazyAltParser(
       array(
-        new Ferno\Loco\StringParser("foo"),
-        new Ferno\Loco\StringParser("bar")
+        new Ab\LocoX\StringParser("foo"),
+        new Ab\LocoX\StringParser("bar")
       )
     );
     // returns either "foo" or "bar"

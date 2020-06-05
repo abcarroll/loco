@@ -2,10 +2,10 @@
 
 namespace Ferno\Tests\Loco;
 
-use Ferno\Loco\GrammarException;
-use Ferno\Loco\ParseFailureException;
-use Ferno\Loco\LazyAltParser;
-use Ferno\Loco\StringParser;
+use Ab\LocoX\GrammarException;
+use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\LazyAltParser;
+use Ab\LocoX\StringParser;
 use PHPUnit\Framework\TestCase;
 
 class LazyAltParserTest extends TestCase

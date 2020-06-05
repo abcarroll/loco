@@ -30,9 +30,16 @@
     </logging>
 
     <testsuites>
-        <testsuite name="v2 Tests">
+        <testsuite name="Complete">
             <directory>../tests/</directory>
+        </testsuite>
 
+        <testsuite name="v2">
+            <directory>../tests/Unit/</directory>
+        </testsuite>
+
+        <testsuite name="classic">
+            <file>../tests/RunAllClassicUnit.php</file>
         </testsuite>
     </testsuites>
 

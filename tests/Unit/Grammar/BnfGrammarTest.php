@@ -2,8 +2,8 @@
 
 namespace Ferno\Tests\Loco\Grammar;
 
-use Ferno\Loco\Grammar\BnfGrammar;
-use Ferno\Loco\ParseFailureException;
+use Ab\LocoX\Grammar\BnfGrammar;
+use Ab\LocoX\ParseFailureException;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class BnfGrammarTest extends TestCase
