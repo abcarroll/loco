@@ -1,6 +1,6 @@
 <?php
 
-namespace Ferno\Tests\Loco\Grammar;
+namespace Ab\Tests\Loco\Grammar;
 
 use Ab\LocoX\Grammar\JsonGrammar;
 use \PHPUnit\Framework\TestCase as TestCase;

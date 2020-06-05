@@ -1,6 +1,6 @@
 <?php
 
-namespace Ferno\Tests\Loco;
+namespace Ab\Tests\Loco;
 
 use Ab\LocoX\GreedyMultiParser;
 use Ab\LocoX\LazyAltParser;
