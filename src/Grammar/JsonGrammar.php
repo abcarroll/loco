@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Ferno\Loco\grammar;
+namespace Ferno\Loco\Grammar;
 
 use Ferno\Loco\ConcParser;
 use Ferno\Loco\EmptyParser;
