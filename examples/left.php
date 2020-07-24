@@ -1,5 +1,5 @@
 <?php
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

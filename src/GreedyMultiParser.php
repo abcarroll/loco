@@ -1,6 +1,6 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 /**
  * Callback accepts a single argument containing all submatches, however many
@@ -18,7 +18,7 @@ class GreedyMultiParser extends MonoParser
             $this->optional = null;
         } else {
             if ($upper < $lower) {
-                throw new \Ferno\Loco\GrammarException("Can't create a " . get_class() . " with lower limit " . var_export($lower, true) . " and upper limit " . var_export($upper, true));
+                throw new \Ab\LocoX\GrammarException("Can't create a " . get_class() . " with lower limit " . var_export($lower, true) . " and upper limit " . var_export($upper, true));
             }
             $this->optional = $upper - $lower;
         }

@@ -2,9 +2,9 @@
 
 namespace Ferno\Tests\Loco;
 
-use Ferno\Loco\GrammarException;
-use Ferno\Loco\ParseFailureException;
-use Ferno\Loco\RegexParser;
+use Ab\LocoX\GrammarException;
+use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\RegexParser;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class RegexParserTest extends TestCase

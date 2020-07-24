@@ -1,5 +1,5 @@
 <?php
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 use Exception;
 

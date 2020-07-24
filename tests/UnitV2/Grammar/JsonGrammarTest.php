@@ -2,7 +2,7 @@
 
 namespace Ferno\Tests\Loco\Grammar;
 
-use Ferno\Loco\Grammar\JsonGrammar;
+use Ab\LocoX\Grammar\JsonGrammar;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class JsonGrammarTest extends TestCase

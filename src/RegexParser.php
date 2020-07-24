@@ -1,6 +1,6 @@
 <?php
 
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
 /**
  * Parser uses a regex to match itself. Regexes are time-consuming to execute,

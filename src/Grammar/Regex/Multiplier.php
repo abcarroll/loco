@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Ferno\Loco\Grammar\Regex;
+namespace Ab\LocoX\Grammar\Regex;
 
 // A Multiplier consists of a non-negative integer lower bound and a non-negative
 // integer upper bound greater than or equal to the lower bound.

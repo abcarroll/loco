@@ -2,10 +2,10 @@
 
 namespace Ferno\Tests\Loco;
 
-use Ferno\Loco\GreedyMultiParser;
-use Ferno\Loco\LazyAltParser;
-use Ferno\Loco\ParseFailureException;
-use Ferno\Loco\StringParser;
+use Ab\LocoX\GreedyMultiParser;
+use Ab\LocoX\LazyAltParser;
+use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\StringParser;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class GreedyMultiParserTest extends TestCase

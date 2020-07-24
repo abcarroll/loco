@@ -1,8 +1,8 @@
 <?php
 
-namespace Ferno\Loco\test\grammar;
+namespace Ab\LocoX\test\grammar;
 
-use Ferno\Loco\Grammar\WirthGrammar;
+use Ab\LocoX\Grammar\WirthGrammar;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class WirthGrammarTest extends TestCase

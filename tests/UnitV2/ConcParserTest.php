@@ -2,9 +2,9 @@
 
 namespace Ferno\Tests\Loco;
 
-use Ferno\Loco\ConcParser;
-use Ferno\Loco\ParseFailureException;
-use Ferno\Loco\RegexParser;
+use Ab\LocoX\ConcParser;
+use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\RegexParser;
 use PHPUnit\Framework\TestCase;
 
 class ConcParserTest extends TestCase

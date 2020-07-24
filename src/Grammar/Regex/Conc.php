@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Ferno\Loco\Grammar\Regex;
+namespace Ab\LocoX\Grammar\Regex;
 
 // Each Conc is a concatenation of several "Mults"
 use Exception;

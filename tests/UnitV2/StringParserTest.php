@@ -2,8 +2,8 @@
 
 namespace Ferno\Tests\Loco;
 
-use Ferno\Loco\ParseFailureException;
-use Ferno\Loco\StringParser;
+use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\StringParser;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class StringParserTest extends TestCase

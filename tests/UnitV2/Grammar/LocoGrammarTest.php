@@ -2,8 +2,8 @@
 
 namespace Ferno\Tests\Loco\Grammar;
 
-use Ferno\Loco\Grammar\LocoGrammar;
-use Ferno\Loco\ParseFailureException;
+use Ab\LocoX\Grammar\LocoGrammar;
+use Ab\LocoX\ParseFailureException;
 use PHPUnit\Framework\TestCase;
 
 class LocoGrammarTest extends TestCase
@@ -38,7 +38,7 @@ class LocoGrammarTest extends TestCase
         $this->assertEquals(array("b"), $grammar2->parse("b"));
     }
 
-    public function testALternation2()
+    public function testAlternation2()
     {
         // array("a") or array("b", "c") or new S("a") or new S("b", "c")
         $grammar2 = $this->grammar->parse(" S ::= 'a' | 'b' 'c' ");
@@ -128,6 +128,8 @@ class LocoGrammarTest extends TestCase
         $grammar4 = $this->grammar->parse(" S ::= 'a' 'a' 'a' | 'a' 'a' | 'a' ");
         $grammar2 = $this->grammar->parse(" S ::= ( 'a' 'a' 'a' | 'a' 'a' | 'a' ) ");
         $grammar3 = $this->grammar->parse(" S ::= APlus \n APlus ::= 'a' 'a' 'a' | 'a' 'a' | 'a' ");
+
+        dump($grammar1->parse("aaa"));
 
         $this->assertEquals(array("a", "a", "a"), $grammar1->parse("aaa"));
         $this->assertEquals(array("a", "a", "a"), $grammar4->parse("aaa"));

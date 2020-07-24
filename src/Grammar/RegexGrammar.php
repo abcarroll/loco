@@ -1,21 +1,21 @@
 <?php
 
 
-namespace Ferno\Loco\grammar;
+namespace Ab\LocoX\Grammar;
 
 use Exception;
-use Ferno\Loco\ConcParser;
-use Ferno\Loco\EmptyParser;
-use Ferno\Loco\Grammar;
-use Ferno\Loco\Grammar\Regex\CharClass;
-use Ferno\Loco\Grammar\Regex\Conc;
-use Ferno\Loco\Grammar\Regex\Mult;
-use Ferno\Loco\Grammar\Regex\Multiplier;
-use Ferno\Loco\Grammar\Regex\Pattern;
-use Ferno\Loco\GreedyStarParser;
-use Ferno\Loco\LazyAltParser;
-use Ferno\Loco\RegexParser;
-use Ferno\Loco\StringParser;
+use Ab\LocoX\ConcParser;
+use Ab\LocoX\EmptyParser;
+use Ab\LocoX\Grammar;
+use Ab\LocoX\Grammar\Regex\CharClass;
+use Ab\LocoX\Grammar\Regex\Conc;
+use Ab\LocoX\Grammar\Regex\Mult;
+use Ab\LocoX\Grammar\Regex\Multiplier;
+use Ab\LocoX\Grammar\Regex\Pattern;
+use Ab\LocoX\GreedyStarParser;
+use Ab\LocoX\LazyAltParser;
+use Ab\LocoX\RegexParser;
+use Ab\LocoX\StringParser;
 
 class RegexGrammar extends Grammar
 {
