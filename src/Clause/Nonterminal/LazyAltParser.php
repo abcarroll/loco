@@ -1,6 +1,11 @@
 <?php
 
-namespace Ab\LocoX;
+namespace Ab\LocoX\Clause\Nonterminal;
+
+use Ab\LocoX\Grammar;
+use Ab\LocoX\GrammarException;
+use Ab\LocoX\MonoParser;
+use Ab\LocoX\ParseFailureException;
 
 /**
  * Takes the input parsers and applies them all in turn. "Lazy" indicates
@@ -19,7 +24,7 @@ class LazyAltParser extends MonoParser
              . " without at least one internal parser.\n");
         }
         $this->internals = $internals;
-        $this->string = 'new ' . __CLASS__ . '(' . serialiseArray($internals) . ')';
+        $this->string = 'new ' . __CLASS__ . '(' . Grammar::serializeGrammar($internals) . ')';
         parent::__construct($internals, $callback);
     }
 

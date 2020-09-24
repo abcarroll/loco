@@ -118,17 +118,17 @@ Callback is passed one argument, the sole successful internal match. The default
 
 
 
-### `ConcParser`
+### `Sequence`
 
 This encapsulates the "concatenation" parser combinator by concatenating a finite sequence of internal parsers. If the sequence is 
 empty, this is equivalent to `Ferno\Loco\EmptyParser`, above.
 
 Callback is passed one argument for every internal parser, each argument containing the result from that parser. For example, 
-`new Ferno\Loco\ConcParser(array($a, $b, $c), $callback)` will pass three arguments to its callback. The first contains the result from 
+`new Ferno\Loco\Sequence(array($a, $b, $c), $callback)` will pass three arguments to its callback. The first contains the result from 
 parser `$a`, the second the result from parser `$b` and the third the result from parser `$c`. The default callback returns the 
 arguments in the form of an array: `return func_get_args();`.
 
-    new Ferno\Loco\ConcParser(
+    new Ferno\Loco\Sequence(
       array(
         new Ferno\Loco\RegexParser("/^<([a-zA-Z_][a-zA-Z_0-9]*)>/", function($match0, $match1) { return $match1; }),
         new Ferno\Loco\StringParser(", "),
@@ -145,7 +145,7 @@ arguments in the form of an array: `return func_get_args();`.
 ### `GreedyMultiParser`
 
 This encapsulates the "Kleene star closure" parser combinator to match single internal parser multiple (finitely or infinitely 
-many) times. With a finite upper bound, this is more or less equivalent to `Ferno\Loco\ConcParser`, above. With an infinite upper bound, this 
+many) times. With a finite upper bound, this is more or less equivalent to `Ferno\Loco\Sequence`, above. With an infinite upper bound, this 
 gets more interesting. `Ferno\Loco\GreedyMultiParser`, as the name hints, will match as many times as it can before returning. 
 There is no option for returning multiple matches simultaneously; only the largest match is returned. And there is no option for 
 backtracking and trying to consume more or fewer instances.
@@ -192,7 +192,7 @@ Here's a simple `Ferno\Loco\Grammar` which can recognise (some) valid HTML parag
     $p = new Ferno\Loco\Grammar(
       "paragraph",
       array(
-        "paragraph" => new Ferno\Loco\ConcParser(
+        "paragraph" => new Ferno\Loco\Sequence(
           array(
             "OPEN_P",
             "CONTENT",
@@ -377,7 +377,7 @@ Defines `$locoGrammar`, which parses a grammar presented in "Loco notation" and 
 
 * `Ferno\Loco\EmptyParser` - Just have an empty string or an empty right-hand side to a rule. Some notations also permit an explicit "epsilon" symbol.
 * `Ferno\Loco\StringParser` - Invariably requires a simple string literal in single or double quotes.
-* `Ferno\Loco\ConcParser` - Usually you put multiple tokens in a row and they will be matched consecutively. In EBNF, commas must be used as separators.
+* `Ferno\Loco\Sequence` - Usually you put multiple tokens in a row and they will be matched consecutively. In EBNF, commas must be used as separators.
 * `Ferno\Loco\LazyAltParser` - Alternation is achieved using a pipe, `|`, between possibilities.
 * `Ferno\Loco\GreedyMultiParser` - Most notations provide some ability to make a match optional (typically square brackets), and/or to match an unlimited number of times (typically an asterisk or braces).
 

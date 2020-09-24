@@ -1,16 +1,19 @@
 <?php
 
-namespace Ab\LocoX;
+namespace Ab\LocoX\Clause\Nonterminal;
+
+use Ab\LocoX\Grammar;
+use Ab\LocoX\MonoParser;
 
 /**
  * Match several things in a row. Callback should accept one argument
  * for each parser listed.
  */
-class ConcParser extends MonoParser
+class Sequence extends MonoParser
 {
     public function __construct($internals, $callback = null)
     {
-        $this->string = 'new ' . __CLASS__ . '(' . serialiseArray($internals) . ')';
+        $this->string = 'new ' . __CLASS__ . '(' . Grammar::serializeGrammar($internals) . ')';
         parent::__construct($internals, $callback);
     }
 

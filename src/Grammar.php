@@ -2,6 +2,8 @@
 
 namespace Ab\LocoX;
 
+use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+
 /**
  * Grammar is a container for a bunch of parsers. This container is
  * necessary so that the parser names used in the constructions of each
@@ -18,7 +20,7 @@ class Grammar extends MonoParser
 
     public function __construct($S, $internals, $callback = null)
     {
-        $this->string = 'new ' . __CLASS__ . '(' . var_export($S, true) . ', ' . serialiseArray($internals) . ')';
+        $this->string = 'new ' . __CLASS__ . '(' . var_export($S, true) . ', ' . Grammar::serializeGrammar($internals) . ')';
         parent::__construct($internals, $callback);
 
         if (! array_key_exists($S, $this->internals)) {
@@ -205,4 +207,26 @@ class Grammar extends MonoParser
     {
         return [$this->internals[$this->S]];
     }
+
+    /**
+     * a helpful internal function
+     */
+    public static function serializeGrammar($array)
+    {
+        $string = "array(";
+        foreach (array_keys($array) as $keyId => $key) {
+            $string .= var_export($key, true) . " => ";
+            if (is_string($array[$key])) {
+                $string .= var_export($array[$key], true);
+            } else {
+                $string .= $array[$key]->__toString();
+            }
+            if ($keyId + 1 !== count($array)) {
+                $string .= ", ";
+            }
+        }
+        $string .= ")";
+        return $string;
+    }
+
 }

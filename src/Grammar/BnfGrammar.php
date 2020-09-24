@@ -4,14 +4,14 @@
 namespace Ab\LocoX\Grammar;
 
 use Exception;
-use Ab\LocoX\ConcParser;
-use Ab\LocoX\EmptyParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Grammar;
-use Ab\LocoX\GreedyMultiParser;
-use Ab\LocoX\GreedyStarParser;
-use Ab\LocoX\LazyAltParser;
-use Ab\LocoX\RegexParser;
-use Ab\LocoX\StringParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 
 /**
  * Takes a string presented in Backus-Naur Form and turns it into a new Grammar
@@ -29,7 +29,7 @@ class BnfGrammar extends Grammar
         parent::__construct(
             '<syntax>',
             [
-                '<syntax>' => new ConcParser(
+                '<syntax>' => new Sequence(
                     [
                         '<rules>',
                         'OPT-WHITESPACE'
@@ -61,13 +61,13 @@ class BnfGrammar extends Grammar
                     ['<rule>', '<emptyline>']
                 ),
 
-                '<emptyline>' => new ConcParser(
+                '<emptyline>' => new Sequence(
                     ['OPT-WHITESPACE', 'EOL'],
                     function ($whitespace, $eol) {
                     }
                 ),
 
-                '<rule>' => new ConcParser(
+                '<rule>' => new Sequence(
                     [
                         'OPT-WHITESPACE',
                         'RULE-NAME',
@@ -93,7 +93,7 @@ class BnfGrammar extends Grammar
                     }
                 ),
 
-                '<expression>' => new ConcParser(
+                '<expression>' => new Sequence(
                     [
                         '<list>',
                         '<pipelists>'
@@ -107,7 +107,7 @@ class BnfGrammar extends Grammar
 
                 '<pipelists>' => new GreedyStarParser('<pipelist>'),
 
-                '<pipelist>' => new ConcParser(
+                '<pipelist>' => new Sequence(
                     [
                         new StringParser('|'),
                         'OPT-WHITESPACE',
@@ -123,11 +123,11 @@ class BnfGrammar extends Grammar
                     1,
                     null,
                     function () {
-                        return new ConcParser(func_get_args());
+                        return new Sequence(func_get_args());
                     }
                 ),
 
-                '<term>' => new ConcParser(
+                '<term>' => new Sequence(
                     ['TERM', 'OPT-WHITESPACE'],
                     function ($term, $whitespace) {
                         return $term;

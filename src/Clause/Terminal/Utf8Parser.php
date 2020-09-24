@@ -1,6 +1,10 @@
 <?php
 
-namespace Ab\LocoX;
+namespace Ab\LocoX\Clause\Terminal;
+
+use Ab\LocoX\Grammar;
+use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\StaticParser;
 
 /**
  * UTF-8 parser parses one valid UTF-8 character and returns the
@@ -169,7 +173,7 @@ class Utf8Parser extends StaticParser
     public function __construct($blacklist = [], $callback = null)
     {
         $this->blacklist = $blacklist;
-        $this->string = 'new ' . __CLASS__ . '(' . serialiseArray($blacklist) . ')';
+        $this->string = 'new ' . __CLASS__ . '(' . Grammar::serializeGrammar($blacklist) . ')';
         parent::__construct($callback);
     }
 

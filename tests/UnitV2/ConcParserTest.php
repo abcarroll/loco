@@ -2,19 +2,19 @@
 
 namespace Ferno\Tests\Loco;
 
-use Ab\LocoX\ConcParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\ParseFailureException;
-use Ab\LocoX\RegexParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
 use PHPUnit\Framework\TestCase;
 
 class ConcParserTest extends TestCase
 {
-    /** @var ConcParser */
+    /** @var \Ab\LocoX\Clause\Nonterminal\Sequence */
     private $parser;
 
     public function setUp(): void
     {
-        $this->parser = new ConcParser(
+        $this->parser = new Sequence(
             array(
                 new RegexParser("#^a*#"),
                 new RegexParser("#^b+#"),

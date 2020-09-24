@@ -1,6 +1,10 @@
 <?php
 
-namespace Ab\LocoX;
+namespace Ab\LocoX\Clause\Terminal;
+
+use Ab\LocoX\GrammarException;
+use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\StaticParser;
 
 /**
  * Parser uses a regex to match itself. Regexes are time-consuming to execute,

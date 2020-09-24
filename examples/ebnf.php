@@ -1,6 +1,13 @@
 <?php
 namespace Ab\LocoX;
 
+use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 use Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -18,7 +25,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $ebnfGrammar = new Grammar(
 	"<syntax>",
 	array(
-		"<syntax>" => new ConcParser(
+		"<syntax>" => new Sequence(
 			array("<space>", "<rules>"),
 			function($space, $rules) {
 				return $rules;
@@ -27,7 +34,7 @@ $ebnfGrammar = new Grammar(
 
 		"<rules>" => new GreedyStarParser("<rule>"),
 
-		"<rule>" => new ConcParser(
+		"<rule>" => new Sequence(
 			array("<bareword>", "<space>", new StringParser("="), "<space>", "<alt>", new StringParser(";"), "<space>"),
 			function($bareword, $space1, $equals, $space2, $alt, $semicolon, $space3) {
 				return array(
@@ -37,7 +44,7 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<alt>" => new ConcParser(
+		"<alt>" => new Sequence(
 			array("<conc>", "<pipeconclist>"),
 			function($conc, $pipeconclist) {
 				array_unshift($pipeconclist, $conc);
@@ -47,14 +54,14 @@ $ebnfGrammar = new Grammar(
 
 		"<pipeconclist>" => new GreedyStarParser("<pipeconc>"),
 
-		"<pipeconc>" => new ConcParser(
+		"<pipeconc>" => new Sequence(
 			array(new StringParser("|"), "<space>", "<conc>"),
 			function($pipe, $space, $conc) {
 				return $conc;
 			}
 		),
 
-		"<conc>" => new ConcParser(
+		"<conc>" => new Sequence(
 			array("<term>", "<commatermlist>"),
 			function($term, $commatermlist) {
 				array_unshift($commatermlist, $term);
@@ -71,7 +78,7 @@ $ebnfGrammar = new Grammar(
 				// We do something quite advanced here. The inner multiparsers are
 				// spliced out into the list of arguments proper instead of forming an
 				// internal sub-array of their own
-				return new ConcParser(
+				return new Sequence(
 					$commatermlist,
 					function() use ($multiparsers) {
 						$args = func_get_args();
@@ -86,7 +93,7 @@ $ebnfGrammar = new Grammar(
 
 		"<commatermlist>" => new GreedyStarParser("<commaterm>"),
 
-		"<commaterm>" => new ConcParser(
+		"<commaterm>" => new Sequence(
 			array(new StringParser(","), "<space>", "<term>"),
 			function($comma, $space, $term) {
 				return $term;
@@ -97,7 +104,7 @@ $ebnfGrammar = new Grammar(
 			array("<bareword>", "<sq>", "<dq>", "<group>", "<repetition>", "<optional>")
 		),
 
-		"<bareword>" => new ConcParser(
+		"<bareword>" => new Sequence(
 			array(
 				new RegexParser(
 					"#^([a-z][a-z ]*[a-z]|[a-z])#",
@@ -112,7 +119,7 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<sq>" => new ConcParser(
+		"<sq>" => new Sequence(
 			array(
 				new RegexParser(
 					"#^'([^']*)'#",
@@ -130,7 +137,7 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<dq>" => new ConcParser(
+		"<dq>" => new Sequence(
 			array(
 				new RegexParser(
 					'#^"([^"]*)"#',
@@ -148,7 +155,7 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<group>" => new ConcParser(
+		"<group>" => new Sequence(
 			array(
 				new StringParser("("),
 				"<space>",
@@ -161,7 +168,7 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<repetition>" => new ConcParser(
+		"<repetition>" => new Sequence(
 			array(
 				new StringParser("{"),
 				"<space>",
@@ -174,7 +181,7 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<optional>" => new ConcParser(
+		"<optional>" => new Sequence(
 			array(
 				new StringParser("["),
 				"<space>",

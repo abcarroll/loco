@@ -7,6 +7,14 @@
  */
 namespace Ab\LocoX;
 
+use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
+use Ab\LocoX\Clause\Terminal\Utf8Parser;
 use Exception;
 
 require_once __DIR__ . '/../src/serialize_array.php';
@@ -147,7 +155,7 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
 
 {
     print("8B\n");
-    $parser = new ConcParser(
+    $parser = new Sequence(
         array(
             new RegexParser("#^a*#"),
             new RegexParser("#^b+#"),
@@ -318,7 +326,7 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
         $grammar = new Grammar(
             "<S>",
             array(
-                "<S>" => new ConcParser(array("<S>"))
+                "<S>" => new Sequence(array("<S>"))
             )
         );
         var_dump(false);
@@ -334,7 +342,7 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
                 "<A>" => new LazyAltParser(
                     array(
                         new StringParser("Y"),
-                        new ConcParser(
+                        new Sequence(
                             array("<B>", "<A>")
                         )
                     )
@@ -354,9 +362,9 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
         $grammar = new Grammar(
             "<A>",
             array(
-                "<A>" => new ConcParser(array("<B>")),
+                "<A>" => new Sequence(array("<B>")),
                 "<B>" => new LazyAltParser(array("<C>", "<D>")),
-                "<C>" => new ConcParser(array(new StringParser("C"))),
+                "<C>" => new Sequence(array(new StringParser("C"))),
                 "<D>" => new LazyAltParser(array("<C>", "<A>"))
             )
         );

@@ -3,15 +3,15 @@
 
 namespace Ab\LocoX\Grammar;
 
-use Ab\LocoX\ConcParser;
-use Ab\LocoX\EmptyParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Grammar;
-use Ab\LocoX\GreedyMultiParser;
-use Ab\LocoX\GreedyStarParser;
-use Ab\LocoX\LazyAltParser;
-use Ab\LocoX\RegexParser;
-use Ab\LocoX\StringParser;
-use Ab\LocoX\Utf8Parser;
+use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
+use Ab\LocoX\Clause\Terminal\Utf8Parser;
 
 // Takes a string presented in Loco Backus-Naur Form and turns it into a
 // new Grammar object capable of recognising the language described by that string.
@@ -25,7 +25,7 @@ class LocoGrammar extends Grammar
         parent::__construct(
             '<grammar>',
             [
-                '<grammar>' => new ConcParser(
+                '<grammar>' => new Sequence(
                     ['<whitespace>', '<rules>'],
                     function ($whitespace, $rules) {
                         return $rules;
@@ -51,7 +51,7 @@ class LocoGrammar extends Grammar
                     ['<rule>', '<blankline>']
                 ),
 
-                '<blankline>' => new ConcParser(
+                '<blankline>' => new Sequence(
                     [
                         new RegexParser("#^\r?\n#"),
                         '<whitespace>'
@@ -60,7 +60,7 @@ class LocoGrammar extends Grammar
                     }
                 ),
 
-                '<rule>' => new ConcParser(
+                '<rule>' => new Sequence(
                     [
                         '<bareword>',
                         '<whitespace>',
@@ -76,7 +76,7 @@ class LocoGrammar extends Grammar
                     }
                 ),
 
-                '<lazyaltparser>' => new ConcParser(
+                '<lazyaltparser>' => new Sequence(
                     ['<concparser>', '<pipeconcparserlist>'],
                     function ($concparser, $pipeconcparserlist) {
                         array_unshift($pipeconcparserlist, $concparser);
@@ -92,7 +92,7 @@ class LocoGrammar extends Grammar
 
                 '<pipeconcparserlist>' => new GreedyStarParser('<pipeconcparser>'),
 
-                '<pipeconcparser>' => new ConcParser(
+                '<pipeconcparser>' => new Sequence(
                     [
                         new StringParser('|'),
                         '<whitespace>',
@@ -116,7 +116,7 @@ class LocoGrammar extends Grammar
                         // We do something quite advanced here. The inner multiparsers are
                         // spliced out into the list of arguments proper instead of forming an
                         // internal sub-array of their own
-                        return new ConcParser(
+                        return new Sequence(
                             func_get_args(),
                             function () use ($multiparsers) {
                                 $args = func_get_args();
@@ -130,7 +130,7 @@ class LocoGrammar extends Grammar
                     }
                 ),
 
-                '<bnfmultiplication>' => new ConcParser(
+                '<bnfmultiplication>' => new Sequence(
                     ['<bnfmultiplicand>', '<whitespace>', '<bnfmultiplier>', '<whitespace>'],
                     function ($bnfmultiplicand, $whitespace1, $bnfmultiplier, $whitespace2) {
                         if (is_array($bnfmultiplier)) {
@@ -180,7 +180,7 @@ class LocoGrammar extends Grammar
                 '<emptymultiplier>' => new EmptyParser(),
 
                 // return a basic parser which recognises this string
-                '<dqstringparser>' => new ConcParser(
+                '<dqstringparser>' => new Sequence(
                     [
                         new StringParser('"'),
                         '<dqstring>',
@@ -195,7 +195,7 @@ class LocoGrammar extends Grammar
                     }
                 ),
 
-                '<sqstringparser>' => new ConcParser(
+                '<sqstringparser>' => new Sequence(
                     [
                         new StringParser("'"),
                         '<sqstring>',
@@ -237,7 +237,7 @@ class LocoGrammar extends Grammar
                 ),
 
                 // return a basic parser matching this regex
-                '<regexparser>' => new ConcParser(
+                '<regexparser>' => new Sequence(
                     [
                         new StringParser('/'),
                         '<regex>',
@@ -266,7 +266,7 @@ class LocoGrammar extends Grammar
                 '<rechar>' => new LazyAltParser(
                     [
                         new Utf8Parser(['\\', '/']),
-                        new ConcParser(
+                        new Sequence(
                             [
                                 new StringParser('\\'),
                                 new Utf8Parser()
@@ -278,7 +278,7 @@ class LocoGrammar extends Grammar
                     ]
                 ),
 
-                '<utf8except>' => new ConcParser(
+                '<utf8except>' => new Sequence(
                     [
                         new StringParser('[^'),
                         '<exceptions>',
@@ -306,7 +306,7 @@ class LocoGrammar extends Grammar
                     }
                 ),
 
-                '<subparser>' => new ConcParser(
+                '<subparser>' => new Sequence(
                     [
                         new StringParser('('),
                         '<whitespace>',

@@ -3,13 +3,13 @@
 
 namespace Ab\LocoX\Grammar;
 
-use Ab\LocoX\ConcParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Grammar;
-use Ab\LocoX\GreedyStarParser;
-use Ab\LocoX\LazyAltParser;
-use Ab\LocoX\RegexParser;
-use Ab\LocoX\StringParser;
-use Ab\LocoX\Utf8Parser;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
+use Ab\LocoX\Clause\Terminal\Utf8Parser;
 
 class SimpleCommentGrammar extends Grammar
 {
@@ -25,19 +25,19 @@ class SimpleCommentGrammar extends Grammar
                 '<blockorwhitespace>' => new LazyAltParser(
                     ['<h5>', '<p>', 'WHITESPACE']
                 ),
-                '<p>' => new ConcParser(
+                '<p>' => new Sequence(
                     ['OPEN_P', '<text>', 'CLOSE_P'],
                     function ($open_p, $text, $close_p) { return $open_p . $text . $close_p; }
                 ),
-                '<h5>' => new ConcParser(
+                '<h5>' => new Sequence(
                     ['OPEN_H5', '<text>', 'CLOSE_H5'],
                     function ($open_h5, $text, $close_h5) { return $open_h5 . $text . $close_h5; }
                 ),
-                '<strong>' => new ConcParser(
+                '<strong>' => new Sequence(
                     ['OPEN_STRONG', '<text>', 'CLOSE_STRONG'],
                     function ($open_strong, $text, $close_strong) { return $open_strong . $text . $close_strong; }
                 ),
-                '<em>' => new ConcParser(
+                '<em>' => new Sequence(
                     ['OPEN_EM', '<text>', 'CLOSE_EM'],
                     function ($open_em, $text, $close_em) { return $open_em . $text . $close_em; }
                 ),

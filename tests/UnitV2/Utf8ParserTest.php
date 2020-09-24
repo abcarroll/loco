@@ -3,12 +3,12 @@
 namespace Ferno\Tests\Loco;
 
 use Ab\LocoX\ParseFailureException;
-use Ab\LocoX\Utf8Parser;
+use Ab\LocoX\Clause\Terminal\Utf8Parser;
 use PHPUnit\Framework\TestCase;
 
 class Utf8ParserTest extends TestCase
 {
-    /** @var Utf8Parser */
+    /** @var \Ab\LocoX\Clause\Terminal\Utf8Parser */
     private $parser;
 
     public function setUp(): void

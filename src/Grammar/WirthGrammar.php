@@ -4,13 +4,13 @@
 namespace Ab\LocoX\Grammar;
 
 use Exception;
-use Ab\LocoX\ConcParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Grammar;
-use Ab\LocoX\GreedyMultiParser;
-use Ab\LocoX\GreedyStarParser;
-use Ab\LocoX\LazyAltParser;
-use Ab\LocoX\RegexParser;
-use Ab\LocoX\StringParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 
 // Takes a string presented in Wirth syntax notation and turn it into a new
 // Grammar object capable of recognising the language described by that string.
@@ -26,7 +26,7 @@ class WirthGrammar extends Grammar
             'SYNTAX',
             [
                 'SYNTAX' => new GreedyStarParser('PRODUCTION'),
-                'PRODUCTION' => new ConcParser(
+                'PRODUCTION' => new Sequence(
                     [
                         'whitespace',
                         'IDENTIFIER',
@@ -40,11 +40,11 @@ class WirthGrammar extends Grammar
                         return ['identifier' => $identifier, 'expression' => $expression];
                     }
                 ),
-                'EXPRESSION' => new ConcParser(
+                'EXPRESSION' => new Sequence(
                     [
                         'TERM',
                         new GreedyStarParser(
-                            new ConcParser(
+                            new Sequence(
                                 [
                                     new StringParser('|'),
                                     'whitespace',
@@ -67,14 +67,14 @@ class WirthGrammar extends Grammar
                     1,
                     null,
                     function () {
-                        return new ConcParser(func_get_args());
+                        return new Sequence(func_get_args());
                     }
                 ),
                 'FACTOR' => new LazyAltParser(
                     [
                         'IDENTIFIER',
                         'LITERAL',
-                        new ConcParser(
+                        new Sequence(
                             [
                                 new StringParser('['),
                                 'whitespace',
@@ -86,7 +86,7 @@ class WirthGrammar extends Grammar
                                 return new GreedyMultiParser($expression, 0, 1);
                             }
                         ),
-                        new ConcParser(
+                        new Sequence(
                             [
                                 new StringParser('('),
                                 'whitespace',
@@ -98,7 +98,7 @@ class WirthGrammar extends Grammar
                                 return $expression;
                             }
                         ),
-                        new ConcParser(
+                        new Sequence(
                             [
                                 new StringParser('{'),
                                 'whitespace',
@@ -112,7 +112,7 @@ class WirthGrammar extends Grammar
                         )
                     ]
                 ),
-                'IDENTIFIER' => new ConcParser(
+                'IDENTIFIER' => new Sequence(
                     [
                         new GreedyMultiParser(
                             'letter',
@@ -128,7 +128,7 @@ class WirthGrammar extends Grammar
                         return $letters;
                     }
                 ),
-                'LITERAL' => new ConcParser(
+                'LITERAL' => new Sequence(
                     [
                         new StringParser('"'),
                         new GreedyMultiParser(

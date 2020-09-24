@@ -1,6 +1,13 @@
 <?php
 namespace Ab\LocoX;
 
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
+use Ab\LocoX\Clause\Terminal\Utf8Parser;
 use Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -11,14 +18,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $jsonGrammar = new Grammar(
     "<topobject>",
     array(
-        "<topobject>" => new ConcParser(
+        "<topobject>" => new Sequence(
             array("WHITESPACE", "<object>"),
             function ($whitespace, $object) {
                 return $object;
             }
         ),
 
-        "<object>" => new ConcParser(
+        "<object>" => new Sequence(
             array("LEFT_BRACE", "WHITESPACE", "<objectcontent>", "RIGHT_BRACE", "WHITESPACE"),
             function ($left_brace, $whitespace0, $objectcontent, $right_brace, $whitespace1) {
                 return $objectcontent;
@@ -29,7 +36,7 @@ $jsonGrammar = new Grammar(
             array("<fullobject>", "<emptyobject>")
         ),
 
-        "<fullobject>" => new ConcParser(
+        "<fullobject>" => new Sequence(
             array("<keyvalue>", "<commakeyvaluelist>"),
             function ($keyvalue, $commakeyvaluelist) {
                 $commakeyvaluelist[$keyvalue[0]] = $keyvalue[1];
@@ -54,21 +61,21 @@ $jsonGrammar = new Grammar(
             }
         ),
 
-        "<commakeyvalue>" => new ConcParser(
+        "<commakeyvalue>" => new Sequence(
             array("COMMA", "WHITESPACE", "<keyvalue>"),
             function ($comma, $whitespace, $keyvalue) {
                 return $keyvalue;
             }
         ),
 
-        "<keyvalue>" => new ConcParser(
+        "<keyvalue>" => new Sequence(
             array("<string>", "COLON", "WHITESPACE", "<value>"),
             function ($string, $colon, $whitespace, $value) {
                 return array($string, $value);
             }
         ),
 
-        "<array>" => new ConcParser(
+        "<array>" => new Sequence(
             array("LEFT_BRACKET", "WHITESPACE", "<arraycontent>", "RIGHT_BRACKET", "WHITESPACE"),
             function ($left_bracket, $whitespace0, $arraycontent, $right_bracket, $whitespace1) {
                 return $arraycontent;
@@ -79,7 +86,7 @@ $jsonGrammar = new Grammar(
             array("<fullarray>", "<emptyarray>")
         ),
 
-        "<fullarray>" => new ConcParser(
+        "<fullarray>" => new Sequence(
             array("<value>", "<commavaluelist>"),
             function ($value, $commavaluelist) {
                 array_unshift($commavaluelist, $value);
@@ -95,7 +102,7 @@ $jsonGrammar = new Grammar(
 
         "<commavaluelist>" => new GreedyStarParser("<commavalue>"),
 
-        "<commavalue>" => new ConcParser(
+        "<commavalue>" => new Sequence(
             array("COMMA", "WHITESPACE", "<value>"),
             function ($comma, $whitespace, $value) {
                 return $value;
@@ -106,7 +113,7 @@ $jsonGrammar = new Grammar(
             array("<string>", "<number>", "<object>", "<array>", "<true>", "<false>", "<null>")
         ),
 
-        "<string>" => new ConcParser(
+        "<string>" => new Sequence(
             array("DOUBLE_QUOTE", "<stringcontent>", "DOUBLE_QUOTE", "WHITESPACE"),
             function ($double_quote0, $stringcontent, $double_quote1, $whitespace) {
                 return $stringcontent;
@@ -127,16 +134,16 @@ $jsonGrammar = new Grammar(
             )
         ),
 
-        "<number>" => new ConcParser(array("NUMBER", "WHITESPACE"), function ($number, $whitespace) {
+        "<number>" => new Sequence(array("NUMBER", "WHITESPACE"), function ($number, $whitespace) {
             return $number;
         }),
-        "<true>" => new ConcParser(array("TRUE", "WHITESPACE"), function ($true, $whitespace) {
+        "<true>" => new Sequence(array("TRUE", "WHITESPACE"), function ($true, $whitespace) {
             return true;
         }),
-        "<false>" => new ConcParser(array("FALSE", "WHITESPACE"), function ($false, $whitespace) {
+        "<false>" => new Sequence(array("FALSE", "WHITESPACE"), function ($false, $whitespace) {
             return false;
         }),
-        "<null>" => new ConcParser(array("NULL", "WHITESPACE"), function ($null, $whitespace) {
+        "<null>" => new Sequence(array("NULL", "WHITESPACE"), function ($null, $whitespace) {
             return null;
         }),
 

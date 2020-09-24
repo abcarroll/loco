@@ -1,6 +1,12 @@
 <?php
 namespace Ab\LocoX;
 
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 use Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -12,7 +18,7 @@ $regexGrammar = new Grammar(
 	"<pattern>",
 	array(
 		// A Pattern is an alternation between several Concs, separated by pipes.
-		"<pattern>" => new ConcParser(
+		"<pattern>" => new Sequence(
 			array("<conc>", "<pipeconclist>"),
 			function($conc, $pipeconclist) {
 				array_unshift($pipeconclist, $conc);
@@ -22,7 +28,7 @@ $regexGrammar = new Grammar(
 		"<pipeconclist>" => new GreedyStarParser(
 			"<pipeconc>"
 		),
-		"<pipeconc>" => new ConcParser(
+		"<pipeconc>" => new Sequence(
 			array(
 				new StringParser("|"),
 				"<conc>"
@@ -38,14 +44,14 @@ $regexGrammar = new Grammar(
 
 		// A Mult is a multiplicand (Charclass or sub-Pattern) followed by a multiplier.
 		// A subpattern has to be put inside parentheses.
-		"<mult>" => new ConcParser(
+		"<mult>" => new Sequence(
 			array("<multiplicand>", "<multiplier>"),
 			function($multiplicand, $multiplier) { return new Mult($multiplicand, $multiplier); }
 		),
 		"<multiplicand>" => new LazyAltParser(
 			array("<subpattern>", "<charclass>")
 		),
-		"<subpattern>" => new ConcParser(
+		"<subpattern>" => new Sequence(
 			array(new StringParser("("), "<pattern>", new StringParser(")")),
 			function($left_parenthesis, $pattern, $right_parenthesis) { return $pattern; }
 		),
@@ -62,7 +68,7 @@ $regexGrammar = new Grammar(
 			)
 		),
 
-		"<bracemultiplier>" => new ConcParser(
+		"<bracemultiplier>" => new Sequence(
 			array(
 				new StringParser("{"),
 				"<multiplierinterior>",
@@ -74,15 +80,15 @@ $regexGrammar = new Grammar(
 		"<multiplierinterior>" => new LazyAltParser(
 			array("<bothbounds>", "<unlimited>", "<onebound>")
 		),
-		"<bothbounds>" => new ConcParser(
+		"<bothbounds>" => new Sequence(
 			array("<integer>", "COMMA", "<integer>"),
 			function($integer1, $comma, $integer2) { return new Multiplier($integer1, $integer2); }
 		),
-		"<unlimited>" => new ConcParser(
+		"<unlimited>" => new Sequence(
 			array("<integer>", "COMMA"),
 			function($integer, $comma) { return new Multiplier($integer, null); }
 		),
-		"<onebound>" => new ConcParser(
+		"<onebound>" => new Sequence(
 			array("<integer>"),
 			function($integer) { return new Multiplier($integer, $integer); }
 		),
@@ -125,11 +131,11 @@ $regexGrammar = new Grammar(
 			)
 		),
 
-		"<bracketednegatedcharclass>" => new ConcParser(
+		"<bracketednegatedcharclass>" => new Sequence(
 			array("LEFT_BRACKET", "CARET", "<elemlist>", "RIGHT_BRACKET"),
 			function($left_bracket, $elemlist, $right_bracket) { return new Charclass($elemlist, true); }
 		),
-		"<bracketedcharclass>" => new ConcParser(
+		"<bracketedcharclass>" => new Sequence(
 			array("LEFT_BRACKET", "<elemlist>", "RIGHT_BRACKET"),
 			function($left_bracket, $elemlist, $right_bracket) { return new Charclass($elemlist); }
 		),
@@ -149,7 +155,7 @@ $regexGrammar = new Grammar(
 			array("<charrange>", "<classchar>")
 		),
 
-		"<charrange>" => new ConcParser(
+		"<charrange>" => new Sequence(
 			array("<classchar>", "HYPHEN", "<classchar>"),
 			function($char1, $hyphen, $char2) {
 				$char1 = ord($char1);

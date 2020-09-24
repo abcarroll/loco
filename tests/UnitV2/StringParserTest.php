@@ -3,7 +3,7 @@
 namespace Ferno\Tests\Loco;
 
 use Ab\LocoX\ParseFailureException;
-use Ab\LocoX\StringParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class StringParserTest extends TestCase

@@ -1,6 +1,11 @@
 <?php
 
-namespace Ab\LocoX;
+namespace Ab\LocoX\Clause\Nonterminal;
+
+use Ab\LocoX\Grammar;
+use Ab\LocoX\GrammarException;
+use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\StaticParser;
 
 /**
  * LookaheadParser matches everything up until any one of the provided
@@ -20,7 +25,7 @@ class LookaheadParser extends StaticParser
         }
         $this->lookaheadStrings = $lookaheadStrings;
 
-        $this->string = 'new ' . __CLASS__ . '(' . serialiseArray($lookaheadStrings) . ')';
+        $this->string = 'new ' . __CLASS__ . '(' . Grammar::serializeGrammar($lookaheadStrings) . ')';
 
         parent::__construct($callback);
     }

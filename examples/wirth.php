@@ -1,6 +1,12 @@
 <?php
 namespace Ab\LocoX;
 
+use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 use Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -16,7 +22,7 @@ $wirthGrammar = new Grammar(
 	"SYNTAX",
 	array(
 		"SYNTAX" => new GreedyStarParser("PRODUCTION"),
-		"PRODUCTION" => new ConcParser(
+		"PRODUCTION" => new Sequence(
 			array(
 				"whitespace",
 				"IDENTIFIER",
@@ -30,11 +36,11 @@ $wirthGrammar = new Grammar(
 				return array("identifier" => $identifier, "expression" => $expression);
 			}
 		),
-		"EXPRESSION" => new ConcParser(
+		"EXPRESSION" => new Sequence(
 			array(
 				"TERM",
 				new GreedyStarParser(
-					new ConcParser(
+					new Sequence(
 						array(
 							new StringParser("|"),
 							"whitespace",
@@ -56,14 +62,14 @@ $wirthGrammar = new Grammar(
 			1,
 			null,
 			function() {
-				return new ConcParser(func_get_args());
+				return new Sequence(func_get_args());
 			}
 		),
 		"FACTOR" => new LazyAltParser(
 			array(
 				"IDENTIFIER",
 				"LITERAL",
-				new ConcParser(
+				new Sequence(
 					array(
 						new StringParser("["),
 						"whitespace",
@@ -75,7 +81,7 @@ $wirthGrammar = new Grammar(
 						return new GreedyMultiParser($expression, 0, 1);
 					}
 				),
-				new ConcParser(
+				new Sequence(
 					array(
 						new StringParser("("),
 						"whitespace",
@@ -87,7 +93,7 @@ $wirthGrammar = new Grammar(
 						return $expression;
 					}
 				),
-				new ConcParser(
+				new Sequence(
 					array(
 						new StringParser("{"),
 						"whitespace",
@@ -101,7 +107,7 @@ $wirthGrammar = new Grammar(
 				)
 			)
 		),
-		"IDENTIFIER" => new ConcParser(
+		"IDENTIFIER" => new Sequence(
 			array(
 				new GreedyMultiParser(
 					"letter",
@@ -117,7 +123,7 @@ $wirthGrammar = new Grammar(
 				return $letters;
 			}
 		),
-		"LITERAL" => new ConcParser(
+		"LITERAL" => new Sequence(
 			array(
 				new StringParser("\""),
 				new GreedyMultiParser(

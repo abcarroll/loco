@@ -4,14 +4,14 @@
 namespace Ab\LocoX\Grammar;
 
 use Exception;
-use Ab\LocoX\ConcParser;
-use Ab\LocoX\EmptyParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Grammar;
-use Ab\LocoX\GreedyMultiParser;
-use Ab\LocoX\GreedyStarParser;
-use Ab\LocoX\LazyAltParser;
-use Ab\LocoX\RegexParser;
-use Ab\LocoX\StringParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 
 /**
  * Takes a string presented in Extended Backus-Naur Form and turns it into a new Grammar
@@ -33,7 +33,7 @@ class EbnfGrammar extends Grammar
         parent::__construct(
             '<syntax>',
             [
-                '<syntax>' => new ConcParser(
+                '<syntax>' => new Sequence(
                     ['<space>', '<rules>'],
                     function ($space, $rules) {
                         return $rules;
@@ -42,7 +42,7 @@ class EbnfGrammar extends Grammar
 
                 '<rules>' => new GreedyStarParser('<rule>'),
 
-                '<rule>' => new ConcParser(
+                '<rule>' => new Sequence(
                     ['<bareword>', '<space>', new StringParser('='), '<space>', '<alt>', new StringParser(';'), '<space>'],
                     function ($bareword, $space1, $equals, $space2, $alt, $semicolon, $space3) {
                         return [
@@ -52,7 +52,7 @@ class EbnfGrammar extends Grammar
                     }
                 ),
 
-                '<alt>' => new ConcParser(
+                '<alt>' => new Sequence(
                     ['<conc>', '<pipeconclist>'],
                     function ($conc, $pipeconclist) {
                         array_unshift($pipeconclist, $conc);
@@ -63,14 +63,14 @@ class EbnfGrammar extends Grammar
 
                 '<pipeconclist>' => new GreedyStarParser('<pipeconc>'),
 
-                '<pipeconc>' => new ConcParser(
+                '<pipeconc>' => new Sequence(
                     [new StringParser('|'), '<space>', '<conc>'],
                     function ($pipe, $space, $conc) {
                         return $conc;
                     }
                 ),
 
-                '<conc>' => new ConcParser(
+                '<conc>' => new Sequence(
                     ['<term>', '<commatermlist>'],
                     function ($term, $commatermlist) {
                         array_unshift($commatermlist, $term);
@@ -87,7 +87,7 @@ class EbnfGrammar extends Grammar
                         // We do something quite advanced here. The inner multiparsers are
                         // spliced out into the list of arguments proper instead of forming an
                         // internal sub-array of their own
-                        return new ConcParser(
+                        return new Sequence(
                             $commatermlist,
                             function () use ($multiparsers) {
                                 $args = func_get_args();
@@ -103,7 +103,7 @@ class EbnfGrammar extends Grammar
 
                 '<commatermlist>' => new GreedyStarParser('<commaterm>'),
 
-                '<commaterm>' => new ConcParser(
+                '<commaterm>' => new Sequence(
                     [new StringParser(','), '<space>', '<term>'],
                     function ($comma, $space, $term) {
                         return $term;
@@ -114,7 +114,7 @@ class EbnfGrammar extends Grammar
                     ['<bareword>', '<sq>', '<dq>', '<group>', '<repetition>', '<optional>']
                 ),
 
-                '<bareword>' => new ConcParser(
+                '<bareword>' => new Sequence(
                     [
                         new RegexParser(
                             '#^([a-z][a-z ]*[a-z]|[a-z])#',
@@ -129,7 +129,7 @@ class EbnfGrammar extends Grammar
                     }
                 ),
 
-                '<sq>' => new ConcParser(
+                '<sq>' => new Sequence(
                     [
                         new RegexParser(
                             "#^'([^']*)'#",
@@ -148,7 +148,7 @@ class EbnfGrammar extends Grammar
                     }
                 ),
 
-                '<dq>' => new ConcParser(
+                '<dq>' => new Sequence(
                     [
                         new RegexParser(
                             '#^"([^"]*)"#',
@@ -167,7 +167,7 @@ class EbnfGrammar extends Grammar
                     }
                 ),
 
-                '<group>' => new ConcParser(
+                '<group>' => new Sequence(
                     [
                         new StringParser('('),
                         '<space>',
@@ -180,7 +180,7 @@ class EbnfGrammar extends Grammar
                     }
                 ),
 
-                '<repetition>' => new ConcParser(
+                '<repetition>' => new Sequence(
                     [
                         new StringParser('{'),
                         '<space>',
@@ -193,7 +193,7 @@ class EbnfGrammar extends Grammar
                     }
                 ),
 
-                '<optional>' => new ConcParser(
+                '<optional>' => new Sequence(
                     [
                         new StringParser('['),
                         '<space>',

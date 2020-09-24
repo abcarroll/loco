@@ -1,6 +1,8 @@
 <?php
 
-namespace Ab\LocoX;
+namespace Ab\LocoX\Clause\Terminal;
+
+use Ab\LocoX\StaticParser;
 
 /**
  * Match the empty string

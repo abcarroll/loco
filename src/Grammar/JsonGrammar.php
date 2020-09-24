@@ -3,14 +3,14 @@
 
 namespace Ab\LocoX\Grammar;
 
-use Ab\LocoX\ConcParser;
-use Ab\LocoX\EmptyParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Grammar;
-use Ab\LocoX\GreedyStarParser;
-use Ab\LocoX\LazyAltParser;
-use Ab\LocoX\RegexParser;
-use Ab\LocoX\StringParser;
-use Ab\LocoX\Utf8Parser;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
+use Ab\LocoX\Clause\Terminal\Utf8Parser;
 
 class JsonGrammar extends Grammar
 {
@@ -19,12 +19,12 @@ class JsonGrammar extends Grammar
         parent::__construct(
             '<topobject>',
             [
-                '<topobject>' => new ConcParser(
+                '<topobject>' => new Sequence(
                     ['WHITESPACE', '<object>'],
                     function ($whitespace, $object) { return $object; }
                 ),
 
-                '<object>' => new ConcParser(
+                '<object>' => new Sequence(
                     ['LEFT_BRACE', 'WHITESPACE', '<objectcontent>', 'RIGHT_BRACE', 'WHITESPACE'],
                     function ($left_brace, $whitespace1, $objectcontent, $right_brace, $whitespace2) { return $objectcontent; }
                 ),
@@ -33,7 +33,7 @@ class JsonGrammar extends Grammar
                     ['<fullobject>', '<emptyobject>']
                 ),
 
-                '<fullobject>' => new ConcParser(
+                '<fullobject>' => new Sequence(
                     ['<keyvalue>', '<commakeyvaluelist>'],
                     function ($keyvalue, $commakeyvaluelist) {
                         $commakeyvaluelist[$keyvalue[0]] = $keyvalue[1];
@@ -58,17 +58,17 @@ class JsonGrammar extends Grammar
                     }
                 ),
 
-                '<commakeyvalue>' => new ConcParser(
+                '<commakeyvalue>' => new Sequence(
                     ['COMMA', 'WHITESPACE', '<keyvalue>'],
                     function ($comma, $whitespace, $keyvalue) { return $keyvalue; }
                 ),
 
-                '<keyvalue>' => new ConcParser(
+                '<keyvalue>' => new Sequence(
                     ['<string>', 'COLON', 'WHITESPACE', '<value>'],
                     function ($string, $colon, $whitespace, $value) { return [$string, $value]; }
                 ),
 
-                '<array>' => new ConcParser(
+                '<array>' => new Sequence(
                     ['LEFT_BRACKET', 'WHITESPACE', '<arraycontent>', 'RIGHT_BRACKET', 'WHITESPACE'],
                     function ($left_bracket, $whitespace1, $arraycontent, $right_bracket, $whitespace2) { return $arraycontent; }
                 ),
@@ -77,7 +77,7 @@ class JsonGrammar extends Grammar
                     ['<fullarray>', '<emptyarray>']
                 ),
 
-                '<fullarray>' => new ConcParser(
+                '<fullarray>' => new Sequence(
                     ['<value>', '<commavaluelist>'],
                     function ($value, $commavaluelist) {
                         array_unshift($commavaluelist, $value);
@@ -92,7 +92,7 @@ class JsonGrammar extends Grammar
 
                 '<commavaluelist>' => new GreedyStarParser('<commavalue>'),
 
-                '<commavalue>' => new ConcParser(
+                '<commavalue>' => new Sequence(
                     ['COMMA', 'WHITESPACE', '<value>'],
                     function ($comma, $whitespace, $value) { return $value; }
                 ),
@@ -101,7 +101,7 @@ class JsonGrammar extends Grammar
                     ['<string>', '<number>', '<object>', '<array>', '<true>', '<false>', '<null>']
                 ),
 
-                '<string>' => new ConcParser(
+                '<string>' => new Sequence(
                     ['DOUBLE_QUOTE', '<stringcontent>', 'DOUBLE_QUOTE', 'WHITESPACE'],
                     function ($double_quote1, $stringcontent, $double_quote2, $whitespace) { return $stringcontent; }
                 ),
@@ -118,10 +118,10 @@ class JsonGrammar extends Grammar
                     ]
                 ),
 
-                '<number>' => new ConcParser(['NUMBER', 'WHITESPACE'], function ($number, $whitespace) { return $number; }),
-                '<true>' => new ConcParser(['TRUE',   'WHITESPACE'], function ($true, $whitespace) { return true; }),
-                '<false>' => new ConcParser(['FALSE',  'WHITESPACE'], function ($false, $whitespace) { return false; }),
-                '<null>' => new ConcParser(['NULL',   'WHITESPACE'], function ($null, $whitespace) {  }),
+                '<number>' => new Sequence(['NUMBER', 'WHITESPACE'], function ($number, $whitespace) { return $number; }),
+                '<true>' => new Sequence(['TRUE',   'WHITESPACE'], function ($true, $whitespace) { return true; }),
+                '<false>' => new Sequence(['FALSE',  'WHITESPACE'], function ($false, $whitespace) { return false; }),
+                '<null>' => new Sequence(['NULL',   'WHITESPACE'], function ($null, $whitespace) {  }),
 
                 // actual physical objects (RegexParsers, StringParsers and Utf8Parsers)
                 // are represented in all capitals because they are important.

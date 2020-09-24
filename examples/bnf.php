@@ -1,6 +1,13 @@
 <?php
 namespace Ab\LocoX;
 
+use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 use Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -15,7 +22,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $bnfGrammar = new Grammar(
 	"<syntax>",
 	array(
-		"<syntax>" => new ConcParser(
+		"<syntax>" => new Sequence(
 			array(
 				"<rules>",
 				"OPT-WHITESPACE"
@@ -46,14 +53,14 @@ $bnfGrammar = new Grammar(
 			array("<rule>", "<emptyline>")
 		),
 
-		"<emptyline>" => new ConcParser(
+		"<emptyline>" => new Sequence(
 			array("OPT-WHITESPACE", "EOL"),
 			function($whitespace, $eol) {
 				return null;
 			}
 		),
 
-		"<rule>" => new ConcParser(
+		"<rule>" => new Sequence(
 			array(
 				"OPT-WHITESPACE",
 				"RULE-NAME",
@@ -79,7 +86,7 @@ $bnfGrammar = new Grammar(
 			}
 		),
 
-		"<expression>" => new ConcParser(
+		"<expression>" => new Sequence(
 			array(
 				"<list>",
 				"<pipelists>"
@@ -92,7 +99,7 @@ $bnfGrammar = new Grammar(
 
 		"<pipelists>" => new GreedyStarParser("<pipelist>"),
 
-		"<pipelist>" => new ConcParser(
+		"<pipelist>" => new Sequence(
 			array(
 				new StringParser("|"),
 				"OPT-WHITESPACE",
@@ -108,11 +115,11 @@ $bnfGrammar = new Grammar(
 			1,
 			null,
 			function() {
-				return new ConcParser(func_get_args());
+				return new Sequence(func_get_args());
 			}
 		),
 
-		"<term>" => new ConcParser(
+		"<term>" => new Sequence(
 			array("TERM", "OPT-WHITESPACE"),
 			function($term, $whitespace) {
 				return $term;

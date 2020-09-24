@@ -2,15 +2,15 @@
 
 namespace Ferno\Tests\Loco;
 
-use Ab\LocoX\ConcParser;
-use Ab\LocoX\EmptyParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Grammar;
 use Ab\LocoX\GrammarException;
-use Ab\LocoX\GreedyMultiParser;
-use Ab\LocoX\GreedyStarParser;
-use Ab\LocoX\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
 use Ab\LocoX\ParseFailureException;
-use Ab\LocoX\StringParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class GrammarTest extends TestCase
@@ -77,7 +77,7 @@ class GrammarTest extends TestCase
         new Grammar(
             "<S>",
             array(
-                "<S>" => new ConcParser(array("<S>"))
+                "<S>" => new Sequence(array("<S>"))
             )
         );
     }
@@ -93,7 +93,7 @@ class GrammarTest extends TestCase
                 "<A>" => new LazyAltParser(
                     array(
                         new StringParser("Y"),
-                        new ConcParser(
+                        new Sequence(
                             array("<B>", "<A>")
                         )
                     )
@@ -113,9 +113,9 @@ class GrammarTest extends TestCase
         new Grammar(
             "<A>",
             array(
-                "<A>" => new ConcParser(array("<B>")),
+                "<A>" => new Sequence(array("<B>")),
                 "<B>" => new LazyAltParser(array("<C>", "<D>")),
-                "<C>" => new ConcParser(array(new StringParser("C"))),
+                "<C>" => new Sequence(array(new StringParser("C"))),
                 "<D>" => new LazyAltParser(array("<C>", "<A>"))
             )
         );

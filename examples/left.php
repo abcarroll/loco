@@ -1,6 +1,12 @@
 <?php
 namespace Ab\LocoX;
 
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /**
@@ -26,7 +32,7 @@ $N = new RegexParser(
 );
 
 # P -> "-" N
-$P = new ConcParser(
+$P = new Sequence(
 	array(new StringParser("-"), $N),
 	function($minus, $n) { return $n; }
 );
@@ -42,7 +48,7 @@ try {
 			"S" => new LazyAltParser(
 				array(
 					"N",
-					new ConcParser(
+					new Sequence(
 						array("S", "P"),
 						"minus"
 					)
@@ -63,7 +69,7 @@ try {
 $grammar = new Grammar(
 	"S",
 	array(
-		"S" => new ConcParser(
+		"S" => new Sequence(
 			array(
 				$N,
 				new GreedyStarParser("P")

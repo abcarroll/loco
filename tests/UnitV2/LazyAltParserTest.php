@@ -4,13 +4,13 @@ namespace Ferno\Tests\Loco;
 
 use Ab\LocoX\GrammarException;
 use Ab\LocoX\ParseFailureException;
-use Ab\LocoX\LazyAltParser;
-use Ab\LocoX\StringParser;
+use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 use PHPUnit\Framework\TestCase;
 
 class LazyAltParserTest extends TestCase
 {
-    /** @var StringParser */
+    /** @var \Ab\LocoX\Clause\Terminal\StringParser */
     private $parser;
 
     public function setUp(): void
