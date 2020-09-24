@@ -39,7 +39,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Ferno\\Loco\\": "src/"
+      "Ab\\LocoX\\": "src/"
     },
     "files": [
       "src/serialize_array.php"
