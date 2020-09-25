@@ -11,7 +11,7 @@ use Exception;
  *
  * @link http://en.wikipedia.org/wiki/Parser_combinator
  */
-abstract class MonoParser extends Parser
+abstract class MonoParser extends TopDownParser
 {
     /**
      * A string form for any parser should be generated at instantiation time.
@@ -50,6 +50,15 @@ abstract class MonoParser extends Parser
 
     abstract public function defaultCallback();
 
+    /**
+     * try to match this parser at the specified point.
+     * returns j and args to pass to the callback, or throws exception on failure
+     *
+     * @param mixed $string
+     * @param mixed $i
+     */
+    abstract public function getResult($string, $i = 0);
+
     public function __construct($internals, $callback)
     {
         if (! is_string($this->string)) {
@@ -79,15 +88,6 @@ abstract class MonoParser extends Parser
         }
         $this->callback = $callback;
     }
-
-    /**
-     * try to match this parser at the specified point.
-     * returns j and args to pass to the callback, or throws exception on failure
-     *
-     * @param mixed $string
-     * @param mixed $i
-     */
-    abstract public function getResult($string, $i = 0);
 
     /**
      * apply callback to returned value before returning it
@@ -123,31 +123,4 @@ abstract class MonoParser extends Parser
         // the whole thing has been parsed
         return call_user_func_array($this->callback, $result['args']);
     }
-
-    /**
-     * Every parser assumes that it is non-nullable from the outset
-     */
-    public $nullable = false;
-
-    /**
-     * Evaluate the nullability of this parser with respect to each of its
-     * internals. This function must NOT simply "return $nullable;", whose content
-     * may be out of date; this function must NOT modify $nullable, either, because
-     * that is not for this function to do; this function must NOT recursively
-     * call evaluateNullability() on any of its internals because that could easily
-     * result in a stack overflow.
-     * Just gets $nullable for each internal, if any.
-     * This has to be called after all strings have been resolved to parser references.
-     */
-    abstract public function evaluateNullability();
-
-    /**
-     * The immediate first-set of a parser is the set of all internal parsers
-     * which could be matched first. For example, if A = B . C then the first-set
-     * of A is usually {B}. If B is nullable, then C could also be matched first, so the
-     * first-set is {B, C}.
-     * This has to be called after the "nullability flood fill" is complete,
-     * or "Called method of non-object" exceptions will arise
-     */
-    abstract public function firstSet();
 }
