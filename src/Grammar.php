@@ -50,7 +50,10 @@ class Grammar extends MonoParser
         // until we are certain that all nullable parsers have been marked as such.
         // It is not unlike a "flood fill" procedure.
         while (1) {
-            foreach ($this->internals as $internal) {
+            foreach ($this->internals as $intlKey => $internal) {
+                if(!($internal instanceof Parser)) {
+                    throw new \InvalidArgumentException("$intlKey is not a parser it is a " . gettype($internal) . "($internal)");
+                }
                 if (true === $internal->nullable) {
                     continue;
                 }
