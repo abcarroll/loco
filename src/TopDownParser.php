@@ -2,7 +2,7 @@
 
 namespace Ab\LocoX;
 
-class TopDownParser extends Parser
+abstract class TopDownParser extends Parser
 {
     /**
      * Every parser assumes that it is non-nullable from the outset
