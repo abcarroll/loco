@@ -3,7 +3,7 @@
 namespace Ferno\Tests\Loco\Grammar;
 
 use Ab\LocoX\Grammar\EbnfGrammar;
-use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\Exception\ParseFailureException;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class EbnfGrammarTest extends TestCase

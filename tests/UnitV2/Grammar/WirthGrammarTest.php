@@ -7,6 +7,9 @@ use \PHPUnit\Framework\TestCase as TestCase;
 
 class WirthGrammarTest extends TestCase
 {
+    /**
+     * @ignoreRisky
+     */
     public function test()
     {
         // This is the syntax for Wirth syntax notation except it lacks whitespace

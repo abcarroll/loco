@@ -6,6 +6,7 @@ use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
+use Ab\LocoX\Exception\GrammarException;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

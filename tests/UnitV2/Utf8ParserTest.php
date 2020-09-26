@@ -2,7 +2,7 @@
 
 namespace Ferno\Tests\Loco;
 
-use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\Exception\ParseFailureException;
 use Ab\LocoX\Clause\Terminal\Utf8Parser;
 use PHPUnit\Framework\TestCase;
 

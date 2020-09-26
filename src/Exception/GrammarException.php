@@ -1,6 +1,6 @@
 <?php
 
-namespace Ab\LocoX;
+namespace Ab\LocoX\Exception;
 
 use RuntimeException;
 

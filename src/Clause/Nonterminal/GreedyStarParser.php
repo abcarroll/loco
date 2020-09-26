@@ -2,8 +2,6 @@
 
 namespace Ab\LocoX\Clause\Nonterminal;
 
-use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
-
 /**
  * Tiny subclass is ironically much more useful than GreedyMultiParser
  */

@@ -1,8 +1,10 @@
 <?php
 
-namespace Ab\LocoX;
+namespace Ab\LocoX\Clause;
 
-class TopDownParser extends Parser
+use Ab\LocoX\Parser;
+
+abstract class Clause extends Parser
 {
     /**
      * Every parser assumes that it is non-nullable from the outset

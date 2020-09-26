@@ -2,6 +2,9 @@
 
 namespace Ab\LocoX;
 
+use Ab\LocoX\Clause\Clause;
+use Ab\LocoX\Exception\GrammarException;
+use Ab\LocoX\Exception\ParseFailureException;
 use Exception;
 
 /**
@@ -11,7 +14,7 @@ use Exception;
  *
  * @link http://en.wikipedia.org/wiki/Parser_combinator
  */
-abstract class MonoParser extends TopDownParser
+abstract class MonoParser extends Clause
 {
     /**
      * A string form for any parser should be generated at instantiation time.
