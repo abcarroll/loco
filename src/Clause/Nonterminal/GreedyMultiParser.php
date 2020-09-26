@@ -3,7 +3,7 @@
 namespace Ab\LocoX\Clause\Nonterminal;
 
 use Ab\LocoX\MonoParser;
-use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\Exception\ParseFailureException;
 
 /**
  * Callback accepts a single argument containing all submatches, however many

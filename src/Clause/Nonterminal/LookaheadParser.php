@@ -4,7 +4,7 @@ namespace Ab\LocoX\Clause\Nonterminal;
 
 use Ab\LocoX\Grammar;
 use Ab\LocoX\GrammarException;
-use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\Exception\ParseFailureException;
 use Ab\LocoX\StaticParser;
 
 /**

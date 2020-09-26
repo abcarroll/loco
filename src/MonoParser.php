@@ -2,6 +2,7 @@
 
 namespace Ab\LocoX;
 
+use Ab\LocoX\Exception\ParseFailureException;
 use Exception;
 
 /**

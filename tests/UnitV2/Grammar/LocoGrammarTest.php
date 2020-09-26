@@ -3,7 +3,7 @@
 namespace Ferno\Tests\Loco\Grammar;
 
 use Ab\LocoX\Grammar\LocoGrammar;
-use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\Exception\ParseFailureException;
 use PHPUnit\Framework\TestCase;
 
 class LocoGrammarTest extends TestCase

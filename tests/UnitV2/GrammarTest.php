@@ -9,7 +9,7 @@ use Ab\LocoX\GrammarException;
 use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
 use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
-use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\Exception\ParseFailureException;
 use Ab\LocoX\Clause\Terminal\StringParser;
 use \PHPUnit\Framework\TestCase as TestCase;
 

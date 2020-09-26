@@ -5,7 +5,7 @@ namespace Ab\LocoX\Clause\Nonterminal;
 use Ab\LocoX\Grammar;
 use Ab\LocoX\GrammarException;
 use Ab\LocoX\MonoParser;
-use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\Exception\ParseFailureException;
 
 /**
  * Takes the input parsers and applies them all in turn. "Lazy" indicates

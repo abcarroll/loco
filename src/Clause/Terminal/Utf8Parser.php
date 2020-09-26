@@ -3,7 +3,7 @@
 namespace Ab\LocoX\Clause\Terminal;
 
 use Ab\LocoX\Grammar;
-use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\Exception\ParseFailureException;
 use Ab\LocoX\StaticParser;
 
 /**

@@ -3,7 +3,7 @@
 namespace Ferno\Tests\Loco;
 
 use Ab\LocoX\GrammarException;
-use Ab\LocoX\ParseFailureException;
+use Ab\LocoX\Exception\ParseFailureException;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use \PHPUnit\Framework\TestCase as TestCase;
 
