@@ -8,10 +8,12 @@
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
          verbose="true"
+         beStrictAboutTestsThatDoNotTestAnything="false"
         >
     <testsuites>
         <testsuite name="v2 Tests">
             <directory>tests/UnitV2/</directory>
+
         </testsuite>
     </testsuites>
 
