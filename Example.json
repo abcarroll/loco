@@ -1,0 +1,14 @@
+{
+  "engine": "recursive-descent",
+  "recursive-descent": {
+    "someRule": {
+      "clause": "sequence",
+      "parsers": [
+        {
+          "match": "regex/pcre"
+        }
+      ]
+    }
+  }
+
+}

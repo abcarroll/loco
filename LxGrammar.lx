@@ -1,0 +1,26 @@
+SingleLineEqRule    ::= <NBSP> RuleName <NBSP> '::=' <NBSP> "(" (ValidClause <NBSP> <EOL>)* ")" <NBSP> ";"
+MultiLineRule       ::= <NBSP> RuleName <NBSP> '::' <NBSP> "(" (ValidClause <NBSP> <EOL>)* ")" <NBSP> ";"
+
+CurlyGroup          ::= "{" (ValidClause? EOL?)* "}"
+
+
+
+	topobject      ::= whitespace object
+	object         ::= '{' whitespace objectcontent '}' whitespace
+	objectcontent  ::= fullobject | ()
+	fullobject     ::= keyvalue (comma keyvalue)*
+	keyvalue       ::= string ':' whitespace value
+	array          ::= '[' whitespace arraycontent ']' whitespace
+	arraycontent   ::= fullarray | ()
+	fullarray      ::= value (comma value)*
+	value          ::= string | number | object | array | true | false | null
+	string         ::= '\"' stringcontent '\"' whitespace
+	stringcontent  ::= char *
+	char           ::= [^\"\\\\] | '\\\\' escapesequence
+	escapesequence ::= '\"' | '\\\\' | '/' | 'b' | 'f' | 'n' | 'r' | 't' | /u[0-9a-fA-F]{4}/
+	number         ::= /-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][-+]?[0-9]+)?/ whitespace
+	true           ::= 'true' whitespace
+	false          ::= 'false' whitespace
+	null           ::= 'null' whitespace
+	comma          ::= ',' whitespace
+	whitespace     ::= /[ \n\r\t]*/

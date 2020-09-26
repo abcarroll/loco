@@ -14,6 +14,8 @@ use Ab\LocoX\StaticParser;
  */
 class RegexParser extends StaticParser
 {
+    private const TARGET_REGEX_DELIM = '#';
+
     private $pattern;
 
     public function __construct($pattern, $callback = null)
@@ -55,5 +57,30 @@ class RegexParser extends StaticParser
     public function evaluateNullability()
     {
         return 1 === preg_match($this->pattern, '', $matches);
+    }
+
+    protected static function normalizeDelimiter(string $inputRegex)
+    {
+        $delimiter = substr($inputRegex, 0, 1);
+        if($delimiter !== self::TARGET_REGEX_DELIM) {
+            $endDelimiterPosition = strrpos($inputRegex, $delimiter);
+
+            // This will remove any escapes of the prev. delim. and replace it with our delim, then escaping it if needed
+            $inputRegex = str_replace(
+                ["\\$delimiter", self::TARGET_REGEX_DELIM],
+                [$delimiter, "\\" . self::TARGET_REGEX_DELIM],
+                $inputRegex
+            );
+            $inputRegex = self::TARGET_REGEX_DELIM
+                . substr($inputRegex, 0, $endDelimiterPosition)
+                . self::TARGET_REGEX_DELIM
+                . substR($inputRegex, $endDelimiterPosition+1);
+        }
+
+    }
+
+    public function jsonSerialize()
+    {
+        return ['regex/pcre' => [$this->pattern]];
     }
 }

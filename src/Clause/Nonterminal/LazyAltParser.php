@@ -75,4 +75,11 @@ class LazyAltParser extends MonoParser
     {
         return $this->internals;
     }
+
+    public function jsonSerialize()
+    {
+        return [
+            'first' => $this->internals
+        ];
+    }
 }

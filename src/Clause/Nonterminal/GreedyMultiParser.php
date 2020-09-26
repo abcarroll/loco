@@ -82,4 +82,11 @@ class GreedyMultiParser extends MonoParser
     {
         return [$this->internals[0]];
     }
+
+    public function jsonSerialize()
+    {
+        return [
+            'matchAtleast' => [$this->internals, $this->lower]
+        ];
+    }
 }

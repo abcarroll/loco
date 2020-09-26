@@ -10,6 +10,7 @@ use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
 use Ab\LocoX\Clause\Terminal\Utf8Parser;
+use Ab\LocoX\Exception\ParseFailureException;
 use Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';

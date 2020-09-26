@@ -1,0 +1,14 @@
+
+
+
+OptionallyTypedSigilIdentifier :: (
+
+);
+
+ClassicStruct :: (
+    "struct" $(IdentifierPath as identifier) "{" $ClassicStructElementList "}"
+);
+
+ClassicStructElementList :: (
+    @zeroOrMore @listAllowTrailing(',' (OptionallyTypedSigilIdentifier) as structMembers)
+);

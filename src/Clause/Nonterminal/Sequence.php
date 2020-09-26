@@ -6,8 +6,13 @@ use Ab\LocoX\Grammar;
 use Ab\LocoX\MonoParser;
 
 /**
- * Match several things in a row. Callback should accept one argument
- * for each parser listed.
+ * A "sequence" clause, also called "all" match or "AND" match: All sub-clause must match in order
+ *
+ * Matches the input at a given start position if all of its subclauses match the input in order, with the first
+ * subclause match starting at the initial position, and each subsequent subclause match starting immediately after the
+ * previous subclause match.  Matching stops if a single subclause fails to match the input at its start position.
+ *
+ * The semantic action callback shall be passed one argument for each subclause given.
  */
 class Sequence extends MonoParser
 {
@@ -69,5 +74,15 @@ class Sequence extends MonoParser
             }
         }
         return true;
+    }
+
+    public function validateCallbackType()
+    {
+        //new \ReflectionFunction($this->)
+    }
+
+    public function jsonSerialize()
+    {
+        return ['seq' => $this->internals];
     }
 }

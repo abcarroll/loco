@@ -83,7 +83,6 @@ class Grammar extends MonoParser
         // This in turn is necessary to detect left recursion, which occurs
         // if and only if a parser contains ITSELF in its own extended first-set.
         foreach ($this->internals as $internal) {
-
             // Find the extended first-set of this parser. If this parser is
             // contained in its own first-set, then it is left-recursive.
             // This has to be called after the "nullability flood fill" is complete.
@@ -230,6 +229,13 @@ class Grammar extends MonoParser
         }
         $string .= ")";
         return $string;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'grammar' => $this->internals
+        ];
     }
 
 }

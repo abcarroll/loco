@@ -8,6 +8,7 @@ use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
+use Ab\LocoX\Exception\ParseFailureException;
 use Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';

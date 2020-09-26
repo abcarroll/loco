@@ -62,4 +62,9 @@ class LookaheadParser extends StaticParser
     {
         return false;
     }
+
+    public function jsonSerialize()
+    {
+        return ['lookahead' => $this->internals];
+    }
 }

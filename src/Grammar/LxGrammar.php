@@ -62,13 +62,18 @@ class LocoGrammar extends Grammar
                     }
                 ),
 
+                '<annotationFn>' => new Sequence(
+                    [new StringParser('@'), '<bareword>', new LazyAltParser([''])
+                ),
+                
                 '<rule>' => new Sequence(
                     [
                         '<bareword>',
                         '<whitespace>',
-                        new StringParser('::='),
+                        new StringParser('<-'),
                         '<whitespace>',
-                        '<lazyaltparser>'
+                        '<lazyaltparser>',
+                        'SEMI'
                     ],
                     function ($bareword, $whitespace1, $equals, $whitespace2, $lazyaltparser) {
                         return [

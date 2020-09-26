@@ -1,6 +1,25 @@
-# Loco
+# LocoX Parsing Toolkit
 
-Loco is a parsing library for PHP.
+LocoX is a parsing library for PHP and potentially other programming languages.
+
+LocoX uses single-valued recursive-descent (top-down) parsers in such a way that each non-terminal parser may envelope
+one or more additional non-terminal (to form potentially complex chains) or terminals (to finalize the parsing 
+recursion).  
+
+Additionally, LocoX contains yet another powerful feature: the LxParser Toolkit.  Within this toolkit is:
+
+ - A language-agnostic scripting language for semantic actions.  This allows you to write a parser grammar containing
+ semantic actions and then transpile it to other languages natively.
+ - A custom yet familiar grammar notation for specifying the base grammar. 
+ - Allows embedding the custom meta-scripting language, LxScript, or any other language within it.
+ - Allows `@Textmate()` annotations for each rule, non-terminal and terminal clause which then may be passed through
+ the LxParser syntax highlighter tool and generates Textmate-compatible (which also includes Atom and VSCode) syntax
+ highlighting grammars.
+
+
+By default, LocoX expects parsers to be in a vendor-neutral language-agnostic JSON format  
+
+It is based off an earlier, abandoned parser called Loco.   
 
 Loco uses single-valued parsers called `MonoParser`s. A conventional, "enthusiastic" parser returns a set of possible results, 
 which is empty if parsing is not possible. A "lazy" parser returns one possible result on the first call, and then returns further 

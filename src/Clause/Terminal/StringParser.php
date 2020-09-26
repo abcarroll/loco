@@ -57,4 +57,9 @@ class StringParser extends StaticParser
     {
         return '' === $this->needle;
     }
+
+    public function jsonSerialize()
+    {
+        return ['utf8' => $this->needle];
+    }
 }

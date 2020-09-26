@@ -1,13 +1,25 @@
 <?php
 
-namespace Ab\LocoX;
+namespace Ab\LocoX\Clause;
 
-abstract class TopDownParser extends Parser
+use Ab\LocoX\Parser;
+
+abstract class Clause extends Parser
 {
     /**
      * Every parser assumes that it is non-nullable from the outset
      */
     public bool $nullable = false;
+
+    /**
+     * The default semantic action.
+     *
+     * Note this may be any callable, including a callable/invokable class. If you are providing non-standard actions,
+     * please consult the documentation on how to provide appropriate verification.
+     *
+     * @var callable
+     */
+    private $action;
 
     /**
      * The immediate first-set of a parser is the set of all internal parsers
@@ -30,4 +42,26 @@ abstract class TopDownParser extends Parser
      * This has to be called after all strings have been resolved to parser references.
      */
     abstract public function evaluateNullability();
+
+    /**
+     * Test to see if the clause will match on the given string
+     *
+     * @param     $string
+     * @param int $i
+     *
+     * @return mixed
+     */
+    abstract public function match($string, $i = 0);
+
+    public function getAction(): callable
+    {
+        return $this->action;
+    }
+
+    abstract public function jsonSerialize();
+
+    public function children()
+    {
+        return [];
+    }
 }
