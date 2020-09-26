@@ -129,8 +129,6 @@ class LocoGrammarTest extends TestCase
         $grammar2 = $this->grammar->parse(" S ::= ( 'a' 'a' 'a' | 'a' 'a' | 'a' ) ");
         $grammar3 = $this->grammar->parse(" S ::= APlus \n APlus ::= 'a' 'a' 'a' | 'a' 'a' | 'a' ");
 
-        dump($grammar1->parse("aaa"));
-
         $this->assertEquals(array("a", "a", "a"), $grammar1->parse("aaa"));
         $this->assertEquals(array("a", "a", "a"), $grammar4->parse("aaa"));
         $this->assertEquals(array(array("a", "a", "a")), $grammar2->parse("aaa"));
