@@ -1,8 +1,30 @@
-# Loco
+# LocoX Parsing Toolkit
 
-Loco is a parsing library for PHP.
+LocoX is a parsing library and toolkit for PHP.  Eventually, other languages will be supported as output targets.  It 
+is, by default, a recursive descent top-down parser.  Again, other styles of parsing may be eventually supported and it
+is designed in such a way that such support is quite trivial.
 
-Loco uses single-valued parsers called `MonoParser`s. A conventional, "enthusiastic" parser returns a set of possible results, 
+These styles of parsers do not require a separate lexer step, but LocoX can still have a separate lexer/parser if you do
+so choose.  One of the fastest way to perform parsing in PHP is to use regular expressions to generate a tokenization of
+the input text and then use a recursive-descent setup to recurse into the tokens.  LocoX supports this style of parsing.
+
+Or, if you do so choose, you may also completely skip the lexer and simply parse raw text in a recursive manner.  This 
+isn't very fast but it's, in 99% of cases, "fast enough".  Again, LocoX supports this style of parsing.
+
+In fact, LocoX supports a wide varity of parser styles (except table-driven parsers as mentioned):
+
+ - LocoX can act as an "on-the-spot" parser or as a parser generator.  You may feed it an object-oriented list of parser
+ operators (and even create your own) as an array directly to create the desired grammar or use one of the many grammar
+ notaitons below to generate a grammar.
+ - LocoX can act as a parser-generator using any of the following grammar notations/expression grammars:
+   - BNF
+   - EBNF
+   - Wirth Notation
+   - Basic Regular Expression (Generate parsers based on regex fragments)
+   - Full PEG Grammar Support
+   - Extended Custom Grammars
+
+LocoX uses single-valued parsers called `MonoParser`s. A conventional, "enthusiastic" parser returns a set of possible results, 
 which is empty if parsing is not possible. A "lazy" parser returns one possible result on the first call, and then returns further 
 results with each subsequent call until no more are possible. In contrast, `MonoParser`s simply return a single result or failure. 
 This in turn **makes backtracking impossible**, which has two effects:
@@ -10,23 +32,23 @@ This in turn **makes backtracking impossible**, which has two effects:
 * it reduces expressive power to only certain **unambiguous** context-free grammars
 * it prevents parsing time from becoming exponential.
 
-Loco directly to parses strings, requiring no intermediate lexing step.
+LocoX directly to parses strings, requiring no intermediate lexing step.
 
-Loco detects infinite loops (e.g. `(|a)*`) and [left recursion](http://en.wikipedia.org/wiki/Left_recursion) (e.g. `A -> Aa`) at 
+LocoX detects infinite loops (e.g. `(|a)*`) and [left recursion](http://en.wikipedia.org/wiki/Left_recursion) (e.g. `A -> Aa`) at 
 grammar creation time.
 
 
-## Parsers in Loco
+## Parsers in LocoX
 
 ### `MonoParser`
 
 Abstract base class from which all parsers inherit. Can't be instantiated. "Mono" means the parser returns one result, or fails.
 
-`Ferno\Loco\MonoParser` has one important method, `match($string, $i = 0)`, which either returns the successful match in the form 
-of an `array("j" => 9, "value" => "something")`, or throws a `Ferno\Loco\ParseFailureException`.
+`Ab\LocoX\MonoParser` has one important method, `match($string, $i = 0)`, which either returns the successful match in the form 
+of an `array("j" => 9, "value" => "something")`, or throws a `Ab\LocoX\ParseFailureException`.
 
 There is also the more useful method `parse($string)`, which either returns the parsed value `"something"` or throws a 
-`Ferno\Loco\ParseFailureException` if the match fails or doesn't occupy the entire length of the supplied string.
+`Ab\LocoX\ParseFailureException` if the match fails or doesn't occupy the entire length of the supplied string.
 
 
 
@@ -35,10 +57,10 @@ There is also the more useful method `parse($string)`, which either returns the 
 
 Finds the empty string (and always succeeds). Callback is passed no arguments. Default callback returns `null`.
 
-    new Ferno\Loco\EmptyParser();
+    new Ab\LocoX\Clause\Terminal\EmptyParser();
     // returns null
 
-    new Ferno\Loco\EmptyParser(
+    new Ab\LocoX\Clause\Terminal\EmptyParser(
       function() { return array(); }
     );
     // return an empty array instead
@@ -49,10 +71,10 @@ Finds the empty string (and always succeeds). Callback is passed no arguments. D
 Finds a static string. Callback is passed one argument, the string that was matched. Yes, that's effectively the same function 
 call each time. Default callback returns the first argument i.e. the string.
 
-    new Ferno\Loco\StringParser("name");
+    new Ab\LocoX\Clause\Terminal\StringParser("name");
     // returns "name"
 
-    new Ferno\Loco\StringParser(
+    new Ab\LocoX\Clause\Terminal\StringParser(
       "name",
       function($string) { return strrev($string); }
     );
@@ -73,10 +95,10 @@ Callback is passed one argument for each sub-match. For example, if the regex is
 the whole match, `"abcdefghij"`, the second argument is `"cdefgh"` and the third argument is `"ef"`. The default callback returns 
 only the first argument, the whole match.
 
-    new Ferno\Loco\RegexParser("/^'([a-zA-Z_][a-zA-Z_0-9]*)'/");
+    new Ab\LocoX\Clause\Terminal\RegexParser("/^'([a-zA-Z_][a-zA-Z_0-9]*)'/");
     // returns the full match including the single quotes
   
-    new Ferno\Loco\RegexParser(
+    new Ab\LocoX\Clause\Terminal\RegexParser(
       "/^'([a-zA-Z_][a-zA-Z_0-9]*)'/",
       function($match0, $match1) { return $match1; }
     );
@@ -88,12 +110,12 @@ only the first argument, the whole match.
 
 Matches a single UTF-8 character. You can optionally supply a blacklist of characters which will *not* be matched.
 
-    new Ferno\Loco\Utf8Parser(array("<", ">", "&"));
+    new Ab\LocoX\Clause\Terminal\Utf8Parser(array("<", ">", "&"));
     // any UTF-8 character except the three listed
 
 Callback is passed one argument, the string that was matched. The default callback returns the first argument i.e. the string.
 
-For best results, alternate (see `Ferno\Loco\OrderedChoice` below) with `Ferno\Loco\StringParsers` for e.g. `"&lt;"`, `"&gt;"`, 
+For best results, alternate (see `Ab\LocoX\Clause\Nonterminal\OrderedChoice` below) with `Ab\LocoX\Clause\Terminal\StringParsers` for e.g. `"&lt;"`, `"&gt;"`, 
 `"&amp;"` and other HTML character entities.
 
 
@@ -107,10 +129,10 @@ trying to retrieve other results if the first one turns out to be bogus.
 
 Callback is passed one argument, the sole successful internal match. The default callback returns the first argument directly.
 
-    new Ferno\Loco\OrderedChoice(
+    new Ab\LocoX\Clause\Nonterminal\OrderedChoice(
       array(
-        new Ferno\Loco\StringParser("foo"),
-        new Ferno\Loco\StringParser("bar")
+        new Ab\LocoX\Clause\Terminal\StringParser("foo"),
+        new Ab\LocoX\Clause\Terminal\StringParser("bar")
       )
     );
     // returns either "foo" or "bar"
@@ -121,20 +143,20 @@ Callback is passed one argument, the sole successful internal match. The default
 ### `Sequence`
 
 This encapsulates the "concatenation" parser combinator by concatenating a finite sequence of internal parsers. If the sequence is 
-empty, this is equivalent to `Ferno\Loco\EmptyParser`, above.
+empty, this is equivalent to `Ab\LocoX\Clause\Terminal\EmptyParser`, above.
 
 Callback is passed one argument for every internal parser, each argument containing the result from that parser. For example, 
-`new Ferno\Loco\Sequence(array($a, $b, $c), $callback)` will pass three arguments to its callback. The first contains the result from 
+`new Ab\LocoX\Clause\Nonterminal\Sequence(array($a, $b, $c), $callback)` will pass three arguments to its callback. The first contains the result from 
 parser `$a`, the second the result from parser `$b` and the third the result from parser `$c`. The default callback returns the 
 arguments in the form of an array: `return func_get_args();`.
 
-    new Ferno\Loco\Sequence(
+    new Ab\LocoX\Clause\Nonterminal\Sequence(
       array(
-        new Ferno\Loco\RegexParser("/^<([a-zA-Z_][a-zA-Z_0-9]*)>/", function($match0, $match1) { return $match1; }),
-        new Ferno\Loco\StringParser(", "),
-        new Ferno\Loco\RegexParser("/^<(\d\d\d\d-\d\d-\d\d)>/",     function($match0, $match1) { return $match1; }),
-        new Ferno\Loco\StringParser(", "),
-        new Ferno\Loco\RegexParser("/^<([A-Z]{2}[0-9]{7})>/",       function($match0, $match1) { return $match1; }),
+        new Ab\LocoX\Clause\Terminal\RegexParser("/^<([a-zA-Z_][a-zA-Z_0-9]*)>/", function($match0, $match1) { return $match1; }),
+        new Ab\LocoX\Clause\Terminal\StringParser(", "),
+        new Ab\LocoX\Clause\Terminal\RegexParser("/^<(\d\d\d\d-\d\d-\d\d)>/",     function($match0, $match1) { return $match1; }),
+        new Ab\LocoX\Clause\Terminal\StringParser(", "),
+        new Ab\LocoX\Clause\Terminal\RegexParser("/^<([A-Z]{2}[0-9]{7})>/",       function($match0, $match1) { return $match1; }),
       ),
       function($name, $comma1, $opendate, $comma2, $ref) { return new Account($accountname, $opendate, $ref); }
     );
@@ -145,25 +167,25 @@ arguments in the form of an array: `return func_get_args();`.
 ### `BoundedRepeat`
 
 This encapsulates the "Kleene star closure" parser combinator to match single internal parser multiple (finitely or infinitely 
-many) times. With a finite upper bound, this is more or less equivalent to `Ferno\Loco\Sequence`, above. With an infinite upper bound, this 
-gets more interesting. `Ferno\Loco\BoundedRepeat`, as the name hints, will match as many times as it can before returning. 
+many) times. With a finite upper bound, this is more or less equivalent to `Ab\LocoX\Clause\Nonterminal\Sequence`, above. With an infinite upper bound, this 
+gets more interesting. `Ab\LocoX\Clause\Nonterminal\BoundedRepeat`, as the name hints, will match as many times as it can before returning. 
 There is no option for returning multiple matches simultaneously; only the largest match is returned. And there is no option for 
 backtracking and trying to consume more or fewer instances.
 
-Callback is passed one argument for every match. For example, `new Ferno\Loco\BoundedRepeat($a, 2, 4, $callback)` could pass 
+Callback is passed one argument for every match. For example, `new Ab\LocoX\Clause\Nonterminal\BoundedRepeat($a, 2, 4, $callback)` could pass 
 2, 3 or 4 arguments to its callback. `new BoundedRepeat($a, 0, null, $callback)` has an unlimited upper bound and could pass 
 an unlimited number of arguments to its callback. (PHP seems to have no problem with this.) The default callback returns all of 
 the arguments in the form of an array: `return func_get_args();`.
 
 Remember that a PHP function can be defined as `function(){...}` and still accept an arbitrary number of arguments.
 
-    new Ferno\Loco\BoundedRepeat(
-      new Ferno\Loco\OrderedChoice(
+    new Ab\LocoX\Clause\Nonterminal\BoundedRepeat(
+      new Ab\LocoX\Clause\Nonterminal\OrderedChoice(
         array(
-          new Ferno\Loco\Utf8Parser(array("<", ">", "&")),                         // match any UTF-8 character except <, > or &
-          new Ferno\Loco\StringParser("&lt;",  function($string) { return "<"; }), // ...or an escaped < (unescape it)
-          new Ferno\Loco\StringParser("&gt;",  function($string) { return ">"; }), // ...or an escaped > (unescape it)
-          new Ferno\Loco\StringParser("&amp;", function($string) { return "&"; })  // ...or an escaped & (unescape it)
+          new Ab\LocoX\Clause\Terminal\Utf8Parser(array("<", ">", "&")),                         // match any UTF-8 character except <, > or &
+          new Ab\LocoX\Clause\Terminal\StringParser("&lt;",  function($string) { return "<"; }), // ...or an escaped < (unescape it)
+          new Ab\LocoX\Clause\Terminal\StringParser("&gt;",  function($string) { return ">"; }), // ...or an escaped > (unescape it)
+          new Ab\LocoX\Clause\Terminal\StringParser("&amp;", function($string) { return "&"; })  // ...or an escaped & (unescape it)
         )
       ),
       0,                                                  // at least 0 times
@@ -180,19 +202,19 @@ All of the above is well and good, but it doesn't complete the picture. Firstly,
 read when they nest too much. Secondly, it makes recursion very difficult; a parser cannot easily be placed inside itself, for 
 example. Without recursion, all we can parse is regular languages, not context-free languages.
 
-The `Ferno\Loco\Grammar` class makes this very easy. At its heart, `Ferno\Loco\Grammar` is just another `Ferno\Loco\MonoParser`. 
-But `Ferno\Loco\Grammar` accepts an associative array of parsers as input -- meaning each one comes attached to a name. The 
-parsers inside it, meanwhile, can refer to other parsers by name instead of containing them directly. `Ferno\Loco\Grammar` 
+The `Ab\LocoX\Grammar` class makes this very easy. At its heart, `Ab\LocoX\Grammar` is just another `Ab\LocoX\MonoParser`. 
+But `Ab\LocoX\Grammar` accepts an associative array of parsers as input -- meaning each one comes attached to a name. The 
+parsers inside it, meanwhile, can refer to other parsers by name instead of containing them directly. `Ab\LocoX\Grammar` 
 resolves these references at instantiation time, as well as detecting anomalies like left recursion, names which refer to parsers 
-which don't exist, dangerous formations such as new `Ferno\Loco\BoundedRepeat(new Ferno\Loco\EmptyParser(), 0, null)`, and so 
+which don't exist, dangerous formations such as new `Ab\LocoX\Clause\Nonterminal\BoundedRepeat(new Ab\LocoX\Clause\Terminal\EmptyParser(), 0, null)`, and so 
 on.
 
-Here's a simple `Ferno\Loco\Grammar` which can recognise (some) valid HTML paragraphs and return the text content of those paragraphs:
+Here's a simple `Ab\LocoX\Grammar` which can recognise (some) valid HTML paragraphs and return the text content of those paragraphs:
 
-    $p = new Ferno\Loco\Grammar(
+    $p = new Ab\LocoX\Grammar(
       "paragraph",
       array(
-        "paragraph" => new Ferno\Loco\Sequence(
+        "paragraph" => new Ab\LocoX\Clause\Nonterminal\Sequence(
           array(
             "OPEN_P",
             "CONTENT",
@@ -203,23 +225,23 @@ Here's a simple `Ferno\Loco\Grammar` which can recognise (some) valid HTML parag
           }
         ),
 
-        "OPEN_P" => new Ferno\Loco\StringParser("<p>"),
+        "OPEN_P" => new Ab\LocoX\Clause\Terminal\StringParser("<p>"),
 
-        "CONTENT" => new Ferno\Loco\BoundedRepeat(
+        "CONTENT" => new Ab\LocoX\Clause\Nonterminal\BoundedRepeat(
           "UTF-8 CHAR",
           0,
           null,
           function() { return implode("", func_get_args()); }
         ),
 
-        "CLOSE_P" => new Ferno\Loco\StringParser("</p>"),
+        "CLOSE_P" => new Ab\LocoX\Clause\Terminal\StringParser("</p>"),
 
-        "UTF-8 CHAR" => new Ferno\Loco\OrderedChoice(
+        "UTF-8 CHAR" => new Ab\LocoX\Clause\Nonterminal\OrderedChoice(
           array(
-            new Ferno\Loco\Utf8Parser(array("<", ">", "&")),                         // match any UTF-8 character except <, > or &
-            new Ferno\Loco\StringParser("&lt;",  function($string) { return "<"; }), // ...or an escaped < (unescape it)
-            new Ferno\Loco\StringParser("&gt;",  function($string) { return ">"; }), // ...or an escaped > (unescape it)
-            new Ferno\Loco\StringParser("&amp;", function($string) { return "&"; })  // ...or an escaped & (unescape it)
+            new Ab\LocoX\Clause\Terminal\Utf8Parser(array("<", ">", "&")),                         // match any UTF-8 character except <, > or &
+            new Ab\LocoX\Clause\Terminal\StringParser("&lt;",  function($string) { return "<"; }), // ...or an escaped < (unescape it)
+            new Ab\LocoX\Clause\Terminal\StringParser("&gt;",  function($string) { return ">"; }), // ...or an escaped > (unescape it)
+            new Ab\LocoX\Clause\Terminal\StringParser("&amp;", function($string) { return "&"; })  // ...or an escaped & (unescape it)
           )
         ),
       )
@@ -254,7 +276,7 @@ Recognise simple valid HTML text using `<h5>`, `<p>`, `<em>` and `<strong>`, wit
 ### [examples/bnf.php](https://github.com/ferno/loco/blob/master/examples/bnf.php)
 
 Defines `$bnfGrammar`, which parses a grammar presented in [Backus-Naur Form](http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form) 
-and returns `Ferno\Loco\Grammar` object capable of recognising that grammar.
+and returns `Ab\LocoX\Grammar` object capable of recognising that grammar.
 
 BNF is generally pretty low-tech and lacks a lot of features.
 
@@ -289,7 +311,7 @@ Steve MacLaurin \n173 Acacia Avenue 7A\nStevenage, KY 33445\n
 ### [examples/wirth.php](https://github.com/ferno/loco/blob/master/examples/wirth.php)
 
 Defines `$wirthGrammar`, which parses a grammar presented in [Wirth syntax notation](http://en.wikipedia.org/wiki/Wirth_syntax_notation) 
-and returns a `Ferno\Loco\Grammar` object capable of recognising that grammar.
+and returns a `Ab\LocoX\Grammar` object capable of recognising that grammar.
 
 Wirth syntax notation is okay, but I don't like the use of `.` (which in my mind usually means "any character" (when used in a 
 regex), or the string concatenation operator) as a line ending (which I usually think of as a semicolon or an actual `\n`). I also 
@@ -333,7 +355,7 @@ Defines `$ebnfGrammar`, which parses a grammar presented in [Extended Backus-Nau
 
 This is a big improvement on vanilla BNF (comments are a must!) but the need for commas between tokens is irritating and again, braces and square brackets aren't ideal in my mind.
 
-`$ebnfGrammar` can't handle "specials" (strings contained between two question marks), since these have no clear definition. It also can't handle "exceptions" (when a `-` is used to discard certain possibilities), because these are not permissible in context-free grammars or possible with naive `Ferno\Loco\MonoParser`s, and so would require special modification to Loco to handle.
+`$ebnfGrammar` can't handle "specials" (strings contained between two question marks), since these have no clear definition. It also can't handle "exceptions" (when a `-` is used to discard certain possibilities), because these are not permissible in context-free grammars or possible with naive `Ab\LocoX\MonoParser`s, and so would require special modification to Loco to handle.
 
 #### Sample grammar in Extended Backus-Naur Form
 
@@ -371,20 +393,20 @@ This is a big improvement on vanilla BNF (comments are a must!) but the need for
 
 ### [examples/locoNotation.php](https://github.com/ferno/loco/blob/master/examples/locoNotation.php)
 
-Defines `$locoGrammar`, which parses a grammar presented in "Loco notation" and returns a `Ferno\Loco\Grammar` object capable of parsing that grammar.
+Defines `$locoGrammar`, which parses a grammar presented in "Loco notation" and returns a `Ab\LocoX\Grammar` object capable of parsing that grammar.
 
-"Loco notation" (for lack of a better name) is an extension of Backus-Naur Form which gives access to all the `Ferno\Loco\MonoParser`s that Loco makes available. The following parsers are already effectively available in most grammar notations:
+"Loco notation" (for lack of a better name) is an extension of Backus-Naur Form which gives access to all the `Ab\LocoX\MonoParser`s that Loco makes available. The following parsers are already effectively available in most grammar notations:
 
-* `Ferno\Loco\EmptyParser` - Just have an empty string or an empty right-hand side to a rule. Some notations also permit an explicit "epsilon" symbol.
-* `Ferno\Loco\StringParser` - Invariably requires a simple string literal in single or double quotes.
-* `Ferno\Loco\Sequence` - Usually you put multiple tokens in a row and they will be matched consecutively. In EBNF, commas must be used as separators.
-* `Ferno\Loco\OrderedChoice` - Alternation is achieved using a pipe, `|`, between possibilities.
-* `Ferno\Loco\BoundedRepeat` - Most notations provide some ability to make a match optional (typically square brackets), and/or to match an unlimited number of times (typically an asterisk or braces).
+* `Ab\LocoX\Clause\Terminal\EmptyParser` - Just have an empty string or an empty right-hand side to a rule. Some notations also permit an explicit "epsilon" symbol.
+* `Ab\LocoX\Clause\Terminal\StringParser` - Invariably requires a simple string literal in single or double quotes.
+* `Ab\LocoX\Clause\Nonterminal\Sequence` - Usually you put multiple tokens in a row and they will be matched consecutively. In EBNF, commas must be used as separators.
+* `Ab\LocoX\Clause\Nonterminal\OrderedChoice` - Alternation is achieved using a pipe, `|`, between possibilities.
+* `Ab\LocoX\Clause\Nonterminal\BoundedRepeat` - Most notations provide some ability to make a match optional (typically square brackets), and/or to match an unlimited number of times (typically an asterisk or braces).
 
 I had to invent new notation for the following:
 
-* `Ferno\Loco\RegexParser` - Put your regex between slashes, just like in Perl.
-* `Ferno\Loco\Utf8Parser` - To match any single UTF-8 character, put a full stop, `.`. To blacklist some characters, put the blacklisted characters between `[^` and `]`.
+* `Ab\LocoX\Clause\Terminal\RegexParser` - Put your regex between slashes, just like in Perl.
+* `Ab\LocoX\Clause\Terminal\Utf8Parser` - To match any single UTF-8 character, put a full stop, `.`. To blacklist some characters, put the blacklisted characters between `[^` and `]`.
 
 In both cases I borrowed notation from the standard regular expression syntax, because why not stay with the familiar?
 
