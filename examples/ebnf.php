@@ -1,9 +1,9 @@
 <?php
 namespace Ab\LocoX;
 
-use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Clause\Terminal\RegexParser;
@@ -48,7 +48,7 @@ $ebnfGrammar = new Grammar(
 			array("<conc>", "<pipeconclist>"),
 			function($conc, $pipeconclist) {
 				array_unshift($pipeconclist, $conc);
-				return new LazyAltParser($pipeconclist);
+				return new OrderedChoice($pipeconclist);
 			}
 		),
 
@@ -70,7 +70,7 @@ $ebnfGrammar = new Grammar(
 				// in reverse order so that our splicing doesn't modify the array
 				$multiparsers = array();
 				foreach($commatermlist as $k => $internal) {
-					if(is_a($internal, "GreedyMultiParser")) {
+					if(is_a($internal, "BoundedRepeat")) {
 						array_unshift($multiparsers, $k);
 					}
 				}
@@ -100,7 +100,7 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<term>" => new LazyAltParser(
+		"<term>" => new OrderedChoice(
 			array("<bareword>", "<sq>", "<dq>", "<group>", "<repetition>", "<optional>")
 		),
 
@@ -190,13 +190,13 @@ $ebnfGrammar = new Grammar(
 				"<space>"
 			),
 			function($left_bracket, $space1, $alt, $right_bracket, $space2) {
-				return new GreedyMultiParser($alt, 0, 1);
+				return new BoundedRepeat($alt, 0, 1);
 			}
 		),
 
 		"<space>" => new GreedyStarParser("<whitespace/comment>"),
 
-		"<whitespace/comment>" => new LazyAltParser(
+		"<whitespace/comment>" => new OrderedChoice(
 			array("<whitespace>", "<comment>")
 		),
 

@@ -4,7 +4,7 @@ namespace Ferno\Tests\Loco;
 
 use Ab\LocoX\Exception\GrammarException;
 use Ab\LocoX\Exception\ParseFailureException;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Terminal\StringParser;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +15,7 @@ class LazyAltParserTest extends TestCase
 
     public function setUp(): void
     {
-        $this->parser = new LazyAltParser(
+        $this->parser = new OrderedChoice(
             array(
                 new StringParser("abc"),
                 new StringParser("ab"),
@@ -41,6 +41,6 @@ class LazyAltParserTest extends TestCase
     public function testEmptyParser()
     {
         $this->expectException(GrammarException::_CLASS);
-        new LazyAltParser(array());
+        new OrderedChoice(array());
     }
 }

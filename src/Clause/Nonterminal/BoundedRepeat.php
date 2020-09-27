@@ -2,19 +2,20 @@
 
 namespace Ab\LocoX\Clause\Nonterminal;
 
+use Ab\LocoX\Clause\Clause;
 use Ab\LocoX\MonoParser;
 use Ab\LocoX\Exception\ParseFailureException;
 
 /**
  * Callback accepts a single argument containing all submatches, however many
  */
-class GreedyMultiParser extends MonoParser
+class BoundedRepeat extends MonoParser
 {
     private $lower;
 
     public $optional;
 
-    public function __construct($internal, $lower, $upper, $callback = null)
+    public function __construct($internal, ?int $lower, ?int $upper, $callback = null)
     {
         $this->lower = $lower;
         if (null === $upper) {
@@ -25,7 +26,7 @@ class GreedyMultiParser extends MonoParser
             }
             $this->optional = $upper - $lower;
         }
-        $this->string = 'new ' . __CLASS__ . '(' . $internal . ', ' . var_export($lower, true) . ', ' . var_export(
+        $this->string = 'new ' . __CLASS__ . '(' . json_encode($internal) . ', ' . var_export($lower, true) . ', ' . var_export(
                 $upper,
                 true
             ) . ')';

@@ -3,12 +3,16 @@
 namespace Ferno\Tests\Loco;
 
 use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Nonterminal\UntilString;
+use Ab\LocoX\Clause\RuleReference;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\Utf8Parser;
 use Ab\LocoX\Grammar;
 use Ab\LocoX\Exception\GrammarException;
-use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Exception\ParseFailureException;
 use Ab\LocoX\Clause\Terminal\StringParser;
 use \PHPUnit\Framework\TestCase as TestCase;
@@ -46,7 +50,7 @@ class GrammarTest extends TestCase
         new Grammar(
             "<S>",
             array(
-                "<S>" => new GreedyMultiParser("<A>", 7, null),
+                "<S>" => new BoundedRepeat("<A>", 7, null),
                 "<A>" => new EmptyParser()
             )
         );
@@ -90,7 +94,7 @@ class GrammarTest extends TestCase
         new Grammar(
             "<A>",
             array(
-                "<A>" => new LazyAltParser(
+                "<A>" => new OrderedChoice(
                     array(
                         new StringParser("Y"),
                         new Sequence(
@@ -114,10 +118,38 @@ class GrammarTest extends TestCase
             "<A>",
             array(
                 "<A>" => new Sequence(array("<B>")),
-                "<B>" => new LazyAltParser(array("<C>", "<D>")),
+                "<B>" => new OrderedChoice(array("<C>", "<D>")),
                 "<C>" => new Sequence(array(new StringParser("C"))),
-                "<D>" => new LazyAltParser(array("<C>", "<A>"))
+                "<D>" => new OrderedChoice(array("<C>", "<A>"))
             )
+        );
+    }
+
+    public function testRuleReferenceClassResolution()
+    {
+        $gg = new Grammar(
+            'S',
+            [
+            'S' => new Sequence([
+                new StringParser('abc')
+            ]),
+            'a' => new StringParser('xyz'),
+            'b' => new Utf8Parser(['.']),
+            'c' => new RegexParser('/^a+/'),
+            'd' => new UntilString(['!']),
+            'e' => new EmptyParser(),
+
+            'x.1' => new Sequence(['a', 'b', 'c', 'd']),
+            'x.2' => new OrderedChoice(['a', 'b', 'c', 'd', 'e']),
+            'x.3' => new BoundedRepeat(new Sequence(['x.1']), 0, 1),
+            'x.4' => new GreedyStarParser(new Sequence(['x.1', 'x.2'])),
+
+            'y.1' => new Sequence([new RuleReference('a'), new RuleReference('b'), new RuleReference('c'), new RuleReference('d')]),
+            'y.2' => new OrderedChoice([new RuleReference('a'), new RuleReference('b'), new RuleReference('c'), new RuleReference('d'), new RuleReference('e')]),
+            'y.3' => new BoundedRepeat(new Sequence([new RuleReference('x.1')]), 0, 1),
+            'y.4' => new GreedyStarParser(new Sequence([new RuleReference('x.1'), new RuleReference('x.2')])),
+                                                                                                                                                     
+            ]
         );
     }
 }

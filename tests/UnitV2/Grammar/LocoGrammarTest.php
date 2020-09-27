@@ -119,8 +119,37 @@ class LocoGrammarTest extends TestCase
 
     }
 
+    /**
+     * 'a' and 'a'+ should both return strings
+     */
+    public function testKlineStarDoesntIntroduceExtraNesting()
+    {
+        $grammar1 = $this->grammar->parse(" S ::= 'aa' | 'a' | 'b'+ | 'c'* ");
+        $this->assertEquals(array("a"), $grammar1->parse("a"));
+        $this->assertEquals(array("aa"), $grammar1->parse("aa"));
+        $this->assertEquals(array("b"), $grammar1->parse("b"));
+        $this->assertEquals(array("b", "b"), $grammar1->parse("bb"));
+        $this->assertEquals(array("b", "b", "b"), $grammar1->parse("bbb"));
+        $this->assertEquals(array("c"), $grammar1->parse("c"));
+        $this->assertEquals(array("c", "c"), $grammar1->parse("cc"));
+        $this->assertEquals(array("c", "c", "c"), $grammar1->parse("ccc"));
+    }
+
+    /**
+     * @FIXME
+     */
+    /* public function testAlternationMergesProperly()
+    {
+        $grammar1 = $this->grammar->parse(" S ::= 'a' | 'a'+");
+        $this->assertEquals(array("a"), $grammar1->parse("a"));
+        $this->assertEquals(array("a", "a", "a"), $grammar1->parse("aaa"));
+    } */
+
     public function testPlusParser()
     {
+
+
+
         // Plus parser
         // new S(array("a", "a", ...))
         // new S(new APlus("a", "a", ...))

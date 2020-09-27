@@ -3,9 +3,9 @@
 namespace Ab\LocoX\Clause\Nonterminal;
 
 /**
- * Tiny subclass is ironically much more useful than GreedyMultiParser
+ * Tiny subclass is ironically much more useful than BoundedRepeat
  */
-class GreedyStarParser extends GreedyMultiParser
+class GreedyStarParser extends BoundedRepeat
 {
     public function __construct($internal, $callback = null)
     {

@@ -27,6 +27,7 @@ abstract class MonoParser extends Clause
 
     public function __toString()
     {
+        return get_class($this);
         return $this->string;
     }
 
@@ -62,7 +63,7 @@ abstract class MonoParser extends Clause
      */
     abstract public function getResult($string, $i = 0);
 
-    public function __construct($internals, $callback)
+    public function __construct(array $internals, $callback)
     {
         if (! is_string($this->string)) {
             throw new Exception('You need to populate $string');

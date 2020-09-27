@@ -6,9 +6,9 @@ namespace Ab\LocoX\Grammar;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Grammar;
-use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
 use Ab\LocoX\Clause\Terminal\Utf8Parser;
@@ -47,9 +47,15 @@ class LocoGrammar extends Grammar
                     }
                 ),
 
-                '<ruleorblankline>' => new LazyAltParser(
-                    ['<rule>', '<blankline>']
+                '<ruleorblankline>' => new OrderedChoice(
+                    ['<rule>', '<comment>', '<blankline>']
                 ),
+                
+                '<comment>' => new OrderedChoice(
+                    [
+                        new RegexParser("/^\/\/.++/"),
+                        new RegexParser("/^(?>\/\*(?:\*(?!\/)|[^*])*\*\/)/"),
+                    ], function() { return null; }),
 
                 '<blankline>' => new Sequence(
                     [
@@ -82,9 +88,9 @@ class LocoGrammar extends Grammar
                         array_unshift($pipeconcparserlist, $concparser);
 
                         // make a basic lazyaltparser which returns whatever.
-                        // Since the LazyAltParser always contains 0 or more ConcParsers,
+                        // Since the OrderedChoice always contains 0 or more ConcParsers,
                         // the value of $result is always an array
-                        return new LazyAltParser(
+                        return new OrderedChoice(
                             $pipeconcparserlist
                         );
                     }
@@ -108,7 +114,7 @@ class LocoGrammar extends Grammar
                         // in reverse order so that our splicing doesn't modify the array
                         $multiparsers = [];
                         foreach (func_get_args() as $k => $internal) {
-                            if (is_a($internal, "Ferno\Loco\GreedyMultiParser")) {
+                            if($internal instanceof BoundedRepeat) {
                                 array_unshift($multiparsers, $k);
                             }
                         }
@@ -134,7 +140,7 @@ class LocoGrammar extends Grammar
                     ['<bnfmultiplicand>', '<whitespace>', '<bnfmultiplier>', '<whitespace>'],
                     function ($bnfmultiplicand, $whitespace1, $bnfmultiplier, $whitespace2) {
                         if (is_array($bnfmultiplier)) {
-                            return new GreedyMultiParser(
+                            return new BoundedRepeat(
                                 $bnfmultiplicand,
                                 $bnfmultiplier['lower'],
                                 $bnfmultiplier['upper']
@@ -146,7 +152,7 @@ class LocoGrammar extends Grammar
                     }
                 ),
 
-                '<bnfmultiplicand>' => new LazyAltParser(
+                '<bnfmultiplicand>' => new OrderedChoice(
                     [
                         '<bareword>'        // i.e. the name of another rule elsewhere in the grammar
                         , '<dqstringparser>' // double-quoted string e.g. "fred"
@@ -158,7 +164,7 @@ class LocoGrammar extends Grammar
                     ]
                 ),
 
-                '<bnfmultiplier>' => new LazyAltParser(
+                '<bnfmultiplier>' => new OrderedChoice(
                     ['<asterisk>', '<plus>', '<questionmark>', '<emptymultiplier>']
                 ),
 
@@ -220,7 +226,7 @@ class LocoGrammar extends Grammar
                     function () { return implode('', func_get_args()); }
                 ),
 
-                '<dqstrchar>' => new LazyAltParser(
+                '<dqstrchar>' => new OrderedChoice(
                     [
                         new Utf8Parser(['\\', '"']),
                         new StringParser('\\\\', function ($string) { return '\\'; }),
@@ -228,7 +234,7 @@ class LocoGrammar extends Grammar
                     ]
                 ),
 
-                '<sqstrchar>' => new LazyAltParser(
+                '<sqstrchar>' => new OrderedChoice(
                     [
                         new Utf8Parser(['\\', "'"]),
                         new StringParser('\\\\', function ($string) { return '\\'; }),
@@ -263,7 +269,7 @@ class LocoGrammar extends Grammar
 
                 // Regular expression contains: Any single character that is not a slash or backslash...
                 // OR any single character escaped by a backslash. Return as literal.
-                '<rechar>' => new LazyAltParser(
+                '<rechar>' => new OrderedChoice(
                     [
                         new Utf8Parser(['\\', '/']),
                         new Sequence(
@@ -291,7 +297,7 @@ class LocoGrammar extends Grammar
 
                 '<exceptions>' => new GreedyStarParser('<exceptionchar>'),
 
-                '<exceptionchar>' => new LazyAltParser(
+                '<exceptionchar>' => new OrderedChoice(
                     [
                         new Utf8Parser(['\\', ']']),
                         new StringParser('\\\\', function ($string) { return '\\'; }),

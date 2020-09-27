@@ -2,9 +2,9 @@
 
 namespace Ab\LocoX;
 
-use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Clause\Terminal\RegexParser;
@@ -44,7 +44,7 @@ $locoGrammar = new Grammar(
             }
         ),
 
-        "<ruleorblankline>" => new LazyAltParser(
+        "<ruleorblankline>" => new OrderedChoice(
             ["<rule>", "<blankline>"]
         ),
 
@@ -80,9 +80,9 @@ $locoGrammar = new Grammar(
                 array_unshift($pipeconcparserlist, $concparser);
 
                 // make a basic lazyaltparser which returns whatever.
-                // Since the LazyAltParser always contains 0 or more ConcParsers,
+                // Since the OrderedChoice always contains 0 or more ConcParsers,
                 // the value of $result is always an array
-                return new LazyAltParser(
+                return new OrderedChoice(
                     $pipeconcparserlist
                 );
             }
@@ -108,7 +108,7 @@ $locoGrammar = new Grammar(
                 // in reverse order so that our splicing doesn't modify the array
                 $multiparsers = [];
                 foreach (func_get_args() as $k => $internal) {
-                    if (is_a($internal, "GreedyMultiParser")) {
+                    if (is_a($internal, "BoundedRepeat")) {
                         array_unshift($multiparsers, $k);
                     }
                 }
@@ -134,7 +134,7 @@ $locoGrammar = new Grammar(
             function ($bnfmultiplicand, $whitespace1, $bnfmultiplier, $whitespace2) {
 
                 if (is_array($bnfmultiplier)) {
-                    return new GreedyMultiParser(
+                    return new BoundedRepeat(
                         $bnfmultiplicand,
                         $bnfmultiplier["lower"],
                         $bnfmultiplier["upper"]
@@ -146,7 +146,7 @@ $locoGrammar = new Grammar(
             }
         ),
 
-        "<bnfmultiplicand>" => new LazyAltParser(
+        "<bnfmultiplicand>" => new OrderedChoice(
             [
                 "<bareword>"        // i.e. the name of another rule elsewhere in the grammar
                 , "<dqstringparser>" // double-quoted string e.g. "fred"
@@ -158,7 +158,7 @@ $locoGrammar = new Grammar(
             ]
         ),
 
-        "<bnfmultiplier>" => new LazyAltParser(
+        "<bnfmultiplier>" => new OrderedChoice(
             ["<asterisk>", "<plus>", "<questionmark>", "<emptymultiplier>"]
         ),
 
@@ -228,7 +228,7 @@ $locoGrammar = new Grammar(
             }
         ),
 
-        "<dqstrchar>" => new LazyAltParser(
+        "<dqstrchar>" => new OrderedChoice(
             [
                 new Utf8Parser(["\\", "\""]),
                 new StringParser(
@@ -242,7 +242,7 @@ $locoGrammar = new Grammar(
             ]
         ),
 
-        "<sqstrchar>"   => new LazyAltParser(
+        "<sqstrchar>"   => new OrderedChoice(
             [
                 new Utf8Parser(["\\", "'"]),
                 new StringParser(
@@ -285,7 +285,7 @@ $locoGrammar = new Grammar(
 
         // Regular expression contains: Any single character that is not a slash or backslash...
         // OR any single character escaped by a backslash. Return as literal.
-        "<rechar>" => new LazyAltParser(
+        "<rechar>" => new OrderedChoice(
             [
                 new Utf8Parser(["\\", "/"]),
                 new Sequence(
@@ -313,7 +313,7 @@ $locoGrammar = new Grammar(
 
         "<exceptions>" => new GreedyStarParser("<exceptionchar>"),
 
-        "<exceptionchar>" => new LazyAltParser(
+        "<exceptionchar>" => new OrderedChoice(
             [
                 new Utf8Parser(["\\", "]"]),
                 new StringParser(

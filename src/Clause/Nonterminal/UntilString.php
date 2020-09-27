@@ -7,11 +7,11 @@ use Ab\LocoX\Exception\{GrammarException, ParseFailureException};
 use Ab\LocoX\StaticParser;
 
 /**
- * LookaheadParser matches everything up until any one of the provided
+ * UntilString matches everything up until any one of the provided
  * $lookaheadStrings is encountered. So this works like a negative
  * lookahead regular expression, but is less flexible.
  */
-class LookaheadParser extends StaticParser
+class UntilString extends StaticParser
 {
     private $lookaheadStrings;
 

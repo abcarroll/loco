@@ -7,7 +7,7 @@ use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Grammar;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
 use Ab\LocoX\Clause\Terminal\Utf8Parser;
@@ -29,7 +29,7 @@ class JsonGrammar extends Grammar
                     function ($left_brace, $whitespace1, $objectcontent, $right_brace, $whitespace2) { return $objectcontent; }
                 ),
 
-                '<objectcontent>' => new LazyAltParser(
+                '<objectcontent>' => new OrderedChoice(
                     ['<fullobject>', '<emptyobject>']
                 ),
 
@@ -73,7 +73,7 @@ class JsonGrammar extends Grammar
                     function ($left_bracket, $whitespace1, $arraycontent, $right_bracket, $whitespace2) { return $arraycontent; }
                 ),
 
-                '<arraycontent>' => new LazyAltParser(
+                '<arraycontent>' => new OrderedChoice(
                     ['<fullarray>', '<emptyarray>']
                 ),
 
@@ -97,7 +97,7 @@ class JsonGrammar extends Grammar
                     function ($comma, $whitespace, $value) { return $value; }
                 ),
 
-                '<value>' => new LazyAltParser(
+                '<value>' => new OrderedChoice(
                     ['<string>', '<number>', '<object>', '<array>', '<true>', '<false>', '<null>']
                 ),
 
@@ -111,7 +111,7 @@ class JsonGrammar extends Grammar
                     function () { return implode('', func_get_args()); }
                 ),
 
-                '<char>' => new LazyAltParser(
+                '<char>' => new OrderedChoice(
                     [
                         'UTF8_EXCEPT', 'ESCAPED_QUOTE', 'ESCAPED_BACKSLASH', 'ESCAPED_SLASH', 'ESCAPED_B',
                         'ESCAPED_F', 'ESCAPED_N', 'ESCAPED_R', 'ESCAPED_T', 'ESCAPED_UTF8'

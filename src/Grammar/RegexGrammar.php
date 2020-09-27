@@ -13,7 +13,7 @@ use Ab\LocoX\Grammar\Regex\Mult;
 use Ab\LocoX\Grammar\Regex\Multiplier;
 use Ab\LocoX\Grammar\Regex\Pattern;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
 
@@ -56,7 +56,7 @@ class RegexGrammar extends Grammar
                     ['<multiplicand>', '<multiplier>'],
                     function ($multiplicand, $multiplier) { return new Mult($multiplicand, $multiplier); }
                 ),
-                '<multiplicand>' => new LazyAltParser(
+                '<multiplicand>' => new OrderedChoice(
                     ['<subpattern>', '<charclass>']
                 ),
                 '<subpattern>' => new Sequence(
@@ -66,7 +66,7 @@ class RegexGrammar extends Grammar
 
                 // A Multiplier has a lower bound and an upper bound. There are several short forms.
                 // In the absence of a multiplier, {1,1} is assumed
-                '<multiplier>' => new LazyAltParser(
+                '<multiplier>' => new OrderedChoice(
                     [
                         '<bracemultiplier>',
                         new StringParser('?', function ($string) { return new Multiplier(0, 1); }),
@@ -85,7 +85,7 @@ class RegexGrammar extends Grammar
                     function ($left_brace, $multiplierinterior, $right_brace) { return $multiplierinterior; }
                 ),
 
-                '<multiplierinterior>' => new LazyAltParser(
+                '<multiplierinterior>' => new OrderedChoice(
                     ['<bothbounds>', '<unlimited>', '<onebound>']
                 ),
                 '<bothbounds>' => new Sequence(
@@ -107,7 +107,7 @@ class RegexGrammar extends Grammar
                 // It can also be a single character escaped with a backslash,
                 // or a "true" charclass, which is a possibly-negated set of elements
                 // listed inside a pair of brackets.
-                '<charclass>' => new LazyAltParser(
+                '<charclass>' => new OrderedChoice(
                     [
                         new RegexParser('#^[^|()\\[\\]?*+{}\\\\.]#', function ($match) { return new CharClass($match); }),
                         '<bracketednegatedcharclass>',
@@ -159,7 +159,7 @@ class RegexGrammar extends Grammar
 
                 // An element is either a single character or a character range.
                 // A character range is represented with an optional hyphen
-                '<elem>' => new LazyAltParser(
+                '<elem>' => new OrderedChoice(
                     ['<charrange>', '<classchar>']
                 ),
 
@@ -183,7 +183,7 @@ class RegexGrammar extends Grammar
 
                 // interior characters in character classes usually represent themselves,
                 // but some are backslash-escaped
-                '<classchar>' => new LazyAltParser(
+                '<classchar>' => new OrderedChoice(
                     [
                         new RegexParser('#^[^\\\\\\[\\]\\^\\-]#'),
                         new StringParser('\\\\', function ($string) { return substr($string, 1, 1); }),

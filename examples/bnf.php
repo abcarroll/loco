@@ -1,9 +1,9 @@
 <?php
 namespace Ab\LocoX;
 
-use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Clause\Terminal\RegexParser;
@@ -30,7 +30,7 @@ $bnfGrammar = new Grammar(
 			function($rules, $whitespace) { return $rules; }
 		),
 
-		"<rules>" => new GreedyMultiParser(
+		"<rules>" => new BoundedRepeat(
 			"<ruleoremptyline>",
 			1,
 			null,
@@ -49,7 +49,7 @@ $bnfGrammar = new Grammar(
 			}
 		),
 
-		"<ruleoremptyline>" => new LazyAltParser(
+		"<ruleoremptyline>" => new OrderedChoice(
 			array("<rule>", "<emptyline>")
 		),
 
@@ -93,7 +93,7 @@ $bnfGrammar = new Grammar(
 			),
 			function($list, $pipelists) {
 				array_unshift($pipelists, $list);
-				return new LazyAltParser($pipelists);
+				return new OrderedChoice($pipelists);
 			}
 		),
 
@@ -110,7 +110,7 @@ $bnfGrammar = new Grammar(
 			}
 		),
 
-		"<list>" => new GreedyMultiParser(
+		"<list>" => new BoundedRepeat(
 			"<term>",
 			1,
 			null,
@@ -126,14 +126,14 @@ $bnfGrammar = new Grammar(
 			}
 		),
 
-		"TERM" => new LazyAltParser(
+		"TERM" => new OrderedChoice(
 			array(
 				"LITERAL",
 				"RULE-NAME"
 			)
 		),
 
-		"LITERAL" => new LazyAltParser(
+		"LITERAL" => new OrderedChoice(
 			array(
 				new RegexParser('#^"([^"]*)"#', function($match0, $match1) { return $match1; }),
 				new RegexParser("#^'([^']*)'#", function($match0, $match1) { return $match1; })
@@ -150,7 +150,7 @@ $bnfGrammar = new Grammar(
 
 		"OPT-WHITESPACE" => new RegexParser("#^[\t ]*#"),
 
-		"EOL" => new LazyAltParser(
+		"EOL" => new OrderedChoice(
 			array(
 				new StringParser("\r"),
 				new StringParser("\n")

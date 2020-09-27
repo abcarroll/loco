@@ -7,9 +7,9 @@
  */
 namespace Ab\LocoX;
 
-use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Clause\Terminal\RegexParser;
@@ -127,7 +127,7 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
 
 {
     print("7A\n");
-    $parser = new LazyAltParser(
+    $parser = new OrderedChoice(
         array(
             new StringParser("abc"),
             new StringParser("ab"),
@@ -147,7 +147,7 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
 
     print("7B\n");
     try {
-        new LazyAltParser(array());
+        new OrderedChoice(array());
         var_dump(false);
     } catch(GrammarException $e) {
         var_dump(true);
@@ -183,7 +183,7 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
 
 {
     print("10B\n");
-    $parser = new GreedyMultiParser(
+    $parser = new BoundedRepeat(
         new StringParser("a"), 0, null
     );
     var_dump($parser->match("",    0) === array("j" => 0, "value" => array()));
@@ -195,8 +195,8 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
 // Test behaviour when given ambiguous inner parser
 {
     print("10C\n");
-    $parser = new GreedyMultiParser(
-        new LazyAltParser(
+    $parser = new BoundedRepeat(
+        new OrderedChoice(
             array(
                 new StringParser("ab"),
                 new StringParser("a")
@@ -213,8 +213,8 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
 
 {
     print("10D\n");
-    $parser = new GreedyMultiParser(
-        new LazyAltParser(
+    $parser = new BoundedRepeat(
+        new OrderedChoice(
             array(
                 new StringParser("aa"),
                 new StringParser("a")
@@ -230,7 +230,7 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
 
 {
     print("10E\n");
-    $parser = new GreedyMultiParser(
+    $parser = new BoundedRepeat(
         new StringParser("a"), 0, 1
     );
     var_dump($parser->match("", 0) === array("j" => 0, "value" => array()));
@@ -239,19 +239,19 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
 
 {
     print("10F\n");
-    $parser = new GreedyMultiParser(new StringParser("f"), 0, 0);
+    $parser = new BoundedRepeat(new StringParser("f"), 0, 0);
     var_dump($parser->match("", 0) === array("j" => 0, "value" => array()));
     var_dump($parser->match("f", 0) === array("j" => 0, "value" => array()));
-    $parser = new GreedyMultiParser(new StringParser("f"), 0, 1);
+    $parser = new BoundedRepeat(new StringParser("f"), 0, 1);
     var_dump($parser->match("", 0) === array("j" => 0, "value" => array()));
     var_dump($parser->match("f", 0) === array("j" => 1, "value" => array("f")));
     var_dump($parser->match("ff", 0) === array("j" => 1, "value" => array("f")));
-    $parser = new GreedyMultiParser(new StringParser("f"), 1, 2);
+    $parser = new BoundedRepeat(new StringParser("f"), 1, 2);
     try { $parser->match("", 0); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); }
     var_dump($parser->match("f", 0) === array("j" => 1, "value" => array("f")));
     var_dump($parser->match("ff", 0) === array("j" => 2, "value" => array("f", "f")));
     var_dump($parser->match("fff", 0) === array("j" => 2, "value" => array("f", "f")));
-    $parser = new GreedyMultiParser(new StringParser("f"),	1, null);
+    $parser = new BoundedRepeat(new StringParser("f"), 1, null);
     try { $parser->match("", 0); var_dump(false); } catch(ParseFailureException $e) { var_dump(true); }
     var_dump($parser->match("f", 0) === array("j" => 1, "value" => array("f")));
     var_dump($parser->match("ff", 0) === array("j" => 2, "value" => array("f", "f")));
@@ -284,7 +284,7 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
         $grammar = new Grammar(
             "<S>",
             array(
-                "<S>" => new GreedyMultiParser("<A>", 7, null),
+                "<S>" => new BoundedRepeat("<A>", 7, null),
                 "<A>" => new EmptyParser()
             )
         );
@@ -340,7 +340,7 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
         $grammar = new Grammar(
             "<A>",
             array(
-                "<A>" => new LazyAltParser(
+                "<A>" => new OrderedChoice(
                     array(
                         new StringParser("Y"),
                         new Sequence(
@@ -364,9 +364,9 @@ if(__FILE__ !== $_SERVER["SCRIPT_FILENAME"]) {
             "<A>",
             array(
                 "<A>" => new Sequence(array("<B>")),
-                "<B>" => new LazyAltParser(array("<C>", "<D>")),
+                "<B>" => new OrderedChoice(array("<C>", "<D>")),
                 "<C>" => new Sequence(array(new StringParser("C"))),
-                "<D>" => new LazyAltParser(array("<C>", "<A>"))
+                "<D>" => new OrderedChoice(array("<C>", "<A>"))
             )
         );
         var_dump(false);

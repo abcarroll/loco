@@ -2,7 +2,7 @@
 namespace Ab\LocoX;
 
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Clause\Terminal\RegexParser;
@@ -32,7 +32,7 @@ $jsonGrammar = new Grammar(
             }
         ),
 
-        "<objectcontent>" => new LazyAltParser(
+        "<objectcontent>" => new OrderedChoice(
             array("<fullobject>", "<emptyobject>")
         ),
 
@@ -82,7 +82,7 @@ $jsonGrammar = new Grammar(
             }
         ),
 
-        "<arraycontent>" => new LazyAltParser(
+        "<arraycontent>" => new OrderedChoice(
             array("<fullarray>", "<emptyarray>")
         ),
 
@@ -109,7 +109,7 @@ $jsonGrammar = new Grammar(
             }
         ),
 
-        "<value>" => new LazyAltParser(
+        "<value>" => new OrderedChoice(
             array("<string>", "<number>", "<object>", "<array>", "<true>", "<false>", "<null>")
         ),
 
@@ -127,7 +127,7 @@ $jsonGrammar = new Grammar(
             }
         ),
 
-        "<char>" => new LazyAltParser(
+        "<char>" => new OrderedChoice(
             array(
                 "UTF8_EXCEPT", "ESCAPED_QUOTE", "ESCAPED_BACKSLASH", "ESCAPED_SLASH", "ESCAPED_B",
                 "ESCAPED_F", "ESCAPED_N", "ESCAPED_R", "ESCAPED_T", "ESCAPED_UTF8"

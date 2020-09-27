@@ -1,9 +1,9 @@
 <?php
 namespace Ab\LocoX;
 
-use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
@@ -54,10 +54,10 @@ $wirthGrammar = new Grammar(
 			),
 			function($term, $terms) {
 				array_unshift($terms, $term);
-				return new LazyAltParser($terms);
+				return new OrderedChoice($terms);
 			}
 		),
-		"TERM" => new GreedyMultiParser(
+		"TERM" => new BoundedRepeat(
 			"FACTOR",
 			1,
 			null,
@@ -65,7 +65,7 @@ $wirthGrammar = new Grammar(
 				return new Sequence(func_get_args());
 			}
 		),
-		"FACTOR" => new LazyAltParser(
+		"FACTOR" => new OrderedChoice(
 			array(
 				"IDENTIFIER",
 				"LITERAL",
@@ -78,7 +78,7 @@ $wirthGrammar = new Grammar(
 						"whitespace"
 					),
 					function($bracket1, $space1, $expression, $bracket2, $space2) {
-						return new GreedyMultiParser($expression, 0, 1);
+						return new BoundedRepeat($expression, 0, 1);
 					}
 				),
 				new Sequence(
@@ -109,7 +109,7 @@ $wirthGrammar = new Grammar(
 		),
 		"IDENTIFIER" => new Sequence(
 			array(
-				new GreedyMultiParser(
+				new BoundedRepeat(
 					"letter",
 					1,
 					null,
@@ -126,7 +126,7 @@ $wirthGrammar = new Grammar(
 		"LITERAL" => new Sequence(
 			array(
 				new StringParser("\""),
-				new GreedyMultiParser(
+				new BoundedRepeat(
 					"character",
 					1,
 					null,

@@ -7,9 +7,9 @@ use Exception;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Grammar;
-use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
 
@@ -57,7 +57,7 @@ class EbnfGrammar extends Grammar
                     function ($conc, $pipeconclist) {
                         array_unshift($pipeconclist, $conc);
 
-                        return new LazyAltParser($pipeconclist);
+                        return new OrderedChoice($pipeconclist);
                     }
                 ),
 
@@ -79,7 +79,7 @@ class EbnfGrammar extends Grammar
                         // in reverse order so that our splicing doesn't modify the array
                         $multiparsers = [];
                         foreach ($commatermlist as $k => $internal) {
-                            if ($internal instanceof GreedyMultiParser) {
+                            if ($internal instanceof BoundedRepeat) {
                                 array_unshift($multiparsers, $k);
                             }
                         }
@@ -110,7 +110,7 @@ class EbnfGrammar extends Grammar
                     }
                 ),
 
-                '<term>' => new LazyAltParser(
+                '<term>' => new OrderedChoice(
                     ['<bareword>', '<sq>', '<dq>', '<group>', '<repetition>', '<optional>']
                 ),
 
@@ -202,13 +202,13 @@ class EbnfGrammar extends Grammar
                         '<space>'
                     ],
                     function ($left_bracket, $space1, $alt, $right_bracket, $space2) {
-                        return new GreedyMultiParser($alt, 0, 1);
+                        return new BoundedRepeat($alt, 0, 1);
                     }
                 ),
 
                 '<space>' => new GreedyStarParser('<whitespace/comment>'),
 
-                '<whitespace/comment>' => new LazyAltParser(
+                '<whitespace/comment>' => new OrderedChoice(
                     ['<whitespace>', '<comment>']
                 ),
 

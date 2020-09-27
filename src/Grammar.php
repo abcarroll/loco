@@ -2,7 +2,8 @@
 
 namespace Ab\LocoX;
 
-use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
+use Ab\LocoX\Clause\RuleReference;
 use Ab\LocoX\Exception\GrammarException;
 
 /**
@@ -114,12 +115,12 @@ class Grammar extends MonoParser
         }
 
         // Nullability is also required for this step:
-        // If a GreedyMultiParser's inner parser is capable of matching a
+        // If a BoundedRepeat's inner parser is capable of matching a
         // string of zero length, and it has an unbounded upper limit, then
         // it is going to loop forever.
         // In this situation, we raise a very serious error
         foreach ($this->internals as $internal) {
-            if (! ($internal instanceof GreedyMultiParser)) {
+            if (! ($internal instanceof BoundedRepeat)) {
                 continue;
             }
             if (null !== $internal->optional) {
@@ -151,12 +152,16 @@ class Grammar extends MonoParser
             $key = $keys[$i];
 
             // replace names with references
-            if (is_string($parser->internals[$key])) {
+            if (is_string($parser->internals[$key]) || $parser->internals[$key] instanceof RuleReference) {
 
-                // make sure the other parser that we're about to create a reference to actually exists
-                $name = $parser->internals[$key];
-                if (! array_key_exists($name, $this->internals)) {
-                    throw new Exception\GrammarException($parser . " contains a reference to another parser " . var_export($name, true) . " which cannot be found");
+                // Make sure the other parser that we're about to create a reference to actually exists
+                // > note the simplification for RuleReference: a RuleReference will return the appropriate rule name
+                // > by this cast calling its __toString() method.
+                $name = (string) $parser->internals[$key];
+                if (!array_key_exists($name, $this->internals)) {
+                    throw new Exception\GrammarException(
+                        $parser . " contains a reference to another parser " . var_export($name, true) . " which cannot be found"
+                    );
                 }
 
                 // create that reference

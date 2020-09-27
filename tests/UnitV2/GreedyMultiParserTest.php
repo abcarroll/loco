@@ -2,8 +2,8 @@
 
 namespace Ferno\Tests\Loco;
 
-use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Exception\ParseFailureException;
 use Ab\LocoX\Clause\Terminal\StringParser;
 use \PHPUnit\Framework\TestCase as TestCase;
@@ -12,7 +12,7 @@ class GreedyMultiParserTest extends TestCase
 {
     public function testSuccess()
     {
-        $parser = new GreedyMultiParser(new StringParser("a"), 0, null);
+        $parser = new BoundedRepeat(new StringParser("a"), 0, null);
 
         $this->assertEquals(array("j" => 0, "value" => array()), $parser->match("", 0));
         $this->assertEquals(array("j" => 1, "value" => array("a")), $parser->match("a", 0));
@@ -22,15 +22,15 @@ class GreedyMultiParserTest extends TestCase
 
     public function testUpper()
     {
-        $parser = new GreedyMultiParser(new StringParser("a"), 0, 1);
+        $parser = new BoundedRepeat(new StringParser("a"), 0, 1);
         $this->assertEquals(array("j" => 0, "value" => array()), $parser->match("", 0));
         $this->assertEquals(array("j" => 1, "value" => array("a")), $parser->match("a", 0));
     }
 
     public function testAmbiguousInnerParser()
     {
-        $parser = new GreedyMultiParser(
-            new LazyAltParser(
+        $parser = new BoundedRepeat(
+            new OrderedChoice(
                 array(
                     new StringParser("ab"),
                     new StringParser("a")
@@ -47,8 +47,8 @@ class GreedyMultiParserTest extends TestCase
 
     public function testAmbiguousRepeatedParser()
     {
-        $parser = new GreedyMultiParser(
-            new LazyAltParser(
+        $parser = new BoundedRepeat(
+            new OrderedChoice(
                 array(
                     new StringParser("aa"),
                     new StringParser("a")
@@ -64,14 +64,14 @@ class GreedyMultiParserTest extends TestCase
 
     public function testUpperZero()
     {
-        $parser = new GreedyMultiParser(new StringParser("f"), 0, 0);
+        $parser = new BoundedRepeat(new StringParser("f"), 0, 0);
         $this->assertEquals(array("j" => 0, "value" => array()), $parser->match("", 0));
         $this->assertEquals(array("j" => 0, "value" => array()), $parser->match("f", 0));
     }
 
     public function testUpperOne()
     {
-        $parser = new GreedyMultiParser(new StringParser("f"), 0, 1);
+        $parser = new BoundedRepeat(new StringParser("f"), 0, 1);
         $this->assertEquals(array("j" => 0, "value" => array()), $parser->match("", 0));
         $this->assertEquals(array("j" => 1, "value" => array("f")), $parser->match("f", 0));
         $this->assertEquals(array("j" => 1, "value" => array("f")), $parser->match("ff", 0));
@@ -79,7 +79,7 @@ class GreedyMultiParserTest extends TestCase
 
     public function testOutOfBounds()
     {
-        $parser = new GreedyMultiParser(new StringParser("f"), 1, 2);
+        $parser = new BoundedRepeat(new StringParser("f"), 1, 2);
         $this->expectException(ParseFailureException::_CLASS);
         $parser->match("", 0);
 
@@ -87,7 +87,7 @@ class GreedyMultiParserTest extends TestCase
 
     public function testUpperTwo()
     {
-        $parser = new GreedyMultiParser(new StringParser("f"), 1, 2);
+        $parser = new BoundedRepeat(new StringParser("f"), 1, 2);
         $this->assertEquals(array("j" => 1, "value" => array("f")), $parser->match("f", 0));
         $this->assertEquals(array("j" => 2, "value" => array("f", "f")), $parser->match("ff", 0));
         $this->assertEquals(array("j" => 2, "value" => array("f", "f")), $parser->match("fff", 0));
@@ -96,7 +96,7 @@ class GreedyMultiParserTest extends TestCase
 
     public function testOptionalEmptyMatch()
     {
-        $parser = new GreedyMultiParser(new StringParser("f"), 1, null);
+        $parser = new BoundedRepeat(new StringParser("f"), 1, null);
         $this->expectException(ParseFailureException::_CLASS);
 
         $parser->match("", 0);
@@ -104,7 +104,7 @@ class GreedyMultiParserTest extends TestCase
 
     public function testOptionalSuccess()
     {
-        $parser = new GreedyMultiParser(new StringParser("f"), 1, null);
+        $parser = new BoundedRepeat(new StringParser("f"), 1, null);
 
         $this->assertEquals(array("j" => 1, "value" => array("f")), $parser->match("f", 0));
         $this->assertEquals(array("j" => 2, "value" => array("f", "f")), $parser->match("ff", 0));

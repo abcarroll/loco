@@ -6,7 +6,7 @@ namespace Ab\LocoX\Grammar;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Grammar;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
 use Ab\LocoX\Clause\Terminal\Utf8Parser;
@@ -22,7 +22,7 @@ class SimpleCommentGrammar extends Grammar
                     '<blockorwhitespace>',
                     function () { return implode('', func_get_args()); }
                 ),
-                '<blockorwhitespace>' => new LazyAltParser(
+                '<blockorwhitespace>' => new OrderedChoice(
                     ['<h5>', '<p>', 'WHITESPACE']
                 ),
                 '<p>' => new Sequence(
@@ -45,10 +45,10 @@ class SimpleCommentGrammar extends Grammar
                     '<atom>',
                     function () { return implode('', func_get_args()); }
                 ),
-                '<atom>' => new LazyAltParser(
+                '<atom>' => new OrderedChoice(
                     ['<char>', '<strong>', '<em>', 'FULL_BR']
                 ),
-                '<char>' => new LazyAltParser(
+                '<char>' => new OrderedChoice(
                     ['UTF8_EXCEPT', 'GREATER_THAN', 'LESS_THAN', 'AMPERSAND']
                 ),
 

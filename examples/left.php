@@ -2,7 +2,7 @@
 namespace Ab\LocoX;
 
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
@@ -46,7 +46,7 @@ try {
 	$grammar = new Grammar(
 		"S",
 		array(
-			"S" => new LazyAltParser(
+			"S" => new OrderedChoice(
 				array(
 					"N",
 					new Sequence(

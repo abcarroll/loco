@@ -14,7 +14,7 @@ use Ab\LocoX\Exception\{GrammarException, ParseFailureException};
  * callback should accept a single argument which is the single match
  * LazyAltParsers become risky when one is a proper prefix of another
  */
-class LazyAltParser extends MonoParser
+class OrderedChoice extends MonoParser
 {
     public function __construct($internals, $callback = null)
     {

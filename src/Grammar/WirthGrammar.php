@@ -6,9 +6,9 @@ namespace Ab\LocoX\Grammar;
 use Exception;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Grammar;
-use Ab\LocoX\Clause\Nonterminal\GreedyMultiParser;
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
 
@@ -59,10 +59,10 @@ class WirthGrammar extends Grammar
                     function ($term, $terms) {
                         array_unshift($terms, $term);
 
-                        return new LazyAltParser($terms);
+                        return new OrderedChoice($terms);
                     }
                 ),
-                'TERM' => new GreedyMultiParser(
+                'TERM' => new BoundedRepeat(
                     'FACTOR',
                     1,
                     null,
@@ -70,7 +70,7 @@ class WirthGrammar extends Grammar
                         return new Sequence(func_get_args());
                     }
                 ),
-                'FACTOR' => new LazyAltParser(
+                'FACTOR' => new OrderedChoice(
                     [
                         'IDENTIFIER',
                         'LITERAL',
@@ -83,7 +83,7 @@ class WirthGrammar extends Grammar
                                 'whitespace'
                             ],
                             function ($bracket1, $space1, $expression, $bracket2, $space2) {
-                                return new GreedyMultiParser($expression, 0, 1);
+                                return new BoundedRepeat($expression, 0, 1);
                             }
                         ),
                         new Sequence(
@@ -114,7 +114,7 @@ class WirthGrammar extends Grammar
                 ),
                 'IDENTIFIER' => new Sequence(
                     [
-                        new GreedyMultiParser(
+                        new BoundedRepeat(
                             'letter',
                             1,
                             null,
@@ -131,7 +131,7 @@ class WirthGrammar extends Grammar
                 'LITERAL' => new Sequence(
                     [
                         new StringParser('"'),
-                        new GreedyMultiParser(
+                        new BoundedRepeat(
                             'character',
                             1,
                             null,

@@ -2,7 +2,7 @@
 namespace Ab\LocoX;
 
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
-use Ab\LocoX\Clause\Nonterminal\LazyAltParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Clause\Terminal\RegexParser;
@@ -48,7 +48,7 @@ $regexGrammar = new Grammar(
 			array("<multiplicand>", "<multiplier>"),
 			function($multiplicand, $multiplier) { return new Mult($multiplicand, $multiplier); }
 		),
-		"<multiplicand>" => new LazyAltParser(
+		"<multiplicand>" => new OrderedChoice(
 			array("<subpattern>", "<charclass>")
 		),
 		"<subpattern>" => new Sequence(
@@ -58,7 +58,7 @@ $regexGrammar = new Grammar(
 
 		// A Multiplier has a lower bound and an upper bound. There are several short forms.
 		// In the absence of a multiplier, {1,1} is assumed
-		"<multiplier>" => new LazyAltParser(
+		"<multiplier>" => new OrderedChoice(
 			array(
 				"<bracemultiplier>",
 				new StringParser("?", function($string) { return new Multiplier(0, 1   ); }),
@@ -77,7 +77,7 @@ $regexGrammar = new Grammar(
 			function($left_brace, $multiplierinterior, $right_brace) { return $multiplierinterior; }
 		),
 
-		"<multiplierinterior>" => new LazyAltParser(
+		"<multiplierinterior>" => new OrderedChoice(
 			array("<bothbounds>", "<unlimited>", "<onebound>")
 		),
 		"<bothbounds>" => new Sequence(
@@ -99,7 +99,7 @@ $regexGrammar = new Grammar(
 		// It can also be a single character escaped with a backslash,
 		// or a "true" charclass, which is a possibly-negated set of elements
 		// listed inside a pair of brackets.
-		"<charclass>" => new LazyAltParser(
+		"<charclass>" => new OrderedChoice(
 			array(
 				new RegexParser("#^[^|()\\[\\]?*+{}\\\\.]#", function($match) { return new Charclass($match); }),
 				"<bracketednegatedcharclass>",
@@ -151,7 +151,7 @@ $regexGrammar = new Grammar(
 
 		// An element is either a single character or a character range.
 		// A character range is represented with an optional hyphen
-		"<elem>" => new LazyAltParser(
+		"<elem>" => new OrderedChoice(
 			array("<charrange>", "<classchar>")
 		),
 
@@ -174,7 +174,7 @@ $regexGrammar = new Grammar(
 
 		// interior characters in character classes usually represent themselves,
 		// but some are backslash-escaped
-		"<classchar>" => new LazyAltParser(
+		"<classchar>" => new OrderedChoice(
 			array(
 				new RegexParser("#^[^\\\\\\[\\]\\^\\-]#"),
 				new StringParser("\\\\", function($string) { return substr($string, 1, 1); }),
