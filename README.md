@@ -93,12 +93,12 @@ Matches a single UTF-8 character. You can optionally supply a blacklist of chara
 
 Callback is passed one argument, the string that was matched. The default callback returns the first argument i.e. the string.
 
-For best results, alternate (see `Ferno\Loco\LazyAltParser` below) with `Ferno\Loco\StringParsers` for e.g. `"&lt;"`, `"&gt;"`, 
+For best results, alternate (see `Ferno\Loco\OrderedChoice` below) with `Ferno\Loco\StringParsers` for e.g. `"&lt;"`, `"&gt;"`, 
 `"&amp;"` and other HTML character entities.
 
 
 
-### `LazyAltParser`
+### `OrderedChoice`
 
 This encapsulates the "alternation" parser combinator by alternating between several internal parsers. The key word here is 
 "lazy". As soon as one of them matches, that result is returned, and that's the end of the story. There is no capability to merge 
@@ -107,7 +107,7 @@ trying to retrieve other results if the first one turns out to be bogus.
 
 Callback is passed one argument, the sole successful internal match. The default callback returns the first argument directly.
 
-    new Ferno\Loco\LazyAltParser(
+    new Ferno\Loco\OrderedChoice(
       array(
         new Ferno\Loco\StringParser("foo"),
         new Ferno\Loco\StringParser("bar")
@@ -142,23 +142,23 @@ arguments in the form of an array: `return func_get_args();`.
     // return new Account("Williams", "2011-06-30", "GH7784939")
 
 
-### `GreedyMultiParser`
+### `BoundedRepeat`
 
 This encapsulates the "Kleene star closure" parser combinator to match single internal parser multiple (finitely or infinitely 
 many) times. With a finite upper bound, this is more or less equivalent to `Ferno\Loco\Sequence`, above. With an infinite upper bound, this 
-gets more interesting. `Ferno\Loco\GreedyMultiParser`, as the name hints, will match as many times as it can before returning. 
+gets more interesting. `Ferno\Loco\BoundedRepeat`, as the name hints, will match as many times as it can before returning. 
 There is no option for returning multiple matches simultaneously; only the largest match is returned. And there is no option for 
 backtracking and trying to consume more or fewer instances.
 
-Callback is passed one argument for every match. For example, `new Ferno\Loco\GreedyMultiParser($a, 2, 4, $callback)` could pass 
-2, 3 or 4 arguments to its callback. `new GreedyMultiParser($a, 0, null, $callback)` has an unlimited upper bound and could pass 
+Callback is passed one argument for every match. For example, `new Ferno\Loco\BoundedRepeat($a, 2, 4, $callback)` could pass 
+2, 3 or 4 arguments to its callback. `new BoundedRepeat($a, 0, null, $callback)` has an unlimited upper bound and could pass 
 an unlimited number of arguments to its callback. (PHP seems to have no problem with this.) The default callback returns all of 
 the arguments in the form of an array: `return func_get_args();`.
 
 Remember that a PHP function can be defined as `function(){...}` and still accept an arbitrary number of arguments.
 
-    new Ferno\Loco\GreedyMultiParser(
-      new Ferno\Loco\LazyAltParser(
+    new Ferno\Loco\BoundedRepeat(
+      new Ferno\Loco\OrderedChoice(
         array(
           new Ferno\Loco\Utf8Parser(array("<", ">", "&")),                         // match any UTF-8 character except <, > or &
           new Ferno\Loco\StringParser("&lt;",  function($string) { return "<"; }), // ...or an escaped < (unescape it)
@@ -184,7 +184,7 @@ The `Ferno\Loco\Grammar` class makes this very easy. At its heart, `Ferno\Loco\G
 But `Ferno\Loco\Grammar` accepts an associative array of parsers as input -- meaning each one comes attached to a name. The 
 parsers inside it, meanwhile, can refer to other parsers by name instead of containing them directly. `Ferno\Loco\Grammar` 
 resolves these references at instantiation time, as well as detecting anomalies like left recursion, names which refer to parsers 
-which don't exist, dangerous formations such as new `Ferno\Loco\GreedyMultiParser(new Ferno\Loco\EmptyParser(), 0, null)`, and so 
+which don't exist, dangerous formations such as new `Ferno\Loco\BoundedRepeat(new Ferno\Loco\EmptyParser(), 0, null)`, and so 
 on.
 
 Here's a simple `Ferno\Loco\Grammar` which can recognise (some) valid HTML paragraphs and return the text content of those paragraphs:
@@ -205,7 +205,7 @@ Here's a simple `Ferno\Loco\Grammar` which can recognise (some) valid HTML parag
 
         "OPEN_P" => new Ferno\Loco\StringParser("<p>"),
 
-        "CONTENT" => new Ferno\Loco\GreedyMultiParser(
+        "CONTENT" => new Ferno\Loco\BoundedRepeat(
           "UTF-8 CHAR",
           0,
           null,
@@ -214,7 +214,7 @@ Here's a simple `Ferno\Loco\Grammar` which can recognise (some) valid HTML parag
 
         "CLOSE_P" => new Ferno\Loco\StringParser("</p>"),
 
-        "UTF-8 CHAR" => new Ferno\Loco\LazyAltParser(
+        "UTF-8 CHAR" => new Ferno\Loco\OrderedChoice(
           array(
             new Ferno\Loco\Utf8Parser(array("<", ">", "&")),                         // match any UTF-8 character except <, > or &
             new Ferno\Loco\StringParser("&lt;",  function($string) { return "<"; }), // ...or an escaped < (unescape it)
@@ -378,8 +378,8 @@ Defines `$locoGrammar`, which parses a grammar presented in "Loco notation" and 
 * `Ferno\Loco\EmptyParser` - Just have an empty string or an empty right-hand side to a rule. Some notations also permit an explicit "epsilon" symbol.
 * `Ferno\Loco\StringParser` - Invariably requires a simple string literal in single or double quotes.
 * `Ferno\Loco\Sequence` - Usually you put multiple tokens in a row and they will be matched consecutively. In EBNF, commas must be used as separators.
-* `Ferno\Loco\LazyAltParser` - Alternation is achieved using a pipe, `|`, between possibilities.
-* `Ferno\Loco\GreedyMultiParser` - Most notations provide some ability to make a match optional (typically square brackets), and/or to match an unlimited number of times (typically an asterisk or braces).
+* `Ferno\Loco\OrderedChoice` - Alternation is achieved using a pipe, `|`, between possibilities.
+* `Ferno\Loco\BoundedRepeat` - Most notations provide some ability to make a match optional (typically square brackets), and/or to match an unlimited number of times (typically an asterisk or braces).
 
 I had to invent new notation for the following:
 
