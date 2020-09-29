@@ -126,6 +126,7 @@ class GrammarTest extends TestCase
         );
     }
 
+    /*
     public function testRuleReferenceClassResolution()
     {
         $gg = new Grammar(
@@ -153,4 +154,5 @@ class GrammarTest extends TestCase
             ]
         );
     }
+    */
 }
