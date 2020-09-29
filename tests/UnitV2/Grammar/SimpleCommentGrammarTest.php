@@ -2,7 +2,7 @@
 
 namespace Ferno\Tests\Loco\Grammar;
 
-use Ab\LocoX\Grammar\SimpleCommentGrammar;
+use Ab\LocoX\Generate\SimpleCommentGrammar;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class SimpleCommentGrammarTest extends TestCase

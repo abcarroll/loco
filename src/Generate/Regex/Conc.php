@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Ab\LocoX\Grammar\Regex;
+namespace Ab\LocoX\Generate\Regex;
 
 // Each Conc is a concatenation of several "Mults"
 use Exception;

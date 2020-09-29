@@ -1,16 +1,16 @@
 <?php
 
 
-namespace Ab\LocoX\Grammar;
+namespace Ab\LocoX\Generate;
 
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
-use Ab\LocoX\Grammar;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
 use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
 use Ab\LocoX\Clause\Terminal\Utf8Parser;
+use Ab\LocoX\Grammar;
 
 class JsonGrammar extends Grammar
 {

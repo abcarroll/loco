@@ -8,13 +8,14 @@ use Ab\LocoX\Clause\RuleReference;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\Utf8Parser;
-use Ab\LocoX\Grammar;
+use Ab\LocoX\Generate;
 use Ab\LocoX\Exception\GrammarException;
 use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
 use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Exception\ParseFailureException;
 use Ab\LocoX\Clause\Terminal\StringParser;
+use Ab\LocoX\Grammar;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class GrammarTest extends TestCase
@@ -41,7 +42,7 @@ class GrammarTest extends TestCase
             )
         );
 
-        $this->assertEquals(null, $grammar->parse(""));
+        self::assertEquals(null, $grammar->parse(""));
     }
 
     public function testGreedyMultiParsersWIthUnboundedLimits()
@@ -148,7 +149,7 @@ class GrammarTest extends TestCase
             'y.2' => new OrderedChoice([new RuleReference('a'), new RuleReference('b'), new RuleReference('c'), new RuleReference('d'), new RuleReference('e')]),
             'y.3' => new BoundedRepeat(new Sequence([new RuleReference('x.1')]), 0, 1),
             'y.4' => new GreedyStarParser(new Sequence([new RuleReference('x.1'), new RuleReference('x.2')])),
-                                                                                                                                                     
+
             ]
         );
     }

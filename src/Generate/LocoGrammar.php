@@ -1,17 +1,18 @@
 <?php
 
 
-namespace Ab\LocoX\Grammar;
+namespace Ab\LocoX\Generate;
 
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
-use Ab\LocoX\Grammar;
+use Ab\LocoX\Generate;
 use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
 use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
 use Ab\LocoX\Clause\Terminal\RegexParser;
 use Ab\LocoX\Clause\Terminal\StringParser;
 use Ab\LocoX\Clause\Terminal\Utf8Parser;
+use Ab\LocoX\Grammar;
 
 // Takes a string presented in Loco Backus-Naur Form and turns it into a
 // new Grammar object capable of recognising the language described by that string.

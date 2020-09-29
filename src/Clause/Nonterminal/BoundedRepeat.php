@@ -2,7 +2,6 @@
 
 namespace Ab\LocoX\Clause\Nonterminal;
 
-use Ab\LocoX\Clause\Clause;
 use Ab\LocoX\MonoParser;
 use Ab\LocoX\Exception\ParseFailureException;
 
@@ -12,7 +11,6 @@ use Ab\LocoX\Exception\ParseFailureException;
 class BoundedRepeat extends MonoParser
 {
     private $lower;
-
     public $optional;
 
     public function __construct($internal, ?int $lower, ?int $upper, $callback = null)
@@ -22,14 +20,17 @@ class BoundedRepeat extends MonoParser
             $this->optional = null;
         } else {
             if ($upper < $lower) {
-                throw new \Ab\LocoX\Exception\GrammarException("Can't create a " . get_class() . " with lower limit " . var_export($lower, true) . " and upper limit " . var_export($upper, true));
+                throw new \Ab\LocoX\Exception\GrammarException(
+                    "Can't create a " . get_class() . " with lower limit " . var_export($lower, true) .
+                    " and upper limit " . var_export($upper, true)
+                );
             }
             $this->optional = $upper - $lower;
         }
         $this->string = 'new ' . __CLASS__ . '(' . json_encode($internal) . ', ' . var_export($lower, true) . ', ' . var_export(
-                $upper,
-                true
-            ) . ')';
+            $upper,
+            true
+        ) . ')';
         parent::__construct([$internal], $callback);
     }
 

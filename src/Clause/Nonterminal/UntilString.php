@@ -19,7 +19,9 @@ class UntilString extends StaticParser
     {
         if (! is_array($lookaheadStrings)) {
             throw new GrammarException('$lookaheadStrings must be an array');
-        } elseif (0 === count($lookaheadStrings)) {
+        }
+
+        if (0 === count($lookaheadStrings)) {
             throw new GrammarException('$lookaheadStrings must not be empty');
         }
         $this->lookaheadStrings = $lookaheadStrings;

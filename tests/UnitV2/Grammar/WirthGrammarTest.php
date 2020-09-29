@@ -2,7 +2,7 @@
 
 namespace Ab\LocoX\test\grammar;
 
-use Ab\LocoX\Grammar\WirthGrammar;
+use Ab\LocoX\Generate\WirthGrammar;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class WirthGrammarTest extends TestCase

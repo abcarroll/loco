@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Ab\LocoX\Grammar;
+namespace Ab\LocoX\Generate;
 
+use Ab\LocoX\Grammar;
 use Exception;
 use Ab\LocoX\Clause\Nonterminal\Sequence;
 use Ab\LocoX\Clause\Terminal\EmptyParser;
-use Ab\LocoX\Grammar;
 use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
 use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
 use Ab\LocoX\Clause\Nonterminal\OrderedChoice;

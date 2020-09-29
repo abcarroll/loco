@@ -2,8 +2,8 @@
 
 namespace Ab\LocoX\Clause\Terminal;
 
-use Ab\LocoX\Grammar;
 use Ab\LocoX\Exception\ParseFailureException;
+use Ab\LocoX\Grammar;
 use Ab\LocoX\StaticParser;
 
 /**
@@ -279,5 +279,7 @@ class Utf8Parser extends StaticParser
 
             return $string;
         }
+
+        return null;
     }
 }

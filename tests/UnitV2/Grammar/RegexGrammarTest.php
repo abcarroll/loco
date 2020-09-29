@@ -2,7 +2,7 @@
 
 namespace Ferno\Tests\Loco\Grammar;
 
-use Ab\LocoX\Grammar\RegexGrammar;
+use Ab\LocoX\Generate\RegexGrammar;
 use \PHPUnit\Framework\TestCase as TestCase;
 
 class RegexGrammarTest extends TestCase

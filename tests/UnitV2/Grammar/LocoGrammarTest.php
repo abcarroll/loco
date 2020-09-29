@@ -2,7 +2,7 @@
 
 namespace Ferno\Tests\Loco\Grammar;
 
-use Ab\LocoX\Grammar\LocoGrammar;
+use Ab\LocoX\Generate\LocoGrammar;
 use Ab\LocoX\Exception\ParseFailureException;
 use PHPUnit\Framework\TestCase;
 

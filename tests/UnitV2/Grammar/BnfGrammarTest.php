@@ -2,7 +2,7 @@
 
 namespace Ferno\Tests\Loco\Grammar;
 
-use Ab\LocoX\Grammar\BnfGrammar;
+use Ab\LocoX\Generate\BnfGrammar;
 use Ab\LocoX\Exception\ParseFailureException;
 use \PHPUnit\Framework\TestCase as TestCase;
 

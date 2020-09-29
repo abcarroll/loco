@@ -27,7 +27,6 @@ abstract class MonoParser extends Clause
 
     public function __toString()
     {
-        return get_class($this);
         return $this->string;
     }
 
