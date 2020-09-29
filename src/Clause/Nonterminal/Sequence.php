@@ -59,15 +59,20 @@ class Sequence extends MonoParser
         return $firstSet;
     }
     /**
-     * only nullable if everything in the list is nullable
+     * Only nullable if everything in the list is nullable.
+     *
+     * This makes sense: if we have "A <- B C" with B nullable and C not nullable (or the other way around, it doesn't
+     * matter) then A is only nullable if both in the sequence are: if either requires a width to the match then it will
+     * by nature force A to have a width.
      */
-    public function evaluateNullability()
+    public function evaluateNullability(): bool
     {
         foreach ($this->internals as $internal) {
-            if (!$internal->nullable) {
+            if (false === $internal->nullable) {
                 return false;
             }
         }
+
         return true;
     }
 }
