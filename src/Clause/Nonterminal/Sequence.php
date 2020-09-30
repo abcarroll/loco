@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Ab\LocoX\Clause\Nonterminal;
 
@@ -42,7 +42,7 @@ class Sequence extends MonoParser
     /**
      * First-set is built up as follows...
      */
-    public function firstSet()
+    public function firstSet(): array
     {
         $firstSet = array();
         foreach ($this->internals as $internal) {

@@ -1,13 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Ab\LocoX\Clause\Terminal;
 
-use Ab\LocoX\StaticParser;
+use Ab\LocoX\Clause\TerminalClause;
 
 /**
  * Match the empty string
  */
-class EmptyParser extends StaticParser
+class EmptyParser extends TerminalClause
 {
     public function __construct($callback = null)
     {
@@ -40,7 +40,7 @@ class EmptyParser extends StaticParser
     /**
      * emptyparser is nullable.
      */
-    public function evaluateNullability()
+    public function evaluateNullability(): bool
     {
         return true;
     }

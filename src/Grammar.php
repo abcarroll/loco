@@ -53,7 +53,7 @@ class Grammar extends MonoParser
         // It is not unlike a "flood fill" procedure.
         while (1) {
             foreach ($this->internals as $intlKey => $internal) {
-                if(!($internal instanceof Parser)) {
+                if (!($internal instanceof Parser)) {
                     throw new \InvalidArgumentException("$intlKey is not a parser it is a " . gettype($internal) . "($internal)");
                 }
                 if (true === $internal->nullable) {
@@ -85,7 +85,6 @@ class Grammar extends MonoParser
         // This in turn is necessary to detect left recursion, which occurs
         // if and only if a parser contains ITSELF in its own extended first-set.
         foreach ($this->internals as $internal) {
-
             // Find the extended first-set of this parser. If this parser is
             // contained in its own first-set, then it is left-recursive.
             // This has to be called after the "nullability flood fill" is complete.
@@ -102,7 +101,7 @@ class Grammar extends MonoParser
 
                     // If it's already in the list, then skip it
                     // this DOESN'T imply left - recursion, though
-                    for ($j = 0; $j < count($firstSet); $j ++) {
+                    for ($j = 0, $jMax = count($firstSet); $j < $jMax; $j ++) {
                         if ($next === $firstSet[$j]) {
                             continue 2;
                         }
@@ -110,7 +109,7 @@ class Grammar extends MonoParser
 
                     $firstSet[] = $next;
                 }
-                $i ++;
+                $i++;
             }
         }
 
@@ -148,7 +147,7 @@ class Grammar extends MonoParser
     private function resolve($parser)
     {
         $keys = array_keys($parser->internals);
-        for ($i = 0; $i < count($keys); $i ++) {
+        for ($i = 0, $iMax = count($keys); $i < $iMax; $i ++) {
             $key = $keys[$i];
 
             // replace names with references
@@ -204,7 +203,7 @@ class Grammar extends MonoParser
     /**
      * nullable iff <S> is nullable
      */
-    public function evaluateNullability()
+    public function evaluateNullability(): bool
     {
         return true === $this->internals[$this->S]->nullable;
     }
@@ -212,7 +211,7 @@ class Grammar extends MonoParser
     /**
      * S is the first
      */
-    public function firstSet()
+    public function firstSet(): array
     {
         return [$this->internals[$this->S]];
     }

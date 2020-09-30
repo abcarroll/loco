@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Ab\LocoX\Clause\Nonterminal;
 
@@ -56,7 +56,7 @@ class OrderedChoice extends MonoParser
     /**
      * Nullable if any internal is nullable.
      */
-    public function evaluateNullability()
+    public function evaluateNullability(): bool
     {
         foreach ($this->internals as $internal) {
             if ($internal->nullable) {
@@ -70,7 +70,7 @@ class OrderedChoice extends MonoParser
     /**
      * every internal is potentially a first.
      */
-    public function firstSet()
+    public function firstSet(): array
     {
         return $this->internals;
     }

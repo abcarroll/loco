@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Ab\LocoX\Clause\Terminal;
 
 use Ab\LocoX\Exception\{GrammarException, ParseFailureException};
-use Ab\LocoX\StaticParser;
+use Ab\LocoX\Clause\TerminalClause;
 
 /**
  * Parser uses a regex to match itself. Regexes are time-consuming to execute,
@@ -11,7 +11,7 @@ use Ab\LocoX\StaticParser;
  * Regexes can match multiple times in theory, but this pattern returns a singleton
  * Callback should accept an array of all the matches made
  */
-class RegexParser extends StaticParser
+class RegexParser extends TerminalClause
 {
     private $pattern;
 
@@ -51,7 +51,7 @@ class RegexParser extends StaticParser
     /**
      * nullable only if regex matches ""
      */
-    public function evaluateNullability()
+    public function evaluateNullability(): bool
     {
         return 1 === preg_match($this->pattern, '', $matches);
     }

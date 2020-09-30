@@ -1,17 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Ab\LocoX\Clause\Terminal;
 
 use Ab\LocoX\Exception\ParseFailureException;
 use Ab\LocoX\Grammar;
-use Ab\LocoX\StaticParser;
+use Ab\LocoX\Clause\TerminalClause;
 
 /**
  * UTF-8 parser parses one valid UTF-8 character and returns the
  * resulting code point.
  * Callback should accept the character (in the form of bytes)
  */
-class Utf8Parser extends StaticParser
+class Utf8Parser extends TerminalClause
 {
     /**
      * Some basic useful information about each possible byte
@@ -247,7 +247,7 @@ class Utf8Parser extends StaticParser
     /**
      * UTF-8 parser is not nullable.
      */
-    public function evaluateNullability()
+    public function evaluateNullability(): bool
     {
         return false;
     }

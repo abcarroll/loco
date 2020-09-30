@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Ab\LocoX\Clause\Nonterminal;
 
@@ -72,7 +72,7 @@ class BoundedRepeat extends MonoParser
     /**
      * nullable if lower limit is zero OR internal is nullable.
      */
-    public function evaluateNullability()
+    public function evaluateNullability(): bool
     {
         return 0 === $this->lower || true === $this->internals[0]->nullable;
     }
@@ -80,7 +80,7 @@ class BoundedRepeat extends MonoParser
     /**
      * This parser contains only one internal
      */
-    public function firstSet()
+    public function firstSet(): array
     {
         return [$this->internals[0]];
     }

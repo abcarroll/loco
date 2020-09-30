@@ -1,15 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Ab\LocoX\Clause\Terminal;
 
 use Ab\LocoX\Exception\{GrammarException, ParseFailureException};
-use Ab\LocoX\StaticParser;
+use Ab\LocoX\Clause\TerminalClause;
 
 /**
  * Match a static string.
  * Callback should accept a single argument which is the static string in question.
  */
-class StringParser extends StaticParser
+class StringParser extends TerminalClause
 {
     private $needle;
 
@@ -52,7 +52,7 @@ class StringParser extends StaticParser
     /**
      * nullable only if string is ""
      */
-    public function evaluateNullability()
+    public function evaluateNullability(): bool
     {
         return '' === $this->needle;
     }

@@ -1,17 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Ab\LocoX\Clause\Nonterminal;
 
 use Ab\LocoX\Grammar;
 use Ab\LocoX\Exception\{GrammarException, ParseFailureException};
-use Ab\LocoX\StaticParser;
+use Ab\LocoX\Clause\TerminalClause;
 
 /**
  * UntilString matches everything up until any one of the provided
  * $lookaheadStrings is encountered. So this works like a negative
  * lookahead regular expression, but is less flexible.
  */
-class UntilString extends StaticParser
+class UntilString extends TerminalClause
 {
     private $lookaheadStrings;
 
@@ -59,7 +59,7 @@ class UntilString extends StaticParser
         ];
     }
 
-    public function evaluateNullability()
+    public function evaluateNullability(): bool
     {
         return false;
     }
