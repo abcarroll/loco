@@ -1,6 +1,6 @@
 {
-  "name": "ab/loco-parse",
-  "description": "The qntm.org loco lexer-parser (ferno/loco) modernized for PHP7.1+",
+  "name": "ab/lx-parser",
+  "description": "A modern yet time-tested monadic recursive descent parsing toolkit for any kind of text processing.",
   "keywords": [
     "parser",
     "parsing",
