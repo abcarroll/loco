@@ -1,6 +1,12 @@
 <?php
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 use Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -12,7 +18,7 @@ $regexGrammar = new Grammar(
 	"<pattern>",
 	array(
 		// A Pattern is an alternation between several Concs, separated by pipes.
-		"<pattern>" => new ConcParser(
+		"<pattern>" => new Sequence(
 			array("<conc>", "<pipeconclist>"),
 			function($conc, $pipeconclist) {
 				array_unshift($pipeconclist, $conc);
@@ -22,7 +28,7 @@ $regexGrammar = new Grammar(
 		"<pipeconclist>" => new GreedyStarParser(
 			"<pipeconc>"
 		),
-		"<pipeconc>" => new ConcParser(
+		"<pipeconc>" => new Sequence(
 			array(
 				new StringParser("|"),
 				"<conc>"
@@ -38,21 +44,21 @@ $regexGrammar = new Grammar(
 
 		// A Mult is a multiplicand (Charclass or sub-Pattern) followed by a multiplier.
 		// A subpattern has to be put inside parentheses.
-		"<mult>" => new ConcParser(
+		"<mult>" => new Sequence(
 			array("<multiplicand>", "<multiplier>"),
 			function($multiplicand, $multiplier) { return new Mult($multiplicand, $multiplier); }
 		),
-		"<multiplicand>" => new LazyAltParser(
+		"<multiplicand>" => new OrderedChoice(
 			array("<subpattern>", "<charclass>")
 		),
-		"<subpattern>" => new ConcParser(
+		"<subpattern>" => new Sequence(
 			array(new StringParser("("), "<pattern>", new StringParser(")")),
 			function($left_parenthesis, $pattern, $right_parenthesis) { return $pattern; }
 		),
 
 		// A Multiplier has a lower bound and an upper bound. There are several short forms.
 		// In the absence of a multiplier, {1,1} is assumed
-		"<multiplier>" => new LazyAltParser(
+		"<multiplier>" => new OrderedChoice(
 			array(
 				"<bracemultiplier>",
 				new StringParser("?", function($string) { return new Multiplier(0, 1   ); }),
@@ -62,7 +68,7 @@ $regexGrammar = new Grammar(
 			)
 		),
 
-		"<bracemultiplier>" => new ConcParser(
+		"<bracemultiplier>" => new Sequence(
 			array(
 				new StringParser("{"),
 				"<multiplierinterior>",
@@ -71,18 +77,18 @@ $regexGrammar = new Grammar(
 			function($left_brace, $multiplierinterior, $right_brace) { return $multiplierinterior; }
 		),
 
-		"<multiplierinterior>" => new LazyAltParser(
+		"<multiplierinterior>" => new OrderedChoice(
 			array("<bothbounds>", "<unlimited>", "<onebound>")
 		),
-		"<bothbounds>" => new ConcParser(
+		"<bothbounds>" => new Sequence(
 			array("<integer>", "COMMA", "<integer>"),
 			function($integer1, $comma, $integer2) { return new Multiplier($integer1, $integer2); }
 		),
-		"<unlimited>" => new ConcParser(
+		"<unlimited>" => new Sequence(
 			array("<integer>", "COMMA"),
 			function($integer, $comma) { return new Multiplier($integer, null); }
 		),
-		"<onebound>" => new ConcParser(
+		"<onebound>" => new Sequence(
 			array("<integer>"),
 			function($integer) { return new Multiplier($integer, $integer); }
 		),
@@ -93,7 +99,7 @@ $regexGrammar = new Grammar(
 		// It can also be a single character escaped with a backslash,
 		// or a "true" charclass, which is a possibly-negated set of elements
 		// listed inside a pair of brackets.
-		"<charclass>" => new LazyAltParser(
+		"<charclass>" => new OrderedChoice(
 			array(
 				new RegexParser("#^[^|()\\[\\]?*+{}\\\\.]#", function($match) { return new Charclass($match); }),
 				"<bracketednegatedcharclass>",
@@ -125,11 +131,11 @@ $regexGrammar = new Grammar(
 			)
 		),
 
-		"<bracketednegatedcharclass>" => new ConcParser(
+		"<bracketednegatedcharclass>" => new Sequence(
 			array("LEFT_BRACKET", "CARET", "<elemlist>", "RIGHT_BRACKET"),
 			function($left_bracket, $elemlist, $right_bracket) { return new Charclass($elemlist, true); }
 		),
-		"<bracketedcharclass>" => new ConcParser(
+		"<bracketedcharclass>" => new Sequence(
 			array("LEFT_BRACKET", "<elemlist>", "RIGHT_BRACKET"),
 			function($left_bracket, $elemlist, $right_bracket) { return new Charclass($elemlist); }
 		),
@@ -145,11 +151,11 @@ $regexGrammar = new Grammar(
 
 		// An element is either a single character or a character range.
 		// A character range is represented with an optional hyphen
-		"<elem>" => new LazyAltParser(
+		"<elem>" => new OrderedChoice(
 			array("<charrange>", "<classchar>")
 		),
 
-		"<charrange>" => new ConcParser(
+		"<charrange>" => new Sequence(
 			array("<classchar>", "HYPHEN", "<classchar>"),
 			function($char1, $hyphen, $char2) {
 				$char1 = ord($char1);
@@ -168,7 +174,7 @@ $regexGrammar = new Grammar(
 
 		// interior characters in character classes usually represent themselves,
 		// but some are backslash-escaped
-		"<classchar>" => new LazyAltParser(
+		"<classchar>" => new OrderedChoice(
 			array(
 				new RegexParser("#^[^\\\\\\[\\]\\^\\-]#"),
 				new StringParser("\\\\", function($string) { return substr($string, 1, 1); }),

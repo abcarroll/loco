@@ -1,6 +1,13 @@
 <?php
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 use Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -15,7 +22,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $bnfGrammar = new Grammar(
 	"<syntax>",
 	array(
-		"<syntax>" => new ConcParser(
+		"<syntax>" => new Sequence(
 			array(
 				"<rules>",
 				"OPT-WHITESPACE"
@@ -23,7 +30,7 @@ $bnfGrammar = new Grammar(
 			function($rules, $whitespace) { return $rules; }
 		),
 
-		"<rules>" => new GreedyMultiParser(
+		"<rules>" => new BoundedRepeat(
 			"<ruleoremptyline>",
 			1,
 			null,
@@ -42,18 +49,18 @@ $bnfGrammar = new Grammar(
 			}
 		),
 
-		"<ruleoremptyline>" => new LazyAltParser(
+		"<ruleoremptyline>" => new OrderedChoice(
 			array("<rule>", "<emptyline>")
 		),
 
-		"<emptyline>" => new ConcParser(
+		"<emptyline>" => new Sequence(
 			array("OPT-WHITESPACE", "EOL"),
 			function($whitespace, $eol) {
 				return null;
 			}
 		),
 
-		"<rule>" => new ConcParser(
+		"<rule>" => new Sequence(
 			array(
 				"OPT-WHITESPACE",
 				"RULE-NAME",
@@ -79,20 +86,20 @@ $bnfGrammar = new Grammar(
 			}
 		),
 
-		"<expression>" => new ConcParser(
+		"<expression>" => new Sequence(
 			array(
 				"<list>",
 				"<pipelists>"
 			),
 			function($list, $pipelists) {
 				array_unshift($pipelists, $list);
-				return new LazyAltParser($pipelists);
+				return new OrderedChoice($pipelists);
 			}
 		),
 
 		"<pipelists>" => new GreedyStarParser("<pipelist>"),
 
-		"<pipelist>" => new ConcParser(
+		"<pipelist>" => new Sequence(
 			array(
 				new StringParser("|"),
 				"OPT-WHITESPACE",
@@ -103,30 +110,30 @@ $bnfGrammar = new Grammar(
 			}
 		),
 
-		"<list>" => new GreedyMultiParser(
+		"<list>" => new BoundedRepeat(
 			"<term>",
 			1,
 			null,
 			function() {
-				return new ConcParser(func_get_args());
+				return new Sequence(func_get_args());
 			}
 		),
 
-		"<term>" => new ConcParser(
+		"<term>" => new Sequence(
 			array("TERM", "OPT-WHITESPACE"),
 			function($term, $whitespace) {
 				return $term;
 			}
 		),
 
-		"TERM" => new LazyAltParser(
+		"TERM" => new OrderedChoice(
 			array(
 				"LITERAL",
 				"RULE-NAME"
 			)
 		),
 
-		"LITERAL" => new LazyAltParser(
+		"LITERAL" => new OrderedChoice(
 			array(
 				new RegexParser('#^"([^"]*)"#', function($match0, $match1) { return $match1; }),
 				new RegexParser("#^'([^']*)'#", function($match0, $match1) { return $match1; })
@@ -143,7 +150,7 @@ $bnfGrammar = new Grammar(
 
 		"OPT-WHITESPACE" => new RegexParser("#^[\t ]*#"),
 
-		"EOL" => new LazyAltParser(
+		"EOL" => new OrderedChoice(
 			array(
 				new StringParser("\r"),
 				new StringParser("\n")

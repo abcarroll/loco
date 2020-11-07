@@ -1,6 +1,13 @@
 <?php
-namespace Ferno\Loco;
+namespace Ab\LocoX;
 
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
 use Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -18,7 +25,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $ebnfGrammar = new Grammar(
 	"<syntax>",
 	array(
-		"<syntax>" => new ConcParser(
+		"<syntax>" => new Sequence(
 			array("<space>", "<rules>"),
 			function($space, $rules) {
 				return $rules;
@@ -27,7 +34,7 @@ $ebnfGrammar = new Grammar(
 
 		"<rules>" => new GreedyStarParser("<rule>"),
 
-		"<rule>" => new ConcParser(
+		"<rule>" => new Sequence(
 			array("<bareword>", "<space>", new StringParser("="), "<space>", "<alt>", new StringParser(";"), "<space>"),
 			function($bareword, $space1, $equals, $space2, $alt, $semicolon, $space3) {
 				return array(
@@ -37,24 +44,24 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<alt>" => new ConcParser(
+		"<alt>" => new Sequence(
 			array("<conc>", "<pipeconclist>"),
 			function($conc, $pipeconclist) {
 				array_unshift($pipeconclist, $conc);
-				return new LazyAltParser($pipeconclist);
+				return new OrderedChoice($pipeconclist);
 			}
 		),
 
 		"<pipeconclist>" => new GreedyStarParser("<pipeconc>"),
 
-		"<pipeconc>" => new ConcParser(
+		"<pipeconc>" => new Sequence(
 			array(new StringParser("|"), "<space>", "<conc>"),
 			function($pipe, $space, $conc) {
 				return $conc;
 			}
 		),
 
-		"<conc>" => new ConcParser(
+		"<conc>" => new Sequence(
 			array("<term>", "<commatermlist>"),
 			function($term, $commatermlist) {
 				array_unshift($commatermlist, $term);
@@ -63,7 +70,7 @@ $ebnfGrammar = new Grammar(
 				// in reverse order so that our splicing doesn't modify the array
 				$multiparsers = array();
 				foreach($commatermlist as $k => $internal) {
-					if(is_a($internal, "GreedyMultiParser")) {
+					if(is_a($internal, "BoundedRepeat")) {
 						array_unshift($multiparsers, $k);
 					}
 				}
@@ -71,7 +78,7 @@ $ebnfGrammar = new Grammar(
 				// We do something quite advanced here. The inner multiparsers are
 				// spliced out into the list of arguments proper instead of forming an
 				// internal sub-array of their own
-				return new ConcParser(
+				return new Sequence(
 					$commatermlist,
 					function() use ($multiparsers) {
 						$args = func_get_args();
@@ -86,18 +93,18 @@ $ebnfGrammar = new Grammar(
 
 		"<commatermlist>" => new GreedyStarParser("<commaterm>"),
 
-		"<commaterm>" => new ConcParser(
+		"<commaterm>" => new Sequence(
 			array(new StringParser(","), "<space>", "<term>"),
 			function($comma, $space, $term) {
 				return $term;
 			}
 		),
 
-		"<term>" => new LazyAltParser(
+		"<term>" => new OrderedChoice(
 			array("<bareword>", "<sq>", "<dq>", "<group>", "<repetition>", "<optional>")
 		),
 
-		"<bareword>" => new ConcParser(
+		"<bareword>" => new Sequence(
 			array(
 				new RegexParser(
 					"#^([a-z][a-z ]*[a-z]|[a-z])#",
@@ -112,7 +119,7 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<sq>" => new ConcParser(
+		"<sq>" => new Sequence(
 			array(
 				new RegexParser(
 					"#^'([^']*)'#",
@@ -130,7 +137,7 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<dq>" => new ConcParser(
+		"<dq>" => new Sequence(
 			array(
 				new RegexParser(
 					'#^"([^"]*)"#',
@@ -148,7 +155,7 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<group>" => new ConcParser(
+		"<group>" => new Sequence(
 			array(
 				new StringParser("("),
 				"<space>",
@@ -161,7 +168,7 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<repetition>" => new ConcParser(
+		"<repetition>" => new Sequence(
 			array(
 				new StringParser("{"),
 				"<space>",
@@ -174,7 +181,7 @@ $ebnfGrammar = new Grammar(
 			}
 		),
 
-		"<optional>" => new ConcParser(
+		"<optional>" => new Sequence(
 			array(
 				new StringParser("["),
 				"<space>",
@@ -183,13 +190,13 @@ $ebnfGrammar = new Grammar(
 				"<space>"
 			),
 			function($left_bracket, $space1, $alt, $right_bracket, $space2) {
-				return new GreedyMultiParser($alt, 0, 1);
+				return new BoundedRepeat($alt, 0, 1);
 			}
 		),
 
 		"<space>" => new GreedyStarParser("<whitespace/comment>"),
 
-		"<whitespace/comment>" => new LazyAltParser(
+		"<whitespace/comment>" => new OrderedChoice(
 			array("<whitespace>", "<comment>")
 		),
 

@@ -1,16 +1,27 @@
 <?php
-namespace Ferno\Loco;
+namespace Ab\LocoX;
+
+use Ab\LocoX\Clause\Nonterminal\GreedyStarParser;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
+use Ab\LocoX\Exception\GrammarException;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-# Left-recursion in Loco, demonstration.
+/**
+ * Left-recursion in Loco, demonstration.
+ *
+ * Left-recursive grammars cannot be parsed using a recursive descent approach.
+ * Loco detects left-recursion in a new grammar and raises an exception.
+ * How do we get around this?
+ */
 
-# Left-recursive grammars cannot be parsed using a recursive descent approach.
-# Loco detects left-recursion in a new grammar and raises an exception.
-# How do we get around this?
-
-# minus($minuend, $subtrahend) is a left-associative operator.
-# e.g. "5 - 4 - 3" means "(5 - 4) - 3 = -2", not "5 - (4 - 3) = 4".
+/**
+ * minus($minuend, $subtrahend) is a left-associative operator.
+ * e.g. "5 - 4 - 3" means "(5 - 4) - 3 = -2", not "5 - (4 - 3) = 4".
+ */
 function minus($minuend, $subtrahend) {
 	return $minuend - $subtrahend;
 }
@@ -22,7 +33,7 @@ $N = new RegexParser(
 );
 
 # P -> "-" N
-$P = new ConcParser(
+$P = new Sequence(
 	array(new StringParser("-"), $N),
 	function($minus, $n) { return $n; }
 );
@@ -35,10 +46,10 @@ try {
 	$grammar = new Grammar(
 		"S",
 		array(
-			"S" => new LazyAltParser(
+			"S" => new OrderedChoice(
 				array(
 					"N",
-					new ConcParser(
+					new Sequence(
 						array("S", "P"),
 						"minus"
 					)
@@ -48,10 +59,10 @@ try {
 			"N" => $N
 		)
 	);
-	var_dump(false);
+    assert(false);
 } catch (GrammarException $e) {
 	# Left-recursive in S
-	var_dump(true);
+    assert(true);
 }
 
 # Fix the grammar like so:
@@ -59,7 +70,7 @@ try {
 $grammar = new Grammar(
 	"S",
 	array(
-		"S" => new ConcParser(
+		"S" => new Sequence(
 			array(
 				$N,
 				new GreedyStarParser("P")
@@ -73,4 +84,4 @@ $grammar = new Grammar(
 	)
 );
 
-var_dump($grammar->parse("5-4-3") === -2); # true
+assert($grammar->parse("5-4-3") === -2); # true

@@ -1,22 +1,52 @@
 {
-  "name": "ferno/loco",
+  "name": "ab/loco-parse",
+  "description": "The qntm.org loco lexer-parser (ferno/loco) modernized for PHP7.1+",
   "keywords": [
     "parser",
     "parsing",
-    "lexer"
+    "lexer",
+    "compiler",
+    "dsl",
+    "doctrine",
+    "hoa"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "A.B. Carroll",
+      "homepage": "https://ab.hl9.net",
+      "email": "ben@hl9.net",
+      "role": "Current Maintainer"
+    },
+    {
+      "name": "ferno",
+      "email": "actinium@gmail.com",
+      "homepage": "https://qntm.org/loco",
+      "role": "Original Author"
+    }
   ],
   "homepage": "http://qntm.org/loco",
   "require": {
-    "php": ">=5.3.0"
+    "php": ">=7.4"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "^2.3",
-    "jakub-onderka/php-parallel-lint": "0.*"
+      "phpunit/phpunit": "^8",
+      "squizlabs/php_codesniffer": "^3.5"
+  },
+  "scripts": {
+    "check": "phpcs",
+    "fix-cs": "phpcbf"
   },
   "autoload": {
-    "files": [
-      "src/Loco.php"
-    ]
+    "psr-4": {
+      "Ab\\LocoX\\": "src/"
+    }
   },
-  "license": "MIT"
+  "autoload-dev": {
+    "psr-4": {
+      "Ferno\\Tests\\Loco\\": "tests/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
