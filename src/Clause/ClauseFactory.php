@@ -2,76 +2,145 @@
 
 namespace Ab\LocoX\Clause;
 
-use Ab\LocoX\Clause\Clause;
+use Ab\LocoX\Clause\Nonterminal\BoundedRepeat;
+use Ab\LocoX\Clause\Nonterminal\OrderedChoice;
+use Ab\LocoX\Clause\Nonterminal\Sequence;
+use Ab\LocoX\Clause\Terminal\EmptyParser;
+use Ab\LocoX\Clause\Terminal\RegexParser;
+use Ab\LocoX\Clause\Terminal\StringParser;
+use Ab\LocoX\Clause\Terminal\Utf8Parser;
 
-class ClauseFactory
+/**
+ * Factory class for clause objects
+ */
+final class ClauseFactory
 {
-    public static function matchCharOfString(string $string)
+    private function __construct()
     {
-        if (strlen($string) === 0) {
-            throw new \InvalidArgumentException(
-                __METHOD__ . " must not be passed an empty string as behavior is ambiguous. " .
-                "Use Empty clause if empty string matching is desired."
-            );
-        }
-
-        return new Clause\Terminal\RegexParser('/^[' . preg_quote($string, '/') . ']+/');
-    }
-
-
-    public static function seq(Clause ...$sequence)
-    {
-        return new Clause\Nonterminal\Sequence($sequence);
+        /* Prevent instantiation */
     }
 
     /**
-     * @TODO Fix into it's own clause class.
+     * @param mixed ...$subclause
+     *
+     * @return Clause
      */
-    public static function ruleRef(string $ref)
+    public static function seq(Clause ...$subclause): Clause
     {
-        return $ref;
-    }
+        if (count($subclause) > 1) {
+            return new Sequence($subclause);
+        }
 
-    public static function oneOrMore(Clause $subclause)
-    {
-        return new Clause\Nonterminal\GreedyMultiParser($subclause, 1, null);
-    }
-
-    public static function optional(Clause $subclause)
-    {
-        return new Clause\Nonterminal\GreedyMultiParser($subclause, 0, 1);
-    }
-
-    public static function zeroOrMore(Clause $subclause)
-    {
-        return new Clause\Nonterminal\GreedyMultiParser($subclause, 0, null);
+        return $subclause[0] ?? self::nothing();
     }
 
     /**
      * Match the first sub-clause which matches successfully, failing if zero of the sub-clauses matches.
      *
-     * Ford termed this "Ordered Choice". Also called "OR" matching, "alternation", or an "any match".
+     * Ford termed this "Ordered Choice". Also called "OR" matching, "alternation", or an "any match", or "First"
      *
      * @param Clause ...$clauses
      *
      * @return Clause
      */
-    public static function first(Clause ...$clauses): Clause
+    public static function ordered_choice(...$subclause): Clause
     {
-        return new Clause\Nonterminal\LazyAltParser($clauses);
+        return new OrderedChoice($subclause);
     }
 
-    public static function followedBy(\Ab\LocoX\Clause\Clause $clause): Clause
+    /**
+     * @param int $min
+     * @param int $max
+     * @param     $subclause
+     *
+     * @return BoundedRepeat
+     */
+    public static function repeat_bounded(int $min, int $max, $subclause): Clause
     {
-        $clause->
+        // TODO Move this logic to the actual BoundedRepeat class
+        if ($max === +INF) {
+            $max = null;
+        }
+
+        return new BoundedRepeat($subclause, $min, $max);
     }
 
-    public static function notFollowedBy(Clause $clause): Clause
+    /**
+     * @param $subclause
+     *
+     * @return BoundedRepeat
+     */
+    public static function zero_or_more(Clause $subclause): Clause
     {
+        return self::repeat_bounded(0, INF, $subclause);
     }
-    
-    public static function matchRegex(string $inputRegex)
+
+    /**
+     * @param $subclause
+     *
+     * @return BoundedRepeat
+     */
+    public static function one_or_more(Clause $subclause): Clause
     {
-        return new Clause\Terminal\RegexParser($inputRegex);
+        return self::repeat_bounded(1, INF, $subclause);
+    }
+
+    /**
+     * @param $subclause
+     *
+     * @return BoundedRepeat
+     */
+    public static function optional(Clause $subclause): Clause
+    {
+        return self::repeat_bounded(0, 1, $subclause);
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return Clause
+     */
+    public static function literal(string $string): Clause
+    {
+        return new StringParser($string);
+    }
+
+    /**
+     * @param string $regexString
+     *
+     * @return Clause
+     */
+    public static function regex(string $regexString): Clause
+    {
+        // Regular Expression clauses must be anchored or it will fail.
+        // This likely should just be a part of the actual clause match, but
+        // that changes behaviour.
+        if (substr($regexString, 1, 1) !== '^') {
+            $regexString = substr($regexString, 0, 1) . '^' . substr($regexString, 1);
+        }
+        return new RegexParser($regexString);
+    }
+
+    /**
+     * @param array $untilChars
+     *
+     * @return Clause
+     */
+    public static function literal_utf8(array $untilChars = []): Clause
+    {
+        return new Utf8Parser($untilChars);
+    }
+
+    /**
+     * @return Clause
+     */
+    public static function nothing(): Clause
+    {
+        return new EmptyParser();
+    }
+
+    public static function ref(string $refName)
+    {
+        return new Sequence([$refName]);
     }
 }
